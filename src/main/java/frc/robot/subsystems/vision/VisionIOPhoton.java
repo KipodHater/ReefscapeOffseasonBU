@@ -38,8 +38,7 @@ public class VisionIOPhoton implements VisionIO {
     List<PoseObservation> poseObservations = new LinkedList<>();
     var results = camera.getAllUnreadResults();
 
-    // for (var result : results) {
-    var result = camera.getLatestResult(); // Get the latest result
+    for (var result : results) {
     if (result.hasTargets()
         && RobotController.getFPGATime() * 1e-6 - result.getTimestampSeconds() < 0.02) {
       inputs.latestTargetObservation =
@@ -106,7 +105,7 @@ public class VisionIOPhoton implements VisionIO {
                 0.1)); // Observation type
       }
     }
-    // }
+  }
 
     if (!poseObservations.isEmpty()) {
       inputs.poseObservations = poseObservations.toArray(new PoseObservation[0]);

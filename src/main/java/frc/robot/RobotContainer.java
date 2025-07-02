@@ -92,7 +92,7 @@ public class RobotContainer {
                 controller::getLeftX,
                 controller::getLeftY,
                 () -> controller.getRawAxis(4));
-        gripper = new Gripper(new GripperIOSpark());
+        gripper = new Gripper(new GripperIOSpark(), new GripperSensorIORev());
         arm = new Arm(new ArmIOSpark());
         vision =
             new Vision(
@@ -126,7 +126,7 @@ public class RobotContainer {
                 controller::getLeftY,
                 () -> controller.getRawAxis(4));
 
-        gripper = new Gripper(new GripperIOSim(driveSimulation));
+        gripper = new Gripper(new GripperIOSim(driveSimulation), new GripperSensorIO() {});
         arm = new Arm(new ArmIOSim());
         vision =
             new Vision(
@@ -157,7 +157,7 @@ public class RobotContainer {
                 controller::getLeftX,
                 controller::getLeftY,
                 () -> controller.getRawAxis(4));
-        gripper = new Gripper(new GripperIO() {});
+        gripper = new Gripper(new GripperIO() {}, new GripperSensorIO() {});
         arm = new Arm(new ArmIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO[] {});
         break;
@@ -217,17 +217,6 @@ public class RobotContainer {
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    controller
-        .button(6)
-        .onTrue(Commands.runOnce(() -> gripper.setGripperGoal(GripperStates.OUTTAKE_STRONG)));
-    controller
-        .button(5)
-        .onTrue(Commands.runOnce(() -> gripper.setGripperGoal(GripperStates.INTAKE)));
-    controller
-        .button(5)
-        .or(controller.button(6))
-        .onFalse(Commands.runOnce(() -> gripper.setGripperGoal(GripperStates.IDLE)));
 
     // Reset gyro to 0° when B button is pressed
 
