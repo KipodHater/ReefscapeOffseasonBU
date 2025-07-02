@@ -1,10 +1,11 @@
 package frc.robot.subsystems.gripper;
 
+import java.lang.Cloneable;
+import java.lang.Override;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public class GripperIOInputsAutoLogged extends GripperIO.GripperIOInputs
-    implements LoggableInputs, Cloneable {
+public class GripperIOInputsAutoLogged extends GripperIO.GripperIOInputs implements LoggableInputs, Cloneable {
   @Override
   public void toLog(LogTable table) {
     table.put("MotorConnected", motorConnected);
