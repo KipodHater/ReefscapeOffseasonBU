@@ -1,2 +1,4 @@
 .pdb filter=lfs diff=lfs merge=lfs -text
+build/jni/release/wpimathjni.pdb[[:space:]]is[[:space:]]55.90[[:space:]]MB filter=lfs diff=lfs merge=lfs -text
+build/jni/release/wpimathjni.pdb filter=lfs diff=lfs merge=lfs -text
 *.pdb filter=lfs diff=lfs merge=lfs -text
