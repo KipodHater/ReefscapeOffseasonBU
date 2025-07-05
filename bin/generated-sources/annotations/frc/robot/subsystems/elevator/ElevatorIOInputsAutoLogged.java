@@ -1,17 +1,16 @@
 package frc.robot.subsystems.elevator;
 
-import java.lang.Cloneable;
-import java.lang.Override;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public class ElevatorIOInputsAutoLogged extends ElevatorIO.ElevatorIOInputs implements LoggableInputs, Cloneable {
+public class ElevatorIOInputsAutoLogged extends ElevatorIO.ElevatorIOInputs
+    implements LoggableInputs, Cloneable {
   @Override
   public void toLog(LogTable table) {
     table.put("MotorConnected", motorConnected);
     table.put("FollowerConnected", followerConnected);
-    table.put("PositionDeg", positionDeg);
-    table.put("VelocityDegPerSec", velocityDegPerSec);
+    table.put("PositionMeters", positionMeters);
+    table.put("VelocityMPS", velocityMPS);
     table.put("MotorVoltage", motorVoltage);
     table.put("FollowerVoltage", followerVoltage);
     table.put("MotorTemp", motorTemp);
@@ -24,8 +23,8 @@ public class ElevatorIOInputsAutoLogged extends ElevatorIO.ElevatorIOInputs impl
   public void fromLog(LogTable table) {
     motorConnected = table.get("MotorConnected", motorConnected);
     followerConnected = table.get("FollowerConnected", followerConnected);
-    positionDeg = table.get("PositionDeg", positionDeg);
-    velocityDegPerSec = table.get("VelocityDegPerSec", velocityDegPerSec);
+    positionMeters = table.get("PositionMeters", positionMeters);
+    velocityMPS = table.get("VelocityMPS", velocityMPS);
     motorVoltage = table.get("MotorVoltage", motorVoltage);
     followerVoltage = table.get("FollowerVoltage", followerVoltage);
     motorTemp = table.get("MotorTemp", motorTemp);
@@ -38,8 +37,8 @@ public class ElevatorIOInputsAutoLogged extends ElevatorIO.ElevatorIOInputs impl
     ElevatorIOInputsAutoLogged copy = new ElevatorIOInputsAutoLogged();
     copy.motorConnected = this.motorConnected;
     copy.followerConnected = this.followerConnected;
-    copy.positionDeg = this.positionDeg;
-    copy.velocityDegPerSec = this.velocityDegPerSec;
+    copy.positionMeters = this.positionMeters;
+    copy.velocityMPS = this.velocityMPS;
     copy.motorVoltage = this.motorVoltage;
     copy.followerVoltage = this.followerVoltage;
     copy.motorTemp = this.motorTemp;

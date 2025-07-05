@@ -1,5 +1,3 @@
 package frc.robot.subsystems.dashboard;
 
-public class Dashboard {
-    
-}
+public class Dashboard {}

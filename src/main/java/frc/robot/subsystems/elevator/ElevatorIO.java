@@ -1,18 +1,17 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-
 public interface ElevatorIO {
-    
-    @AutoLog
+
+  @AutoLog
   public static class ElevatorIOInputs {
     public boolean motorConnected = false;
     public boolean followerConnected = false;
 
-    public double positionDeg = 0; // degrees
-    public double velocityDegPerSec = 0; // degrees/second
+    public double positionMeters = 0; // Meters
+    public double velocityMPS = 0; // Meters/second
     public double motorVoltage = 0; // volts
     public double followerVoltage = 0; // volts
     public double motorTemp = 0; // celsius
@@ -28,6 +27,10 @@ public interface ElevatorIO {
   public default void stop() {}
 
   public default void runPosition(double position, double feedforward) {}
+
+  public default void runPositionMeters(double height, double feedforward) {}
+
+  public default void runExtendPercent(double percent, double feedforward) {}
 
   public default void setPID(double KP, double KI, double KD) {}
 

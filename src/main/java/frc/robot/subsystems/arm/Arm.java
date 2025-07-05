@@ -4,8 +4,6 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
-
 public class Arm {
 
   private final ArmIO io;
@@ -32,11 +30,11 @@ public class Arm {
 
     Double value;
 
-    ArmStates(Double value){
+    ArmStates(Double value) {
       this.value = value;
     }
 
-    public Double position(){
+    public Double position() {
       return this.value;
     }
   };
@@ -54,7 +52,6 @@ public class Arm {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Arm", inputs);
-
 
     stateMachine();
   }
@@ -91,13 +88,13 @@ public class Arm {
   //   };
   // }
 
-  public void stateMachine(){
+  public void stateMachine() {
 
     double ffVoltage =
-    feedforwardController.calculate(
-        inputs.positionDeg * Math.PI / 180.0, inputs.velocityDegPerSec * Math.PI / 180.0);
+        feedforwardController.calculate(
+            inputs.positionDeg * Math.PI / 180.0, inputs.velocityDegPerSec * Math.PI / 180.0);
 
-    switch(currentState){
+    switch (currentState) {
       case DEFAULT -> io.runPosition(ArmStates.DEFAULT.position(), ffVoltage);
 
       case CORAL_L1 -> io.runPosition(ArmStates.CORAL_L1.position(), ffVoltage);
@@ -114,22 +111,24 @@ public class Arm {
 
       case ALGAE_INTAKE_REEF -> io.runPosition(ArmStates.ALGAE_INTAKE_REEF.position(), ffVoltage);
 
-      case ALGAE_INTAKE_LOLIPOP -> io.runPosition(ArmStates.ALGAE_INTAKE_LOLIPOP.position(), ffVoltage);
+      case ALGAE_INTAKE_LOLIPOP -> io.runPosition(
+          ArmStates.ALGAE_INTAKE_LOLIPOP.position(), ffVoltage);
 
       case ALGAE_INTAKE_FLOOR -> io.runPosition(ArmStates.ALGAE_INTAKE_FLOOR.position(), ffVoltage);
 
-      case ALGAE_SCORE_PROCESSOR -> io.runPosition(ArmStates.ALGAE_SCORE_PROCESSOR.position(), ffVoltage);
+      case ALGAE_SCORE_PROCESSOR -> io.runPosition(
+          ArmStates.ALGAE_SCORE_PROCESSOR.position(), ffVoltage);
 
       case ALGAE_SCORE_NET -> io.runPosition(ArmStates.ALGAE_SCORE_NET.position(), ffVoltage);
 
       case IDLE -> io.stop();
-    };
+    }
+    ;
   }
 
   public void setArmGoal(ArmStates desiredGoal) {
     currentState = desiredGoal;
   }
-
 
   public void testPeriodic() {}
 }
