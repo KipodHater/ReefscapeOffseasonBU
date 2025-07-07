@@ -1,66 +1,71 @@
 package frc.robot.subsystems.intakeDeploy;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-
 public class IntakeDeploy {
-    private final IntakeDeployIO io;
-    private final IntakeDeployIOInputsAutoLogged inputs = new IntakeDeployIOInputsAutoLogged();
+  private final IntakeDeployIO io;
+  private final IntakeDeployIOInputsAutoLogged inputs = new IntakeDeployIOInputsAutoLogged();
 
-    private final ArmFeedforward feedforwardController =
-        new ArmFeedforward(IntakeDeployConstants.GAINS.KS(), IntakeDeployConstants.GAINS.KG(), IntakeDeployConstants.GAINS.KV());
-    
-    public enum IntakeDeployStates {
-        CLOSED(0.0),
-        DEPLOY(90.0),
-        RETRACT(0.0),
-        IDLE(null);
+  private final ArmFeedforward feedforwardController =
+      new ArmFeedforward(
+          IntakeDeployConstants.GAINS.KS(),
+          IntakeDeployConstants.GAINS.KG(),
+          IntakeDeployConstants.GAINS.KV());
 
-        Double value;
+  public enum IntakeDeployStates {
+    CLOSED(0.0),
+    DEPLOY(90.0),
+    RETRACT(0.0),
+    IDLE(null);
 
-        IntakeDeployStates(Double value) {
-            this.value = value;
-        }
+    Double value;
 
-        public Double position() {
-            return this.value;
-        }
-    };
-
-    @AutoLogOutput(key = "IntakeDeploy/currentState")
-    private IntakeDeployStates currentState = IntakeDeployStates.IDLE;
-
-    public IntakeDeploy(IntakeDeployIO io) {
-        this.io = io;
+    IntakeDeployStates(Double value) {
+      this.value = value;
     }
 
-    public void periodic() {
-        io.updateInputs(inputs);
-        Logger.processInputs("IntakeDeploy/inputs", inputs);
-
-        stateMachine();
+    public Double position() {
+      return this.value;
     }
+  };
 
-    private void stateMachine(){
-        double ffVoltage = feedforwardController.calculate(currentState.position()*(Math.PI / 180.0), inputs.velocityDegPerSec * (Math.PI / 180.0));
-                 // Convert velocity to radians per second
+  @AutoLogOutput(key = "IntakeDeploy/currentState")
+  private IntakeDeployStates currentState = IntakeDeployStates.IDLE;
 
-        switch (currentState) {
-            case CLOSED -> io.runPosition(IntakeDeployStates.CLOSED.position(), ffVoltage);
+  public IntakeDeploy(IntakeDeployIO io) {
+    this.io = io;
+  }
 
-            case DEPLOY -> io.runPosition(IntakeDeployStates.DEPLOY.position(), ffVoltage);
+  public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("IntakeDeploy/inputs", inputs);
 
-            case RETRACT -> io.runPosition(IntakeDeployStates.RETRACT.position(), ffVoltage);
+    stateMachine();
+  }
 
-            case IDLE -> io.stop();
+  private void stateMachine() {
+    double ffVoltage =
+        feedforwardController.calculate(
+            currentState.position() * (Math.PI / 180.0),
+            inputs.velocityDegPerSec * (Math.PI / 180.0));
+    // Convert velocity to radians per second
 
-            default -> io.stop();
-        }
+    switch (currentState) {
+      case CLOSED -> io.runPosition(IntakeDeployStates.CLOSED.position(), ffVoltage);
+
+      case DEPLOY -> io.runPosition(IntakeDeployStates.DEPLOY.position(), ffVoltage);
+
+      case RETRACT -> io.runPosition(IntakeDeployStates.RETRACT.position(), ffVoltage);
+
+      case IDLE -> io.stop();
+
+      default -> io.stop();
     }
+  }
 
-    public void setBrakeMode(boolean isBrake) {
-        io.setBrakeMode(isBrake);
-    }
+  public void setBrakeMode(boolean isBrake) {
+    io.setBrakeMode(isBrake);
+  }
 }
