@@ -4,48 +4,48 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeRollers {
-    private final IntakeRollersIO io;
-    private final IntakeRollersIOInputsAutoLogged inputs = new IntakeRollersIOInputsAutoLogged();
+  private final IntakeRollersIO io;
+  private final IntakeRollersIOInputsAutoLogged inputs = new IntakeRollersIOInputsAutoLogged();
 
-    public enum IntakeRollersStates {
-        IDLE(0.0),
-        INTAKE(12.0),
-        EXHAUST(-12.0);
+  public enum IntakeRollersStates {
+    IDLE(0.0),
+    INTAKE(12.0),
+    EXHAUST(-12.0);
 
-        double value;
+    double value;
 
-        IntakeRollersStates(double value) {
-            this.value = value;
-        }
-
-        public double getSpeed() {
-            return this.value;
-        }
-    };
-
-    @AutoLogOutput(key = "IntakeRollers/currentState")
-    private IntakeRollersStates currentState = IntakeRollersStates.IDLE;
-
-    public IntakeRollers(IntakeRollersIO io) {
-        this.io = io;
+    IntakeRollersStates(double value) {
+      this.value = value;
     }
 
-    public void periodic() {
-        io.updateInputs(inputs);
-        Logger.processInputs("IntakeRollers", inputs);
-
-        stateMachine();
+    public double getSpeed() {
+      return this.value;
     }
-    
-    private void stateMachine() {
-        switch (currentState) {
-            case IDLE -> io.stop();
+  };
 
-            case INTAKE -> io.runVoltage(IntakeRollersStates.INTAKE.getSpeed());
+  @AutoLogOutput(key = "IntakeRollers/currentState")
+  private IntakeRollersStates currentState = IntakeRollersStates.IDLE;
 
-            case EXHAUST -> io.runVoltage(IntakeRollersStates.EXHAUST.getSpeed());
+  public IntakeRollers(IntakeRollersIO io) {
+    this.io = io;
+  }
 
-            default -> io.stop();
-        }
+  public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("IntakeRollers", inputs);
+
+    stateMachine();
+  }
+
+  private void stateMachine() {
+    switch (currentState) {
+      case IDLE -> io.stop();
+
+      case INTAKE -> io.runVoltage(IntakeRollersStates.INTAKE.getSpeed());
+
+      case EXHAUST -> io.runVoltage(IntakeRollersStates.EXHAUST.getSpeed());
+
+      default -> io.stop();
     }
+  }
 }
