@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.arm.*;
 import frc.robot.subsystems.drive.Drive;
@@ -42,8 +43,11 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.Elevator.ElevatorStates;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.gripper.*;
-import frc.robot.subsystems.gripper.Gripper.GripperStates;
 import frc.robot.subsystems.vision.*;
 import java.util.function.DoubleSupplier;
 import org.ironmaple.simulation.SimulatedArena;
@@ -64,6 +68,7 @@ public class RobotContainer {
   private final Gripper gripper;
   private final Arm arm;
   private final Vision vision;
+  private final Elevator elevator;
   private SwerveDriveSimulation driveSimulation = null;
 
   // Controller
@@ -94,6 +99,7 @@ public class RobotContainer {
                 () -> controller.getRawAxis(4));
         gripper = new Gripper(new GripperIOSpark(), new GripperSensorIORev());
         arm = new Arm(new ArmIOSpark());
+        elevator = new Elevator(new ElevatorIO() {});
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -124,10 +130,11 @@ public class RobotContainer {
                 (robotPose) -> driveSimulation.getSimulatedDriveTrainPose(),
                 controller::getLeftX,
                 controller::getLeftY,
-                () -> controller.getRawAxis(4));
+                () -> controller.getRawAxis(2));
 
         gripper = new Gripper(new GripperIOSim(driveSimulation), new GripperSensorIO() {});
         arm = new Arm(new ArmIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -159,6 +166,7 @@ public class RobotContainer {
                 () -> controller.getRawAxis(4));
         gripper = new Gripper(new GripperIO() {}, new GripperSensorIO() {});
         arm = new Arm(new ArmIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO[] {});
         break;
     }
@@ -229,6 +237,18 @@ public class RobotContainer {
 
     // Simulation Buttons
     if (Constants.currentMode == Constants.Mode.SIM) {
+      GenericHID controllerHID = new GenericHID(0);
+
+      Trigger stupidshit = new Trigger(() -> controllerHID.getRawButton(1));
+      Trigger stupidshit2 = new Trigger(() -> controllerHID.getRawButton(2));
+      Trigger stupidshit3 = new Trigger(() -> controllerHID.getRawButton(3));
+
+      stupidshit.onTrue(Commands.runOnce(() -> elevator.setElevatorGoal(ElevatorStates.CORAL_L4)));
+      stupidshit2.onTrue(
+          Commands.runOnce(() -> elevator.setElevatorGoal(ElevatorStates.CORAL_L3_SCORE)));
+      stupidshit3.onTrue(
+          Commands.runOnce(() -> elevator.setElevatorGoal(ElevatorStates.CORAL_L2_SCORE)));
+
       // L1 Placement
       controller
           .b()
@@ -272,6 +292,7 @@ public class RobotContainer {
     vision.periodic();
     Logger.recordOutput("diffff", (RobotController.getFPGATime() - startTime) * 1e-3);
     gripper.periodic();
+    elevator.periodic();
   }
 
   public void resetSimulation() {
