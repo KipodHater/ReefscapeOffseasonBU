@@ -1,10 +1,11 @@
-package frc.robot.subsystems.intakeRollers;
+package frc.robot.subsystems.conveyor;
 
+import java.lang.Cloneable;
+import java.lang.Override;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public class IntakeRollersIOInputsAutoLogged extends IntakeRollersIO.IntakeRollersIOInputs
-    implements LoggableInputs, Cloneable {
+public class ConveyorIOInputsAutoLogged extends ConveyorIO.ConveyorIOInputs implements LoggableInputs, Cloneable {
   @Override
   public void toLog(LogTable table) {
     table.put("MotorConnected", motorConnected);
@@ -23,8 +24,8 @@ public class IntakeRollersIOInputsAutoLogged extends IntakeRollersIO.IntakeRolle
     motorCurrent = table.get("MotorCurrent", motorCurrent);
   }
 
-  public IntakeRollersIOInputsAutoLogged clone() {
-    IntakeRollersIOInputsAutoLogged copy = new IntakeRollersIOInputsAutoLogged();
+  public ConveyorIOInputsAutoLogged clone() {
+    ConveyorIOInputsAutoLogged copy = new ConveyorIOInputsAutoLogged();
     copy.motorConnected = this.motorConnected;
     copy.velocityDegPerSec = this.velocityDegPerSec;
     copy.motorVoltage = this.motorVoltage;

@@ -19,12 +19,12 @@
     "###FMS": {
       "Collapsed": "0",
       "Pos": "5,439",
-      "Size": "169,184"
+      "Size": "283,140"
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "101,439",
-      "Size": "796,155"
+      "Size": "796,240"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
@@ -33,12 +33,12 @@
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "101,277",
+      "Pos": "268,262",
       "Size": "750,185"
     },
     "###NetworkTables Info": {
       "Collapsed": "0",
-      "Pos": "101,130",
+      "Pos": "182,102",
       "Size": "750,145"
     },
     "###Other Devices": {

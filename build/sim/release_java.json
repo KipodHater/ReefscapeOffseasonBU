@@ -5,17 +5,17 @@
     "extensions": [
       {
         "name": "Sim GUI",
-        "libName": "C:\\Users\\royle\\Documents\\Robotica_work\\ReefscapeOffseasonBU\\build\\jni\\release\\halsim_gui.dll",
+        "libName": "C:\\Users\\frc\\Documents\\Programming\\ReefscapeOffseasonBU\\build\\jni\\release\\halsim_gui.dll",
         "defaultEnabled": false
       },
       {
         "name": "Use Real DriverStation",
-        "libName": "C:\\Users\\royle\\Documents\\Robotica_work\\ReefscapeOffseasonBU\\build\\jni\\release\\halsim_ds_socket.dll",
+        "libName": "C:\\Users\\frc\\Documents\\Programming\\ReefscapeOffseasonBU\\build\\jni\\release\\halsim_ds_socket.dll",
         "defaultEnabled": false
       }
     ],
     "environment": {},
-    "libraryDir": "C:\\Users\\royle\\Documents\\Robotica_work\\ReefscapeOffseasonBU\\build\\jni\\release",
+    "libraryDir": "C:\\Users\\frc\\Documents\\Programming\\ReefscapeOffseasonBU\\build\\jni\\release",
     "mainClassName": "frc.robot.Main"
   }
 ]
