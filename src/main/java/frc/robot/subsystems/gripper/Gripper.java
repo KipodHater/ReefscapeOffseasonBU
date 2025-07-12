@@ -139,7 +139,7 @@ public class Gripper {
     ;
   }
 
-  public void setGripperWantedState(GripperStates wantedState) {
+  public void setState(GripperStates wantedState) {
     this.wantedState = wantedState;
   }
 

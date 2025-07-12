@@ -65,6 +65,10 @@ public class IntakeDeploy {
     }
   }
 
+  public void setState(IntakeDeployStates state) {
+    this.currentState = state;
+  }
+
   public void setBrakeMode(boolean isBrake) {
     io.setBrakeMode(isBrake);
   }

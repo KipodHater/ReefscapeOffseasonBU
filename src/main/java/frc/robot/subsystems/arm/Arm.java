@@ -15,6 +15,7 @@ public class Arm {
   // @RequiredArgsConstructor
   public enum ArmStates {
     DEFAULT(-90.0),
+    HOME(90.0),
     CORAL_L1(-20.0),
     CORAL_L23(10.0),
     CORAL_L4(30.0),
@@ -121,12 +122,14 @@ public class Arm {
 
       case ALGAE_SCORE_NET -> io.runPosition(ArmStates.ALGAE_SCORE_NET.position(), ffVoltage);
 
+      case HOME -> io.runPosition(ArmStates.HOME.position(), ffVoltage);
+
       case IDLE -> io.stop();
     }
     ;
   }
 
-  public void setArmGoal(ArmStates desiredGoal) {
+  public void setState(ArmStates desiredGoal) {
     currentState = desiredGoal;
   }
 

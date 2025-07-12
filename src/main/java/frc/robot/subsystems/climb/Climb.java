@@ -15,7 +15,7 @@ public class Climb {
       new ArmFeedforward(
           ClimbConstants.GAINS.KS(), ClimbConstants.GAINS.KG(), ClimbConstants.GAINS.KV());
 
-  private enum ClimbStates {
+  public enum ClimbStates {
     IDLE(null),
     OPEN(100.0),
     CLIMBING(200.0),
@@ -56,6 +56,10 @@ public class Climb {
 
       case HOLD_POSITION -> io.runVoltage(1);
     }
+  }
+
+  public void setState(ClimbStates state) {
+    currentState = state;
   }
 
   public boolean isReadyToClimb() {

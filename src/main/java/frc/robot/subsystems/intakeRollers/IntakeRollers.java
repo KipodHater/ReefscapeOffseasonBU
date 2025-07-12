@@ -48,4 +48,8 @@ public class IntakeRollers {
       default -> io.stop();
     }
   }
+
+  public void setState(IntakeRollersStates wantedState) {
+    currentState = wantedState;
+  }
 }
