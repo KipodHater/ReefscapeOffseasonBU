@@ -13,7 +13,7 @@ public class Elevator {
       new ElevatorFeedforward(
           ElevatorConstants.GAINS.KS(), ElevatorConstants.GAINS.KG(), ElevatorConstants.GAINS.KV());
 
-  public enum ElevatorStates {
+  public enum ElevatorStates { //TODO: set actuaL heights
     DEFAULT(0.0),
     CORAL_L1(0.2),
     CORAL_L2(0.3),
