@@ -1,11 +1,10 @@
 package frc.robot.subsystems.conveyor;
 
-import java.lang.Cloneable;
-import java.lang.Override;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public class ConveyorIOInputsAutoLogged extends ConveyorIO.ConveyorIOInputs implements LoggableInputs, Cloneable {
+public class ConveyorIOInputsAutoLogged extends ConveyorIO.ConveyorIOInputs
+    implements LoggableInputs, Cloneable {
   @Override
   public void toLog(LogTable table) {
     table.put("MotorConnected", motorConnected);

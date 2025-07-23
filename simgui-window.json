@@ -10,7 +10,7 @@
       "maximized": "0",
       "style": "0",
       "userScale": "2",
-      "width": "1018",
+      "width": "260",
       "xpos": "195",
       "ypos": "213"
     }
@@ -23,8 +23,8 @@
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "101,439",
-      "Size": "796,155"
+      "Pos": "105,438",
+      "Size": "254,155"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
@@ -33,12 +33,12 @@
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "101,277",
+      "Pos": "170,210",
       "Size": "750,185"
     },
     "###NetworkTables Info": {
       "Collapsed": "0",
-      "Pos": "101,130",
+      "Pos": "195,51",
       "Size": "750,145"
     },
     "###Other Devices": {

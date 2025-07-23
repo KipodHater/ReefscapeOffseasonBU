@@ -1,11 +1,10 @@
 package frc.robot.subsystems.intakeDeploy;
 
-import java.lang.Cloneable;
-import java.lang.Override;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public class IntakeDeployIOInputsAutoLogged extends IntakeDeployIO.IntakeDeployIOInputs implements LoggableInputs, Cloneable {
+public class IntakeDeployIOInputsAutoLogged extends IntakeDeployIO.IntakeDeployIOInputs
+    implements LoggableInputs, Cloneable {
   @Override
   public void toLog(LogTable table) {
     table.put("MotorConnected", motorConnected);
