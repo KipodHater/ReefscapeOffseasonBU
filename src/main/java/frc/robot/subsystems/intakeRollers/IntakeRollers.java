@@ -3,7 +3,9 @@ package frc.robot.subsystems.intakeRollers;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class IntakeRollers {
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class IntakeRollers extends SubsystemBase {
   private final IntakeRollersIO io;
   private final IntakeRollersIOInputsAutoLogged inputs = new IntakeRollersIOInputsAutoLogged();
 

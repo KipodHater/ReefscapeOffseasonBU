@@ -3,10 +3,12 @@ package frc.robot.subsystems.climb;
 import static frc.robot.subsystems.climb.ClimbConstants.*;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Climb {
+public class Climb extends SubsystemBase {
 
   private final ClimbIO io;
   private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();

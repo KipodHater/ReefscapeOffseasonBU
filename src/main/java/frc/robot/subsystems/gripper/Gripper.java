@@ -5,7 +5,9 @@ import static frc.robot.subsystems.gripper.GripperConstants.*;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Gripper {
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class Gripper extends SubsystemBase {
 
   private final GripperIO io;
   private final GripperSensorIO ioSensor;

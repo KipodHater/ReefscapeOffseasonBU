@@ -42,6 +42,8 @@ public class ElevatorConstants { // TODO: tune everything
   public static final double L3_ANGLE = 0; // deg
   public static final double L4_ANGLE = 0; // deg
 
+  public static final double SAFE_FOR_ARM_HEIGHT = 0.65; // meters  
+
   public record Gains(
       double KP, double KI, double KD, double KS, double KV, double KA, double KG) {}
 }

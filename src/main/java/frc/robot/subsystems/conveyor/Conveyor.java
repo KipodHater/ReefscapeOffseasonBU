@@ -2,7 +2,9 @@ package frc.robot.subsystems.conveyor;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
-public class Conveyor {
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class Conveyor extends SubsystemBase {
 
   public ConveyorIO io;
   public ConveyorIOInputsAutoLogged inputs = new ConveyorIOInputsAutoLogged();

@@ -1,10 +1,14 @@
 package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Arm {
+import static frc.robot.subsystems.arm.ArmConstants.*;
+
+public class Arm extends SubsystemBase{
 
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
@@ -17,10 +21,12 @@ public class Arm {
     DEFAULT(-90.0),
     HOME(90.0),
     CORAL_L1(-20.0),
-    CORAL_L23(10.0),
+    CORAL_L2(10.0),
+    CORAL_L3(10.0),
     CORAL_L4(30.0),
     CORAL_L1_SCORE(-30.0),
-    CORAL_L23_SCORE(0.0),
+    CORAL_L2_SCORE(0.0),
+    CORAL_L3_SCORE(0.0),
     CORAL_L4_SCORE(20.0),
     ALGAE_INTAKE_REEF(0.0),
     ALGAE_INTAKE_LOLIPOP(-40.0),
@@ -100,13 +106,17 @@ public class Arm {
 
       case CORAL_L1 -> io.runPosition(ArmStates.CORAL_L1.position(), ffVoltage);
 
-      case CORAL_L23 -> io.runPosition(ArmStates.CORAL_L23.position(), ffVoltage);
+      case CORAL_L2 -> io.runPosition(ArmStates.CORAL_L2.position(), ffVoltage);
+
+      case CORAL_L3 -> io.runPosition(ArmStates.CORAL_L3.position(), ffVoltage);
 
       case CORAL_L4 -> io.runPosition(ArmStates.CORAL_L4.position(), ffVoltage);
 
       case CORAL_L1_SCORE -> io.runPosition(ArmStates.CORAL_L1_SCORE.position(), ffVoltage);
 
-      case CORAL_L23_SCORE -> io.runPosition(ArmStates.CORAL_L23_SCORE.position(), ffVoltage);
+      case CORAL_L2_SCORE -> io.runPosition(ArmStates.CORAL_L2_SCORE.position(), ffVoltage);
+
+      case CORAL_L3_SCORE -> io.runPosition(ArmStates.CORAL_L3_SCORE.position(), ffVoltage);
 
       case CORAL_L4_SCORE -> io.runPosition(ArmStates.CORAL_L4_SCORE.position(), ffVoltage);
 
@@ -131,6 +141,32 @@ public class Arm {
 
   public void setState(ArmStates desiredGoal) {
     currentState = desiredGoal;
+  }
+
+  public void setReefState(int Lx, boolean isScore){
+    if(isScore) {
+      switch(Lx) {
+        case 1 -> setState(ArmStates.CORAL_L1_SCORE);
+        case 2 -> setState(ArmStates.CORAL_L2_SCORE);
+        case 3 -> setState(ArmStates.CORAL_L3_SCORE);
+        case 4 -> setState(ArmStates.CORAL_L4_SCORE);
+      }
+    } else {
+      switch(Lx) {
+        case 1 -> setState(ArmStates.CORAL_L1);
+        case 2 -> setState(ArmStates.CORAL_L2);
+        case 3 -> setState(ArmStates.CORAL_L3);
+        case 4 -> setState(ArmStates.CORAL_L4);
+      }
+    }
+  }
+
+  public boolean atGoal() {
+    return Math.abs(inputs.positionDeg - currentState.position()) < ARM_POSITION_TOLERANCE_DEG;
+  }
+
+  public boolean atGoal(ArmStates desiredState) {
+    return Math.abs(inputs.positionDeg - desiredState.position()) < ARM_POSITION_TOLERANCE_DEG;
   }
 
   public void testPeriodic() {}

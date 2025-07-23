@@ -1,10 +1,14 @@
 package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Elevator {
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+
+public class Elevator extends SubsystemBase {
 
   private final ElevatorIO io;
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
@@ -14,7 +18,8 @@ public class Elevator {
           ElevatorConstants.GAINS.KS(), ElevatorConstants.GAINS.KG(), ElevatorConstants.GAINS.KV());
 
   public enum ElevatorStates {
-    DEFAULT(0.0),
+    DEFAULT(0.4),
+    CORAL_INTAKE_CONVEYOR(0.4),
     CORAL_L1(0.2),
     CORAL_L2(0.3),
     CORAL_L3(0.5),
@@ -116,5 +121,26 @@ public class Elevator {
 
   public void setElevatorGoal(ElevatorStates desiredGoal) {
     currentState = desiredGoal;
+  }
+
+  public void setReefState(int Lx){
+    switch (Lx) {
+      case 1 -> setElevatorGoal(ElevatorStates.CORAL_L1);
+      case 2 -> setElevatorGoal(ElevatorStates.CORAL_L2);
+      case 3 -> setElevatorGoal(ElevatorStates.CORAL_L3);
+      case 4 -> setElevatorGoal(ElevatorStates.CORAL_L4);
+    }
+  }
+
+  public boolean atGoal() {
+    return Math.abs(inputs.positionMeters - currentState.position()) < 0.01; // can add here a constant
+  }
+
+  public boolean atGoal(ElevatorStates desiredState) {
+    return Math.abs(inputs.positionMeters - desiredState.position()) < 0.01; // convert cm to m
+  }
+
+  public boolean isSafeForArm() {
+    return inputs.positionMeters < SAFE_FOR_ARM_HEIGHT;
   }
 }
