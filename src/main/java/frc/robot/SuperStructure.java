@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.AutoLogOutput;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.Arm.ArmStates;
@@ -27,6 +24,7 @@ import frc.robot.subsystems.intakeRollers.IntakeRollers;
 import frc.robot.subsystems.intakeRollers.IntakeRollers.IntakeRollersStates;
 import frc.robot.subsystems.objectVision.ObjectVision;
 import frc.robot.subsystems.vision.Vision;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class SuperStructure extends SubsystemBase {
 
@@ -44,10 +42,10 @@ public class SuperStructure extends SubsystemBase {
     CLIMBED
   }
 
-  @AutoLogOutput (key = "SuperStructure/currentState")
+  @AutoLogOutput(key = "SuperStructure/currentState")
   private SuperStructureStates currentState = SuperStructureStates.HOME;
 
-  @AutoLogOutput (key = "SuperStructure/wantedState")
+  @AutoLogOutput(key = "SuperStructure/wantedState")
   private SuperStructureStates wantedState = SuperStructureStates.HOME;
 
   private SuperStructureStates previousState = SuperStructureStates.HOME;
@@ -67,25 +65,33 @@ public class SuperStructure extends SubsystemBase {
   private final ObjectVision objectVision;
   private final Vision vision;
 
-  public SuperStructure(Arm arm, Climb climb, Conveyor conveyor, Dashboard dashboard, Drive drive, Elevator elevator, 
-    Gripper gripper, IntakeDeploy intakeDeploy, IntakeRollers intakeRollers, ObjectVision ObjectVision, Vision vision) {
-      this.arm = arm;
-      this.climb = climb;
-      this.conveyor = conveyor;
-      this.dashboard = dashboard;
-      this.drive = drive;
-      this.elevator = elevator;
-      this.gripper = gripper;
-      this.intakeDeploy = intakeDeploy;
-      this.intakeRollers = intakeRollers;
-      this.objectVision = ObjectVision;
-      this.vision = vision;
-    }
+  public SuperStructure(
+      Arm arm,
+      Climb climb,
+      Conveyor conveyor,
+      Dashboard dashboard,
+      Drive drive,
+      Elevator elevator,
+      Gripper gripper,
+      IntakeDeploy intakeDeploy,
+      IntakeRollers intakeRollers,
+      ObjectVision ObjectVision,
+      Vision vision) {
+    this.arm = arm;
+    this.climb = climb;
+    this.conveyor = conveyor;
+    this.dashboard = dashboard;
+    this.drive = drive;
+    this.elevator = elevator;
+    this.gripper = gripper;
+    this.intakeDeploy = intakeDeploy;
+    this.intakeRollers = intakeRollers;
+    this.objectVision = ObjectVision;
+    this.vision = vision;
+  }
 
   @Override
-  public void periodic() {
-    
-  }
+  public void periodic() {}
 
   private SuperStructureStates handleStateTransition(SuperStructureStates wantedState) {
     // TODO: add logic with algae in gripper
@@ -101,7 +107,7 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL -> {
-        if(conveyor.hasCoral() || gripper.hasCoral()) {
+        if (conveyor.hasCoral() || gripper.hasCoral()) {
           yield SuperStructureStates.PLACE_CORAL;
         } else {
           yield previousState;
@@ -119,6 +125,11 @@ public class SuperStructure extends SubsystemBase {
       case OPEN_CLIMB -> SuperStructureStates.OPEN_CLIMB;
 
       case CLIMBED -> SuperStructureStates.CLIMBED;
+
+      default -> {
+        System.out.println("SuperStructure: Invalid state transition requested: " + wantedState);
+        yield currentState;
+      }
     };
   }
 
@@ -126,13 +137,11 @@ public class SuperStructure extends SubsystemBase {
     switch (currentState) {
       case HOME -> {}
 
-      case TRAVEL-> travel();
+      case TRAVEL -> travel();
 
       case INTAKE_CORAL_FLOOR -> intakeCoralFloor();
 
-      case PLACE_CORAL -> {
-
-      }
+      case PLACE_CORAL -> {}
 
       case INTAKE_ALGAE_REEF -> {}
 
@@ -171,35 +180,36 @@ public class SuperStructure extends SubsystemBase {
     intakeDeploy.setState(IntakeDeployStates.DEPLOY);
     intakeRollers.setState(IntakeRollersStates.INTAKE);
 
-    if(conveyor.hasCoral()) {
+    if (conveyor.hasCoral()) {
       currentState = SuperStructureStates.TRAVEL;
     }
   }
 
-  private void placeCoralAlign(int Lx, boolean shouldScoreRightSide) {
-    // run place coral command, when finished automatically move to intake floor or travel depended on if safe mode enabled
-    if(!conveyor.hasCoral() && !gripper.hasCoral()) { // gripper.hasAlgae()
-      currentState = SuperStructureStates.TRAVEL;
-      return;
-    }
+  // private void placeCoralAlign(int Lx, boolean shouldScoreRightSide) {
+  //   // run place coral command, when finished automatically move to intake floor or travel
+  // depended on if safe mode enabled
+  //   if(!conveyor.hasCoral() && !gripper.hasCoral()) { // gripper.hasAlgae()
+  //     currentState = SuperStructureStates.TRAVEL;
+  //     return;
+  //   }
 
-    if(conveyor.hasCoral() && !gripper.hasCoral()){
-      arm.setState(ArmStates.DEFAULT);
-      gripper.setState(GripperStates.INTAKE_CORAL);
-      if(arm.atGoal()){
-        elevator.setElevatorGoal(ElevatorStates.CORAL_INTAKE_CONVEYOR);
-      } else {
-        elevator.setElevatorGoal(ElevatorStates.DEFAULT);
-      }
-    } else if(gripper.hasCoral()){ // hasCoral is redundant but here for clarity
-      arm.setReefState(Lx, false);
-      elevator.setReefState(Lx);
-      if(arm.atGoal() && elevator.atGoal() && swerve.atPose(new Pose2d())) {
-        currentState = SuperStructureStates.PLACE_CORAL;
-        wantedState = SuperStructureStates.PLACE_CORAL;
-      }
-    }
-  }
+  //   if(conveyor.hasCoral() && !gripper.hasCoral()){
+  //     arm.setState(ArmStates.DEFAULT);
+  //     gripper.setState(GripperStates.INTAKE_CORAL);
+  //     if(arm.atGoal()){
+  //       elevator.setElevatorGoal(ElevatorStates.CORAL_INTAKE_CONVEYOR);
+  //     } else {
+  //       elevator.setElevatorGoal(ElevatorStates.DEFAULT);
+  //     }
+  //   } else if(gripper.hasCoral()){ // hasCoral is redundant but here for clarity
+  //     arm.setReefState(Lx, false);
+  //     elevator.setReefState(Lx);
+  //     if(arm.atGoal() && elevator.atGoal() && swerve.atPose(new Pose2d())) {
+  //       currentState = SuperStructureStates.PLACE_CORAL;
+  //       wantedState = SuperStructureStates.PLACE_CORAL;
+  //     }
+  //   }
+  // }
 
   // private void placeCoral(int Lx){
   //   gripper.setState(coast);

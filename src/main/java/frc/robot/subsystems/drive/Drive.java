@@ -54,6 +54,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -127,10 +128,9 @@ public class Drive extends SubsystemBase {
 
   private final DoubleSupplier xJoystickVelocity, yJoystickVelocity, rJoystickVelocity;
 
-  private final ProfiledPIDController xController =
-      new ProfiledPIDController(1.2, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5));
+  private Supplier<Pose2d> autoAlignTarget;
 
-  private final ProfiledPIDController yController =
+  private final ProfiledPIDController linearVelocityController =
       new ProfiledPIDController(1.2, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5));
   private final ProfiledPIDController rotationController =
       new ProfiledPIDController(0.8, 0, 0, new Constraints(getMaxAngularSpeedRadPerSec(), 10));
@@ -290,11 +290,19 @@ public class Drive extends SubsystemBase {
         break;
 
       case AUTO_ALIGN: // Align the robot with reef
+        Transform2d distance = getPose().minus(autoAlignTarget.get());
+        double linearVelocity =
+            linearVelocityController.calculate(Math.hypot(distance.getX(), distance.getY()), 0);
+        Translation2d linearVelocityTranslation =
+            new Translation2d(
+                linearVelocity, new Rotation2d(Math.atan2(distance.getY(), distance.getX())));
         runVelocity(
             new ChassisSpeeds(
-                xController.calculate(getPose().getX(), 3.9),
-                yController.calculate(getPose().getY(), 2.7),
-                rotationController.calculate(getPose().getRotation().getDegrees(), 60)));
+                linearVelocityTranslation.getX(),
+                linearVelocityTranslation.getY(),
+                rotationController.calculate(
+                    getPose().getRotation().getDegrees(),
+                    autoAlignTarget.get().getRotation().getDegrees())));
         break;
       default:
         System.out.println("Drive subsystem is really broken");
@@ -490,6 +498,12 @@ public class Drive extends SubsystemBase {
     if (state == driveState) return;
     driveState = state;
     Logger.recordOutput("Drive/DriveState", driveState.toString());
+  }
+
+  public void setStateAutoAlign(Supplier<Pose2d> targetPose) {
+    autoAlignTarget = targetPose;
+    if (driveState == DriveStates.AUTO_ALIGN) return;
+    driveState = DriveStates.AUTO_ALIGN;
   }
 
   public DriveStates getState() {
