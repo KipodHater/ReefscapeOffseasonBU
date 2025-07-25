@@ -4,48 +4,59 @@
 
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-
-import com.fasterxml.jackson.databind.util.IgnorePropertiesUtil;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.Drive.DriveStates;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.gripper.Gripper;
+import java.util.function.BooleanSupplier;
 
 public class PlaceCoralCommand extends SequentialCommandGroup {
 
-  public PlaceCoralCommand(Drive drive, Arm arm, Elevator elevator, Gripper gripper, int lx, BooleanSupplier gripperHasCoral, BooleanSupplier ignoreGripperSensor) {
+  public PlaceCoralCommand(
+      Drive drive,
+      Arm arm,
+      Elevator elevator,
+      Gripper gripper,
+      int lx,
+      BooleanSupplier gripperHasCoral,
+      BooleanSupplier ignoreGripperSensor) {
     // Use addRequirements() here to declare subsystem dependencies.
     RobotState.getInstance().setUpScoringTargetCoral();
     addRequirements(drive, arm, elevator, gripper);
 
-    if(!gripperHasCoral.getAsBoolean() || ignoreGripperSensor.getAsBoolean()) {
+    if (!gripperHasCoral.getAsBoolean() || ignoreGripperSensor.getAsBoolean()) {
       addCommands(
-        Commands.parallel(
-          new IntakeFromConveyor(arm, elevator, gripper, gripperHasCoral, ignoreGripperSensor),
-          Commands.runOnce(() -> drive.setStateAutoAlign(() -> RobotState.getInstance().getCoralScoringInfo().alignPose())))
-      );
+          Commands.parallel(
+              new IntakeFromConveyor(arm, elevator, gripper, gripperHasCoral, ignoreGripperSensor),
+              Commands.runOnce(
+                  () ->
+                      drive.setStateAutoAlign(
+                          () -> RobotState.getInstance().getCoralScoringInfo().alignPose()))));
     }
     addCommands(
-    Commands.either(
-        Commands.sequence(
-          Commands.parallel(
-            ArmElevatorCommands.moveToLxCommand(arm, elevator, lx, RobotState.getInstance().getCoralScoringInfo().backside()), 
-            Commands.runOnce(() -> drive.setStateAutoAlign(() -> RobotState.getInstance().getCoralScoringInfo().alignPose()))),
-          Commands.runOnce(() -> drive.setStateAutoAlign(() -> RobotState.getInstance().getCoralScoringInfo().scorePose()), drive)
-          // score here!
-        ), 
-        Commands.none(), () -> (gripperHasCoral.getAsBoolean() && !ignoreGripperSensor.getAsBoolean())
-      )
-    );
+        Commands.either(
+            Commands.sequence(
+                Commands.parallel(
+                    SimpleCommands.moveToLxCommand(
+                        arm,
+                        elevator,
+                        lx,
+                        RobotState.getInstance().getCoralScoringInfo().backside()),
+                    Commands.runOnce(
+                        () ->
+                            drive.setStateAutoAlign(
+                                () -> RobotState.getInstance().getCoralScoringInfo().alignPose()))),
+                Commands.runOnce(
+                    () ->
+                        drive.setStateAutoAlign(
+                            () -> RobotState.getInstance().getCoralScoringInfo().scorePose()),
+                    drive)
+                // score here!
+                ),
+            Commands.none(),
+            () -> (gripperHasCoral.getAsBoolean() && !ignoreGripperSensor.getAsBoolean())));
   }
 }

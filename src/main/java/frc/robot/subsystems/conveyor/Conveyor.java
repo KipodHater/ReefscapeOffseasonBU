@@ -1,8 +1,7 @@
 package frc.robot.subsystems.conveyor;
 
-import org.littletonrobotics.junction.AutoLogOutput;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Conveyor extends SubsystemBase {
 
@@ -33,10 +32,10 @@ public class Conveyor extends SubsystemBase {
   }
 
   public void setState(ConveyorStates state) {
-      currentState = state;
+    currentState = state;
   }
 
-  public boolean hasCoral(){
+  public boolean hasCoral() {
     return false;
   }
 }

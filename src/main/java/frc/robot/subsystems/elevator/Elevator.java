@@ -1,12 +1,11 @@
 package frc.robot.subsystems.elevator;
 
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
 public class Elevator extends SubsystemBase {
 
@@ -123,7 +122,7 @@ public class Elevator extends SubsystemBase {
     currentState = desiredGoal;
   }
 
-  public void setReefState(int Lx){
+  public void setReefState(int Lx) {
     switch (Lx) {
       case 1 -> setElevatorGoal(ElevatorStates.CORAL_L1);
       case 2 -> setElevatorGoal(ElevatorStates.CORAL_L2);
@@ -133,7 +132,8 @@ public class Elevator extends SubsystemBase {
   }
 
   public boolean atGoal() {
-    return Math.abs(inputs.positionMeters - currentState.position()) < 0.01; // can add here a constant
+    return Math.abs(inputs.positionMeters - currentState.position())
+        < 0.01; // can add here a constant
   }
 
   public boolean atGoal(ElevatorStates desiredState) {

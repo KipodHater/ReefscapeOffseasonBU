@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.Timer;
@@ -16,6 +14,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.Elevator.ElevatorStates;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.Gripper.GripperStates;
+import java.util.function.BooleanSupplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeFromConveyor extends Command {
@@ -28,7 +27,7 @@ public class IntakeFromConveyor extends Command {
   }
 
   private IntakeFromConveyorStates currentState = IntakeFromConveyorStates.MOVE_DEFAULT;
-  
+
   private final Arm arm;
   private final Elevator elevator;
   private final Gripper gripper;
@@ -37,9 +36,13 @@ public class IntakeFromConveyor extends Command {
 
   private final Debouncer sensorDebouncer = new Debouncer(0.3, DebounceType.kRising);
   private final Timer timer = new Timer();
-  
 
-  public IntakeFromConveyor(Arm arm, Elevator elevator, Gripper gripper, BooleanSupplier gripperHasCoral, BooleanSupplier ignoreGripperSensor) {
+  public IntakeFromConveyor(
+      Arm arm,
+      Elevator elevator,
+      Gripper gripper,
+      BooleanSupplier gripperHasCoral,
+      BooleanSupplier ignoreGripperSensor) {
     this.arm = arm;
     this.elevator = elevator;
     this.gripper = gripper;
@@ -65,7 +68,7 @@ public class IntakeFromConveyor extends Command {
         if (elevator.isSafeForArm()) {
           arm.setState(ArmStates.DEFAULT);
         }
-        if(arm.atGoal(ArmStates.DEFAULT) && elevator.atGoal(ElevatorStates.DEFAULT)) {
+        if (arm.atGoal(ArmStates.DEFAULT) && elevator.atGoal(ElevatorStates.DEFAULT)) {
           arm.setState(ArmStates.DEFAULT);
           elevator.setElevatorGoal(ElevatorStates.DEFAULT);
           currentState = IntakeFromConveyorStates.MOVE_TO_CONVEYOR;
@@ -76,7 +79,7 @@ public class IntakeFromConveyor extends Command {
         arm.setState(ArmStates.DEFAULT);
         elevator.setElevatorGoal(ElevatorStates.CORAL_INTAKE_CONVEYOR);
         gripper.setState(GripperStates.INTAKE_CORAL);
-        if(arm.atGoal() && elevator.atGoal()) {
+        if (arm.atGoal() && elevator.atGoal()) {
           timer.reset();
           timer.start();
           currentState = IntakeFromConveyorStates.INTAKE_FROM_CONVEYOR;
@@ -87,11 +90,12 @@ public class IntakeFromConveyor extends Command {
         arm.setState(ArmStates.DEFAULT);
         elevator.setElevatorGoal(ElevatorStates.CORAL_INTAKE_CONVEYOR);
         gripper.setState(GripperStates.INTAKE_CORAL);
-        if (sensorDebouncer.calculate(gripperHasCoral.getAsBoolean()) && !ignoreGripperSensor.getAsBoolean()) {
+        if (sensorDebouncer.calculate(gripperHasCoral.getAsBoolean())
+            && !ignoreGripperSensor.getAsBoolean()) {
           gripper.setState(GripperStates.HOLD_CORAL);
           currentState = IntakeFromConveyorStates.FINAL_MOVE_DEFAULT;
         }
-        if(timer.get() > 0.3){ // can change this constant but i think its fine
+        if (timer.get() > 0.3) { // can change this constant but i think its fine
           gripper.setState(GripperStates.HOLD_CORAL);
           currentState = IntakeFromConveyorStates.FINAL_MOVE_DEFAULT; // timeout for intake time
         }

@@ -2,10 +2,9 @@ package frc.robot.subsystems.gripper;
 
 import static frc.robot.subsystems.gripper.GripperConstants.*;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Gripper extends SubsystemBase {
 

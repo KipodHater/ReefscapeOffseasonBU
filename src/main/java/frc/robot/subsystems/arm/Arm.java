@@ -1,14 +1,13 @@
 package frc.robot.subsystems.arm;
 
+import static frc.robot.subsystems.arm.ArmConstants.*;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.subsystems.arm.ArmConstants.*;
-
-public class Arm extends SubsystemBase{
+public class Arm extends SubsystemBase {
 
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
@@ -18,21 +17,27 @@ public class Arm extends SubsystemBase{
 
   // @RequiredArgsConstructor
   public enum ArmStates {
-    DEFAULT(-90.0),
-    HOME(90.0),
-    CORAL_L1(-20.0),
-    CORAL_L2(10.0),
-    CORAL_L3(10.0),
-    CORAL_L4(30.0),
-    CORAL_L1_SCORE(-30.0),
-    CORAL_L2_SCORE(0.0),
-    CORAL_L3_SCORE(0.0),
-    CORAL_L4_SCORE(20.0),
-    ALGAE_INTAKE_REEF(0.0),
-    ALGAE_INTAKE_LOLIPOP(-40.0),
-    ALGAE_INTAKE_FLOOR(-50.0),
-    ALGAE_SCORE_PROCESSOR(-20.0),
-    ALGAE_SCORE_NET(110.0),
+    DEFAULT(0.0),
+    HOME(180.0),
+    CORAL_L1(70.0),
+    CORAL_L2(100.0),
+    CORAL_L3(100.0),
+    CORAL_L4(120.0),
+    CORAL_L1_SCORE(60.0),
+    CORAL_L2_SCORE(90.0),
+    CORAL_L3_SCORE(90.0),
+    CORAL_L4_SCORE(110.0),
+    CORAL_L2_BACK(260.0),
+    CORAL_L3_BACK(260.0),
+    CORAL_L4_BACK(280.0),
+    CORAL_L2_SCORE_BACK(270.0),
+    CORAL_L3_SCORE_BACK(270.0),
+    CORAL_L4_SCORE_BACK(250.0),
+    ALGAE_INTAKE_REEF(90.0),
+    ALGAE_INTAKE_LOLIPOP(50.0),
+    ALGAE_INTAKE_FLOOR(40.0),
+    ALGAE_SCORE_PROCESSOR(70.0),
+    ALGAE_SCORE_NET(200.0),
     IDLE(null);
 
     Double value;
@@ -143,16 +148,16 @@ public class Arm extends SubsystemBase{
     currentState = desiredGoal;
   }
 
-  public void setReefState(int Lx, boolean isScore){
-    if(isScore) {
-      switch(Lx) {
-        case 1 -> setState(ArmStates.CORAL_L1_SCORE);
-        case 2 -> setState(ArmStates.CORAL_L2_SCORE);
-        case 3 -> setState(ArmStates.CORAL_L3_SCORE);
-        case 4 -> setState(ArmStates.CORAL_L4_SCORE);
+  public void setReefState(int Lx, boolean isBackside) {
+    if (isBackside) {
+      switch (Lx) {
+        case 1 -> setState(ArmStates.CORAL_L1);
+        case 2 -> setState(ArmStates.CORAL_L2_BACK);
+        case 3 -> setState(ArmStates.CORAL_L3_BACK);
+        case 4 -> setState(ArmStates.CORAL_L4_BACK);
       }
     } else {
-      switch(Lx) {
+      switch (Lx) {
         case 1 -> setState(ArmStates.CORAL_L1);
         case 2 -> setState(ArmStates.CORAL_L2);
         case 3 -> setState(ArmStates.CORAL_L3);
@@ -161,8 +166,31 @@ public class Arm extends SubsystemBase{
     }
   }
 
+  public void setScoreReefState(int Lx, boolean isBackside) {
+    if (isBackside) {
+      switch (Lx) {
+        case 1 -> setState(ArmStates.CORAL_L1_SCORE);
+        case 2 -> setState(ArmStates.CORAL_L2_SCORE);
+        case 3 -> setState(ArmStates.CORAL_L3_SCORE);
+        case 4 -> setState(ArmStates.CORAL_L4_SCORE);
+      }
+    } else {
+      switch (Lx) {
+        case 1 -> setState(ArmStates.CORAL_L1_SCORE);
+        case 2 -> setState(ArmStates.CORAL_L2_SCORE);
+        case 3 -> setState(ArmStates.CORAL_L3_SCORE);
+        case 4 -> setState(ArmStates.CORAL_L4_SCORE);
+      }
+    }
+  }
+
   public boolean atGoal() {
     return Math.abs(inputs.positionDeg - currentState.position()) < ARM_POSITION_TOLERANCE_DEG;
+  }
+
+  public boolean atScoreGoal() {
+    return Math.abs(inputs.positionDeg - currentState.position())
+        < ARM_SCORE_POSITION_TOLERANCE_DEG;
   }
 
   public boolean atGoal(ArmStates desiredState) {
