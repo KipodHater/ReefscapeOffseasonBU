@@ -186,7 +186,7 @@ public class SuperStructure extends SubsystemBase {
         if(previousState != currentState) {
           CommandScheduler.getInstance().cancelAll();
           currentCommand = 
-              new AlignCoralCommand(drive, arm, elevator, gripper, 1, () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/null);
+              SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 1);
           currentCommand.schedule();
         }
         if(!CommandScheduler.getInstance().isScheduled(currentCommand)) {
@@ -205,7 +205,7 @@ public class SuperStructure extends SubsystemBase {
         if(previousState != currentState) {
           CommandScheduler.getInstance().cancelAll();
           currentCommand = 
-              new AlignCoralCommand(drive, arm, elevator, gripper, 2, () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/null);
+              SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 2);
           currentCommand.schedule();
         }
         if(!CommandScheduler.getInstance().isScheduled(currentCommand)) {
@@ -243,7 +243,7 @@ public class SuperStructure extends SubsystemBase {
         if(previousState != currentState) {
           CommandScheduler.getInstance().cancelAll();
           currentCommand = 
-              new AlignCoralCommand(drive, arm, elevator, gripper, 4, () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/null);
+              SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 4);
           currentCommand.schedule();
         }
         if(!CommandScheduler.getInstance().isScheduled(currentCommand)) {
