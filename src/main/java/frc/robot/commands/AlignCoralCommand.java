@@ -13,9 +13,9 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.gripper.Gripper;
 import java.util.function.BooleanSupplier;
 
-public class PlaceCoralCommand extends SequentialCommandGroup {
+public class AlignCoralCommand extends SequentialCommandGroup {
 
-  public PlaceCoralCommand(
+  public AlignCoralCommand(
       Drive drive,
       Arm arm,
       Elevator elevator,
@@ -49,14 +49,9 @@ public class PlaceCoralCommand extends SequentialCommandGroup {
                         () ->
                             drive.setStateAutoAlign(
                                 () -> RobotState.getInstance().getCoralScoringInfo().alignPose()))),
-                Commands.runOnce(
-                    () ->
-                        drive.setStateAutoAlign(
-                            () -> RobotState.getInstance().getCoralScoringInfo().scorePose()),
-                    drive)
-                // score here!
+                SimpleCommands.nonStopAutoAlignCommand(drive, () -> RobotState.getInstance().getCoralScoringInfo().scorePose())
                 ),
             Commands.none(),
-            () -> (gripperHasCoral.getAsBoolean() && !ignoreGripperSensor.getAsBoolean())));
+            () -> (gripperHasCoral.getAsBoolean() || ignoreGripperSensor.getAsBoolean())));
   }
 }

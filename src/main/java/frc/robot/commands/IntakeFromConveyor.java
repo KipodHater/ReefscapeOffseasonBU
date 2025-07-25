@@ -33,6 +33,7 @@ public class IntakeFromConveyor extends Command {
   private final Gripper gripper;
   private final BooleanSupplier gripperHasCoral;
   private final BooleanSupplier ignoreGripperSensor;
+  private boolean isFinished = false;
 
   private final Debouncer sensorDebouncer = new Debouncer(0.3, DebounceType.kRising);
   private final Timer timer = new Timer();
@@ -105,6 +106,7 @@ public class IntakeFromConveyor extends Command {
         gripper.setState(GripperStates.HOLD_CORAL);
         elevator.setElevatorGoal(ElevatorStates.DEFAULT);
         arm.setState(ArmStates.DEFAULT);
+        isFinished = true;
         break;
     }
   }
@@ -116,6 +118,6 @@ public class IntakeFromConveyor extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }

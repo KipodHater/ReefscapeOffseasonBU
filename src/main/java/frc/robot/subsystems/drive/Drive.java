@@ -66,6 +66,7 @@ public class Drive extends SubsystemBase {
     ASSISTED_DRIVE,
     AUTO_ALIGN,
     AUTONOMOUS,
+    SLOWLY_FORWARD,
     IDLE
   }
 
@@ -129,6 +130,7 @@ public class Drive extends SubsystemBase {
   private final DoubleSupplier xJoystickVelocity, yJoystickVelocity, rJoystickVelocity;
 
   private Supplier<Pose2d> autoAlignTarget;
+  private boolean isBackside = false; // Used for auto-aligning to the reef
 
   private final ProfiledPIDController linearVelocityController =
       new ProfiledPIDController(1.2, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5));
@@ -287,6 +289,10 @@ public class Drive extends SubsystemBase {
 
       case ASSISTED_DRIVE: // Field drive but with assistance from the robot
         // This is a placeholder for assisted drive logic
+        break;
+
+      case SLOWLY_FORWARD: // Drive backwards slowly
+        robotCentricJoystickDrive(0, 0.05 * getMaxLinearSpeedMetersPerSec(), 0); // TODO: check if forward is x or y
         break;
 
       case AUTO_ALIGN: // Align the robot with reef
@@ -504,6 +510,12 @@ public class Drive extends SubsystemBase {
     autoAlignTarget = targetPose;
     if (driveState == DriveStates.AUTO_ALIGN) return;
     driveState = DriveStates.AUTO_ALIGN;
+  }
+
+  public void setStateSlowlyForward(boolean isBackside){
+    this.isBackside = isBackside;
+    if (driveState == DriveStates.SLOWLY_FORWARD) return;
+    driveState = DriveStates.SLOWLY_FORWARD;
   }
 
   public DriveStates getState() {
