@@ -1,10 +1,11 @@
 package frc.robot.subsystems.intakeDeploy;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class IntakeDeploy {
+public class IntakeDeploy extends SubsystemBase {
   private final IntakeDeployIO io;
   private final IntakeDeployIOInputsAutoLogged inputs = new IntakeDeployIOInputsAutoLogged();
 
@@ -63,6 +64,10 @@ public class IntakeDeploy {
 
       default -> io.stop();
     }
+  }
+
+  public void setState(IntakeDeployStates state) {
+    this.currentState = state;
   }
 
   public void setBrakeMode(boolean isBrake) {

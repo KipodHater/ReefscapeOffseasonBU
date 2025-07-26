@@ -19,11 +19,15 @@ public class ElevatorConstants { // TODO: tune everything
   public static final double ELEVATOR_LENGTH_METERS = 1.7; // meters
   public static final double ELEVATOR_MOI = 0; // kg*m^2
 
-  public static final double PULLEY_SOURCE_RADIUS = 0.1; // meters
+  public static final double PULLEY_SOURCE_RADIUS = 0.1; // meters, spool radius
   public static final double PULLEY_GEAR_RATIO = 1 / 50.0; // 50:1 gear ratio for the pulley
+  public static final double CASCADE_MULTIPLIER = 2;
 
+  public static final double SPOOL_CIRCUMFERENCE = 2 * Math.PI * PULLEY_SOURCE_RADIUS; // meters
   public static final double ROTATIONS_PER_METER =
-      1 / (2 * Math.PI * PULLEY_SOURCE_RADIUS) * PULLEY_GEAR_RATIO * 8; // rotations per meter
+      (SPOOL_CIRCUMFERENCE * CASCADE_MULTIPLIER) / PULLEY_GEAR_RATIO;
+
+  public static final double METERS_PER_ROTATION = 1 / ROTATIONS_PER_METER; // meters per rotation
 
   public static final int ELEVATOR_CURRENT_LIMIT = 50;
   public static final double ELEVATOR_ENCODER_OFFSET = 0;
@@ -41,6 +45,8 @@ public class ElevatorConstants { // TODO: tune everything
   public static final double L2_ANGLE = 0; // deg
   public static final double L3_ANGLE = 0; // deg
   public static final double L4_ANGLE = 0; // deg
+
+  public static final double SAFE_FOR_ARM_HEIGHT = 0.65; // meters
 
   public record Gains(
       double KP, double KI, double KD, double KS, double KV, double KA, double KG) {}

@@ -3,10 +3,11 @@ package frc.robot.subsystems.climb;
 import static frc.robot.subsystems.climb.ClimbConstants.*;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Climb {
+public class Climb extends SubsystemBase {
 
   private final ClimbIO io;
   private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
@@ -15,7 +16,7 @@ public class Climb {
       new ArmFeedforward(
           ClimbConstants.GAINS.KS(), ClimbConstants.GAINS.KG(), ClimbConstants.GAINS.KV());
 
-  private enum ClimbStates {
+  public enum ClimbStates {
     IDLE(null),
     OPEN(100.0),
     CLIMBING(200.0),
@@ -56,6 +57,10 @@ public class Climb {
 
       case HOLD_POSITION -> io.runVoltage(1);
     }
+  }
+
+  public void setState(ClimbStates state) {
+    currentState = state;
   }
 
   public boolean isReadyToClimb() {

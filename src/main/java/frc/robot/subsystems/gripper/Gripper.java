@@ -2,10 +2,11 @@ package frc.robot.subsystems.gripper;
 
 import static frc.robot.subsystems.gripper.GripperConstants.*;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Gripper {
+public class Gripper extends SubsystemBase {
 
   private final GripperIO io;
   private final GripperSensorIO ioSensor;
@@ -139,7 +140,7 @@ public class Gripper {
     ;
   }
 
-  public void setGripperWantedState(GripperStates wantedState) {
+  public void setState(GripperStates wantedState) {
     this.wantedState = wantedState;
   }
 

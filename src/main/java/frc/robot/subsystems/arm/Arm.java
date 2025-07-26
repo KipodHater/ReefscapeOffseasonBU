@@ -1,10 +1,13 @@
 package frc.robot.subsystems.arm;
 
+import static frc.robot.subsystems.arm.ArmConstants.*;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Arm {
+public class Arm extends SubsystemBase {
 
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
@@ -14,18 +17,27 @@ public class Arm {
 
   // @RequiredArgsConstructor
   public enum ArmStates {
-    DEFAULT(-90.0),
-    CORAL_L1(-20.0),
-    CORAL_L23(10.0),
-    CORAL_L4(30.0),
-    CORAL_L1_SCORE(-30.0),
-    CORAL_L23_SCORE(0.0),
-    CORAL_L4_SCORE(20.0),
-    ALGAE_INTAKE_REEF(0.0),
-    ALGAE_INTAKE_LOLIPOP(-40.0),
-    ALGAE_INTAKE_FLOOR(-50.0),
-    ALGAE_SCORE_PROCESSOR(-20.0),
-    ALGAE_SCORE_NET(110.0),
+    DEFAULT(0.0),
+    HOME(180.0),
+    CORAL_L1(70.0),
+    CORAL_L2(100.0),
+    CORAL_L3(100.0),
+    CORAL_L4(120.0),
+    CORAL_L1_SCORE(60.0),
+    CORAL_L2_SCORE(90.0),
+    CORAL_L3_SCORE(90.0),
+    CORAL_L4_SCORE(110.0),
+    CORAL_L2_BACK(260.0),
+    CORAL_L3_BACK(260.0),
+    CORAL_L4_BACK(280.0),
+    CORAL_L2_SCORE_BACK(270.0),
+    CORAL_L3_SCORE_BACK(270.0),
+    CORAL_L4_SCORE_BACK(250.0),
+    ALGAE_INTAKE_REEF(90.0),
+    ALGAE_INTAKE_LOLIPOP(50.0),
+    ALGAE_INTAKE_FLOOR(40.0),
+    ALGAE_SCORE_PROCESSOR(70.0),
+    ALGAE_SCORE_NET(200.0),
     IDLE(null);
 
     Double value;
@@ -99,13 +111,17 @@ public class Arm {
 
       case CORAL_L1 -> io.runPosition(ArmStates.CORAL_L1.position(), ffVoltage);
 
-      case CORAL_L23 -> io.runPosition(ArmStates.CORAL_L23.position(), ffVoltage);
+      case CORAL_L2 -> io.runPosition(ArmStates.CORAL_L2.position(), ffVoltage);
+
+      case CORAL_L3 -> io.runPosition(ArmStates.CORAL_L3.position(), ffVoltage);
 
       case CORAL_L4 -> io.runPosition(ArmStates.CORAL_L4.position(), ffVoltage);
 
       case CORAL_L1_SCORE -> io.runPosition(ArmStates.CORAL_L1_SCORE.position(), ffVoltage);
 
-      case CORAL_L23_SCORE -> io.runPosition(ArmStates.CORAL_L23_SCORE.position(), ffVoltage);
+      case CORAL_L2_SCORE -> io.runPosition(ArmStates.CORAL_L2_SCORE.position(), ffVoltage);
+
+      case CORAL_L3_SCORE -> io.runPosition(ArmStates.CORAL_L3_SCORE.position(), ffVoltage);
 
       case CORAL_L4_SCORE -> io.runPosition(ArmStates.CORAL_L4_SCORE.position(), ffVoltage);
 
@@ -121,13 +137,64 @@ public class Arm {
 
       case ALGAE_SCORE_NET -> io.runPosition(ArmStates.ALGAE_SCORE_NET.position(), ffVoltage);
 
+      case HOME -> io.runPosition(ArmStates.HOME.position(), ffVoltage);
+
       case IDLE -> io.stop();
     }
     ;
   }
 
-  public void setArmGoal(ArmStates desiredGoal) {
+  public void setState(ArmStates desiredGoal) {
     currentState = desiredGoal;
+  }
+
+  public void setReefState(int Lx, boolean isBackside) {
+    if (isBackside) {
+      switch (Lx) {
+        case 1 -> setState(ArmStates.CORAL_L1);
+        case 2 -> setState(ArmStates.CORAL_L2_BACK);
+        case 3 -> setState(ArmStates.CORAL_L3_BACK);
+        case 4 -> setState(ArmStates.CORAL_L4_BACK);
+      }
+    } else {
+      switch (Lx) {
+        case 1 -> setState(ArmStates.CORAL_L1);
+        case 2 -> setState(ArmStates.CORAL_L2);
+        case 3 -> setState(ArmStates.CORAL_L3);
+        case 4 -> setState(ArmStates.CORAL_L4);
+      }
+    }
+  }
+
+  public void setScoreReefState(int Lx, boolean isBackside) {
+    if (isBackside) {
+      switch (Lx) {
+        case 1 -> setState(ArmStates.CORAL_L1_SCORE);
+        case 2 -> setState(ArmStates.CORAL_L2_SCORE);
+        case 3 -> setState(ArmStates.CORAL_L3_SCORE);
+        case 4 -> setState(ArmStates.CORAL_L4_SCORE);
+      }
+    } else {
+      switch (Lx) {
+        case 1 -> setState(ArmStates.CORAL_L1_SCORE);
+        case 2 -> setState(ArmStates.CORAL_L2_SCORE);
+        case 3 -> setState(ArmStates.CORAL_L3_SCORE);
+        case 4 -> setState(ArmStates.CORAL_L4_SCORE);
+      }
+    }
+  }
+
+  public boolean atGoal() {
+    return Math.abs(inputs.positionDeg - currentState.position()) < ARM_POSITION_TOLERANCE_DEG;
+  }
+
+  public boolean atScoreGoal() {
+    return Math.abs(inputs.positionDeg - currentState.position())
+        < ARM_SCORE_POSITION_TOLERANCE_DEG;
+  }
+
+  public boolean atGoal(ArmStates desiredState) {
+    return Math.abs(inputs.positionDeg - desiredState.position()) < ARM_POSITION_TOLERANCE_DEG;
   }
 
   public void testPeriodic() {}

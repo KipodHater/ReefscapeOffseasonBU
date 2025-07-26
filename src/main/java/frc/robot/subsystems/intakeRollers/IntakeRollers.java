@@ -1,9 +1,10 @@
 package frc.robot.subsystems.intakeRollers;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class IntakeRollers {
+public class IntakeRollers extends SubsystemBase {
   private final IntakeRollersIO io;
   private final IntakeRollersIOInputsAutoLogged inputs = new IntakeRollersIOInputsAutoLogged();
 
@@ -47,5 +48,9 @@ public class IntakeRollers {
 
       default -> io.stop();
     }
+  }
+
+  public void setState(IntakeRollersStates wantedState) {
+    currentState = wantedState;
   }
 }

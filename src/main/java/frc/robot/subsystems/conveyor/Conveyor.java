@@ -1,9 +1,15 @@
 package frc.robot.subsystems.conveyor;
 
-public class Conveyor {
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.AutoLogOutput;
+
+public class Conveyor extends SubsystemBase {
 
   public ConveyorIO io;
   public ConveyorIOInputsAutoLogged inputs = new ConveyorIOInputsAutoLogged();
+
+  @AutoLogOutput(key = "Conveyor/currentState")
+  public ConveyorStates currentState = ConveyorStates.IDLE;
 
   public enum ConveyorStates {
     IDLE(0.0),
@@ -23,5 +29,13 @@ public class Conveyor {
 
   public Conveyor(ConveyorIO io) {
     this.io = io;
+  }
+
+  public void setState(ConveyorStates state) {
+    currentState = state;
+  }
+
+  public boolean hasCoral() {
+    return false;
   }
 }

@@ -1,10 +1,13 @@
 package frc.robot.subsystems.elevator;
 
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Elevator {
+public class Elevator extends SubsystemBase {
 
   private final ElevatorIO io;
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
@@ -13,8 +16,9 @@ public class Elevator {
       new ElevatorFeedforward(
           ElevatorConstants.GAINS.KS(), ElevatorConstants.GAINS.KG(), ElevatorConstants.GAINS.KV());
 
-  public enum ElevatorStates {
-    DEFAULT(0.0),
+  public enum ElevatorStates { // TODO: set actuaL heights
+    DEFAULT(0.7),
+    CORAL_INTAKE_CONVEYOR(0.5),
     CORAL_L1(0.2),
     CORAL_L2(0.3),
     CORAL_L3(0.5),
@@ -75,6 +79,9 @@ public class Elevator {
     switch (currentState) {
       case DEFAULT -> io.runPositionMeters(ElevatorStates.DEFAULT.position(), ffVoltage);
 
+      case CORAL_INTAKE_CONVEYOR -> io.runPositionMeters(
+          ElevatorStates.CORAL_INTAKE_CONVEYOR.position(), ffVoltage);
+
       case CORAL_L1 -> io.runPositionMeters(ElevatorStates.CORAL_L1.position(), ffVoltage);
 
       case CORAL_L2 -> io.runPositionMeters(ElevatorStates.CORAL_L2.position(), ffVoltage);
@@ -114,7 +121,29 @@ public class Elevator {
     }
   }
 
-  public void setElevatorGoal(ElevatorStates desiredGoal) {
+  public void setState(ElevatorStates desiredGoal) {
     currentState = desiredGoal;
+  }
+
+  public void setReefState(int Lx) {
+    switch (Lx) {
+      case 1 -> setState(ElevatorStates.CORAL_L1);
+      case 2 -> setState(ElevatorStates.CORAL_L2);
+      case 3 -> setState(ElevatorStates.CORAL_L3);
+      case 4 -> setState(ElevatorStates.CORAL_L4);
+    }
+  }
+
+  public boolean atGoal() {
+    return Math.abs(inputs.positionMeters - currentState.position())
+        < 0.01; // can add here a constant
+  }
+
+  public boolean atGoal(ElevatorStates desiredState) {
+    return Math.abs(inputs.positionMeters - desiredState.position()) < 0.01; // convert cm to m
+  }
+
+  public boolean isSafeForArm() {
+    return inputs.positionMeters < SAFE_FOR_ARM_HEIGHT;
   }
 }

@@ -29,10 +29,10 @@ public class ElevatorIOSim implements ElevatorIO {
         new ProfiledPIDController(GAINS.KP(), GAINS.KI(), GAINS.KD(), ELEVATOR_CONSTRAINTS);
     elevatorSim =
         new ElevatorSim(
-            LinearSystemId.createElevatorSystem(DCMotor.getNEO(2), 4, 0.1, 50),
+            LinearSystemId.createElevatorSystem(DCMotor.getNEO(2), 4, PULLEY_SOURCE_RADIUS, 50),
             DCMotor.getNEO(2),
             0,
-            1.7,
+            ELEVATOR_LENGTH_METERS,
             true,
             0.3,
             new double[] {0.001, 0.001});
@@ -85,15 +85,44 @@ public class ElevatorIOSim implements ElevatorIO {
 
   public void setBrakeMode(boolean isBrake) {}
 
-  public void runPositionMeters(double height, double feedforward) {
-    double output = elevatorPIDController.calculate(elevatorSim.getPositionMeters(), height);
-    System.out.println(output + " " + feedforward);
+  // public void runPositionMeters(double height, double feedforward) {
+  //   double output = elevatorPIDController.calculate(elevatorSim.getPositionMeters(), height);
+  //   System.out.println(output + " " + feedforward);
 
-    runVoltage(output + feedforward);
+  //   runVoltage(output + feedforward);
+  // }
+
+  // public void runExtendPercent(double percent, double feedforward) {
+  //   double position = elevatorSim.getPositionMeters() + (percent * ELEVATOR_LENGTH_METERS);
+  //   runPositionMeters(position, feedforward);
+  // }
+  public double getRotationsToMeter(double rotations) {
+    return METERS_PER_ROTATION * rotations;
   }
 
+  public double getMetersToRotations(double meters) {
+    return meters * ROTATIONS_PER_METER;
+  }
+
+  public double getCurrentMotorRotations() {
+    return getMetersToRotations(elevatorSim.getPositionMeters());
+  }
+
+  @Override
+  public void runPositionMeters(double heightMeters, double feedforward) {
+
+    double setpoint = getMetersToRotations(heightMeters); // deg
+
+    double currentpos = getCurrentMotorRotations(); // deg
+
+    double output = elevatorPIDController.calculate(currentpos, setpoint);
+
+    elevatorSim.setInputVoltage(output + feedforward);
+  }
+
+  @Override
   public void runExtendPercent(double percent, double feedforward) {
-    double position = elevatorSim.getPositionMeters() + (percent * ELEVATOR_LENGTH_METERS);
-    runPositionMeters(position, feedforward);
+    percent = MathUtil.clamp(percent, -1, 1);
+    runPositionMeters(ELEVATOR_LENGTH_METERS * percent, feedforward);
   }
 }
