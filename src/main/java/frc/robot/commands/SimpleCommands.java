@@ -56,6 +56,25 @@ public class SimpleCommands {
         elevator);
   }
 
+  private static boolean moveToAlgaeLx(
+      Arm arm, Elevator elevator, int lx, boolean isBackside) {
+    arm.setState(ArmStates.ALGAE_INTAKE_REEF);
+    elevator.setAlgaeReefState(lx);
+    return arm.atGoal();
+  }
+
+  public static Command moveToAlgaeLxCommand(
+      Arm arm, Elevator elevator, int lx, boolean isBackside) {
+    return new FunctionalCommand(
+        () -> {},
+        () -> {},
+        interrupted -> {},
+        () -> moveToAlgaeLx(arm, elevator, lx, isBackside), // check if finished
+        arm,
+        elevator);
+  }
+  
+
   private static boolean moveToLxScore(
       Arm arm, Elevator elevator, Gripper gripper, int lx, boolean isBackside) {
     arm.setScoreReefState(lx, isBackside);

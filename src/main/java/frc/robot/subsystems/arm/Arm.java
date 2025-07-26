@@ -184,6 +184,7 @@ public class Arm extends SubsystemBase {
     }
   }
 
+
   public boolean atGoal() {
     return Math.abs(inputs.positionDeg - currentState.position()) < ARM_POSITION_TOLERANCE_DEG;
   }

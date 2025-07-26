@@ -134,6 +134,13 @@ public class Elevator extends SubsystemBase {
     }
   }
 
+  public void setAlgaeReefState(int Lx) {
+    switch (Lx) {
+      case 2 -> setState(ElevatorStates.ALGAE_INTAKE_REEF_L2);
+      case 3 -> setState(ElevatorStates.ALGAE_INTAKE_REEF_L3);
+    }
+  }
+
   public boolean atGoal() {
     return Math.abs(inputs.positionMeters - currentState.position())
         < 0.01; // can add here a constant
