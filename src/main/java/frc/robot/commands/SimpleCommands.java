@@ -17,13 +17,13 @@ import frc.robot.subsystems.gripper.Gripper.GripperStates;
 public class SimpleCommands {
 
   private static boolean moveToDefault(Arm arm, Elevator elevator) {
-    elevator.setElevatorGoal(ElevatorStates.DEFAULT);
+    elevator.setState(ElevatorStates.DEFAULT);
     if (elevator.isSafeForArm()) {
       arm.setState(ArmStates.DEFAULT);
     }
     if (arm.atGoal(ArmStates.DEFAULT) && elevator.atGoal(ElevatorStates.DEFAULT)) {
       arm.setState(ArmStates.DEFAULT);
-      elevator.setElevatorGoal(ElevatorStates.DEFAULT);
+      elevator.setState(ElevatorStates.DEFAULT);
       return true;
     }
     return false;

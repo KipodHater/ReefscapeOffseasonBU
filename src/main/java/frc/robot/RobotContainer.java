@@ -243,11 +243,11 @@ public class RobotContainer {
       Trigger stupidshit2 = new Trigger(() -> controllerHID.getRawButton(2));
       Trigger stupidshit3 = new Trigger(() -> controllerHID.getRawButton(3));
 
-      stupidshit.onTrue(Commands.runOnce(() -> elevator.setElevatorGoal(ElevatorStates.CORAL_L4)));
+      stupidshit.onTrue(Commands.runOnce(() -> elevator.setState(ElevatorStates.CORAL_L4)));
       stupidshit2.onTrue(
-          Commands.runOnce(() -> elevator.setElevatorGoal(ElevatorStates.CORAL_L3_SCORE)));
+          Commands.runOnce(() -> elevator.setState(ElevatorStates.CORAL_L3_SCORE)));
       stupidshit3.onTrue(
-          Commands.runOnce(() -> elevator.setElevatorGoal(ElevatorStates.CORAL_L2_SCORE)));
+          Commands.runOnce(() -> elevator.setState(ElevatorStates.CORAL_L2_SCORE)));
 
       // L1 Placement
       controller

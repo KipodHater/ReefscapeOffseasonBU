@@ -65,20 +65,20 @@ public class IntakeFromConveyor extends Command {
   public void execute() {
     switch (currentState) {
       case MOVE_DEFAULT:
-        elevator.setElevatorGoal(ElevatorStates.DEFAULT);
+        elevator.setState(ElevatorStates.DEFAULT);
         if (elevator.isSafeForArm()) {
           arm.setState(ArmStates.DEFAULT);
         }
         if (arm.atGoal(ArmStates.DEFAULT) && elevator.atGoal(ElevatorStates.DEFAULT)) {
           arm.setState(ArmStates.DEFAULT);
-          elevator.setElevatorGoal(ElevatorStates.DEFAULT);
+          elevator.setState(ElevatorStates.DEFAULT);
           currentState = IntakeFromConveyorStates.MOVE_TO_CONVEYOR;
         }
         break;
 
       case MOVE_TO_CONVEYOR:
         arm.setState(ArmStates.DEFAULT);
-        elevator.setElevatorGoal(ElevatorStates.CORAL_INTAKE_CONVEYOR);
+        elevator.setState(ElevatorStates.CORAL_INTAKE_CONVEYOR);
         gripper.setState(GripperStates.INTAKE_CORAL);
         if (arm.atGoal() && elevator.atGoal()) {
           timer.reset();
@@ -89,7 +89,7 @@ public class IntakeFromConveyor extends Command {
 
       case INTAKE_FROM_CONVEYOR:
         arm.setState(ArmStates.DEFAULT);
-        elevator.setElevatorGoal(ElevatorStates.CORAL_INTAKE_CONVEYOR);
+        elevator.setState(ElevatorStates.CORAL_INTAKE_CONVEYOR);
         gripper.setState(GripperStates.INTAKE_CORAL);
         if (sensorDebouncer.calculate(gripperHasCoral.getAsBoolean())
             && !ignoreGripperSensor.getAsBoolean()) {
@@ -104,7 +104,7 @@ public class IntakeFromConveyor extends Command {
 
       case FINAL_MOVE_DEFAULT:
         gripper.setState(GripperStates.HOLD_CORAL);
-        elevator.setElevatorGoal(ElevatorStates.DEFAULT);
+        elevator.setState(ElevatorStates.DEFAULT);
         arm.setState(ArmStates.DEFAULT);
         isFinished = true;
         break;

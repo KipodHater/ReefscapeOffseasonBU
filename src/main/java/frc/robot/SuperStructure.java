@@ -273,7 +273,7 @@ public class SuperStructure extends SubsystemBase {
     climb.setState(ClimbStates.IDLE);
     conveyor.setState(ConveyorStates.IDLE);
     drive.setState(DriveStates.FIELD_DRIVE);
-    elevator.setElevatorGoal(ElevatorStates.DEFAULT);
+    elevator.setState(ElevatorStates.DEFAULT);
 
     if(elevator.isSafeForArm()) arm.setState(ArmStates.DEFAULT);
     else arm.setState(ArmStates.IDLE); // TODO: change this to hold current position state
@@ -287,7 +287,7 @@ public class SuperStructure extends SubsystemBase {
     climb.setState(ClimbStates.IDLE);
     conveyor.setState(ConveyorStates.INTAKE);
     drive.setState(DriveStates.ASSISTED_DRIVE);
-    elevator.setElevatorGoal(ElevatorStates.DEFAULT);
+    elevator.setState(ElevatorStates.DEFAULT);
 
     if(elevator.isSafeForArm()) arm.setState(ArmStates.DEFAULT);
     else arm.setState(ArmStates.IDLE); // TODO: change this to hold current position state

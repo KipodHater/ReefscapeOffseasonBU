@@ -132,22 +132,28 @@ public class ElevatorIOSpark implements ElevatorIO {
         followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public double getRotationsToMeter(double meters) {
-    return meters / (2 * Math.PI * PULLEY_SOURCE_RADIUS) * PULLEY_GEAR_RATIO * 8;
+  public double getRotationsToMeter(double rotations) {
+    return METERS_PER_ROTATION * rotations;
+  }
+
+  public double getMetersToRotations(double meters) {
+    return meters * ROTATIONS_PER_METER;
+  }
+
+  public double getCurrentMotorRotations() {
+    return getMetersToRotations(elevatorEncoder.getPosition());
   }
 
   @Override
   public void runPositionMeters(double heightMeters, double feedforward) {
-    runVoltage(
-        elevatorPIDController.calculate(
-                getRotationsToMeter(heightMeters),
-                getRotationsToMeter(heightMeters)
-                    * 2
-                    * Math.PI
-                    * PULLEY_SOURCE_RADIUS
-                    * ELEVATOR_GEAR_RATIO
-                    * 8)
-            + feedforward);
+
+    double setpoint = getMetersToRotations(heightMeters); // deg
+
+    double currentpos = getCurrentMotorRotations(); // deg
+
+    double output = elevatorPIDController.calculate(currentpos, setpoint);
+
+    runVoltage(output + feedforward);
   }
 
   @Override
