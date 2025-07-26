@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.RobotState;
@@ -56,8 +57,7 @@ public class SimpleCommands {
         elevator);
   }
 
-  private static boolean moveToAlgaeLx(
-      Arm arm, Elevator elevator, int lx, boolean isBackside) {
+  private static boolean moveToAlgaeLx(Arm arm, Elevator elevator, int lx, boolean isBackside) {
     arm.setState(ArmStates.ALGAE_INTAKE_REEF);
     elevator.setAlgaeReefState(lx);
     return arm.atGoal();
@@ -73,7 +73,6 @@ public class SimpleCommands {
         arm,
         elevator);
   }
-  
 
   private static boolean moveToLxScore(
       Arm arm, Elevator elevator, Gripper gripper, int lx, boolean isBackside) {
@@ -122,6 +121,42 @@ public class SimpleCommands {
         arm,
         elevator,
         gripper,
+        drive);
+  }
+
+  public static void moveToHome(Arm arm, Elevator elevator, Gripper gripper, boolean holdCoral) {
+    arm.setState(ArmStates.HOME);
+    elevator.setState(ElevatorStates.HOME);
+    gripper.setState(holdCoral ? GripperStates.HOLD_CORAL : GripperStates.IDLE);
+  }
+
+  public static Command moveToHomeCommand(
+      Arm arm, Elevator elevator, Gripper gripper, boolean holdCoral) {
+    return new FunctionalCommand(
+        () -> moveToHome(arm, elevator, gripper, holdCoral),
+        () -> {},
+        interrupted -> {},
+        () -> arm.atGoal() && elevator.atGoal(),
+        arm,
+        elevator,
+        gripper);
+  }
+
+  public static Command driveAutoAlignTolerance(
+      Drive drive, Supplier<Pose2d> other, double tolerance, double angleTolerance) {
+    return new FunctionalCommand(
+        () -> drive.setStateAutoAlign(other),
+        () -> {},
+        interrupted -> {},
+        () -> {
+          Pose2d currentPose = drive.getPose() != null ? drive.getPose() : new Pose2d(1,1, new Rotation2d());
+          Pose2d targetPose = other.get() != null ? other.get() : new Pose2d(1,1,new Rotation2d());
+          return currentPose.getTranslation().getDistance(targetPose.getTranslation()) < tolerance
+              && Math.abs(
+                      currentPose.getRotation().getDegrees()
+                          - targetPose.getRotation().getDegrees())
+                  < angleTolerance;
+        },
         drive);
   }
 }

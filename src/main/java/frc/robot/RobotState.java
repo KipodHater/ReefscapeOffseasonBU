@@ -18,7 +18,7 @@ public class RobotState {
     return instance;
   }
 
-  public void setUpScoringTargetCoral() { 
+  public void setUpScoringTargetCoral() {
     // getPose
     // find closest reef face and whether should score on backside or frontside
     // save the target reef face and back side or front side
@@ -26,12 +26,19 @@ public class RobotState {
     // dont forget alliance flipping
   }
 
-  public void setUpIntakeTargetAlgae(){ // TODO: Implement this method
+  public void setUpIntakeTargetAlgae() { // TODO: Implement this method
     // getPose
     // find closest algae and check if frontside or backside faster
     // save the target algae and front side or back side
     // update scoring info
     // dont forget alliance flipping
+    curScoringInfo =
+        new ScoringInfo(
+            0, // placeholder for algae face
+            false, // placeholder for backside
+            new Pose2d(1, 4, new Rotation2d()), // placeholder for align pose
+            new Pose2d(1, 4.2, new Rotation2d()), // placeholder for score pose
+            true); // placeholder for should score right side
   }
 
   public void switchScoreSide() {

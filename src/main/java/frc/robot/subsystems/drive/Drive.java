@@ -133,9 +133,9 @@ public class Drive extends SubsystemBase {
   private boolean isBackside = false; // Used for auto-aligning to the reef
 
   private final ProfiledPIDController linearVelocityController =
-      new ProfiledPIDController(1.2, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5));
+      new ProfiledPIDController(5, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5)); // kp 1.2
   private final ProfiledPIDController rotationController =
-      new ProfiledPIDController(0.8, 0, 0, new Constraints(getMaxAngularSpeedRadPerSec(), 10));
+      new ProfiledPIDController(0.8, 0, 0, new Constraints(getMaxAngularSpeedRadPerSec(), 10)); // kp 0.8
 
   public Drive(
       GyroIO gyroIO,
@@ -293,10 +293,13 @@ public class Drive extends SubsystemBase {
 
       case SLOWLY_FORWARD: // Drive backwards slowly
         robotCentricJoystickDrive(
-            0, 0.05 * getMaxLinearSpeedMetersPerSec(), 0); // TODO: check if forward is x or y
+            0,
+            0.05 * getMaxLinearSpeedMetersPerSec() * (isBackside ? -1 : 1),
+            0); // TODO: check if forward is x or y
         break;
 
       case AUTO_ALIGN: // Align the robot with reef
+        autoAlignTarget = autoAlignTarget != null ? autoAlignTarget : () -> new Pose2d(3, 3, new Rotation2d());
         Transform2d distance = getPose().minus(autoAlignTarget.get());
         double linearVelocity =
             linearVelocityController.calculate(Math.hypot(distance.getX(), distance.getY()), 0);
