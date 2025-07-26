@@ -15,19 +15,19 @@ public class ElevatorConstants { // TODO: tune everything
         default -> new Gains(5, 0.2, 0, 0, 0.1, 0, 0.05);
       };
 
-      public static final double ELEVATOR_GEAR_RATIO = 1;
-      public static final double ELEVATOR_LENGTH_METERS = 1.7; // meters
-      public static final double ELEVATOR_MOI = 0; // kg*m^2
-    
-      public static final double PULLEY_SOURCE_RADIUS = 0.1; // meters, spool radius
-      public static final double PULLEY_GEAR_RATIO = 1 / 50.0; // 50:1 gear ratio for the pulley
-      public static final double CASCADE_MULTIPLIER = 2;
-    
-      public static final double SPOOL_CIRCUMFERENCE = 2 * Math.PI * PULLEY_SOURCE_RADIUS; // meters
+  public static final double ELEVATOR_GEAR_RATIO = 1;
+  public static final double ELEVATOR_LENGTH_METERS = 1.7; // meters
+  public static final double ELEVATOR_MOI = 0; // kg*m^2
+
+  public static final double PULLEY_SOURCE_RADIUS = 0.1; // meters, spool radius
+  public static final double PULLEY_GEAR_RATIO = 1 / 50.0; // 50:1 gear ratio for the pulley
+  public static final double CASCADE_MULTIPLIER = 2;
+
+  public static final double SPOOL_CIRCUMFERENCE = 2 * Math.PI * PULLEY_SOURCE_RADIUS; // meters
   public static final double ROTATIONS_PER_METER =
       (SPOOL_CIRCUMFERENCE * CASCADE_MULTIPLIER) / PULLEY_GEAR_RATIO;
 
-public static final double METERS_PER_ROTATION = 1 / ROTATIONS_PER_METER; // meters per rotation
+  public static final double METERS_PER_ROTATION = 1 / ROTATIONS_PER_METER; // meters per rotation
 
   public static final int ELEVATOR_CURRENT_LIMIT = 50;
   public static final double ELEVATOR_ENCODER_OFFSET = 0;

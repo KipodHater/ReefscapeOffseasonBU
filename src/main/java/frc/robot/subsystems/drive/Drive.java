@@ -292,7 +292,8 @@ public class Drive extends SubsystemBase {
         break;
 
       case SLOWLY_FORWARD: // Drive backwards slowly
-        robotCentricJoystickDrive(0, 0.05 * getMaxLinearSpeedMetersPerSec(), 0); // TODO: check if forward is x or y
+        robotCentricJoystickDrive(
+            0, 0.05 * getMaxLinearSpeedMetersPerSec(), 0); // TODO: check if forward is x or y
         break;
 
       case AUTO_ALIGN: // Align the robot with reef
@@ -512,7 +513,7 @@ public class Drive extends SubsystemBase {
     driveState = DriveStates.AUTO_ALIGN;
   }
 
-  public void setStateSlowlyForward(boolean isBackside){
+  public void setStateSlowlyForward(boolean isBackside) {
     this.isBackside = isBackside;
     if (driveState == DriveStates.SLOWLY_FORWARD) return;
     driveState = DriveStates.SLOWLY_FORWARD;

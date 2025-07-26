@@ -1,12 +1,11 @@
 package frc.robot.subsystems.elevator;
 
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
 public class Elevator extends SubsystemBase {
 
@@ -17,7 +16,7 @@ public class Elevator extends SubsystemBase {
       new ElevatorFeedforward(
           ElevatorConstants.GAINS.KS(), ElevatorConstants.GAINS.KG(), ElevatorConstants.GAINS.KV());
 
-  public enum ElevatorStates { //TODO: set actuaL heights
+  public enum ElevatorStates { // TODO: set actuaL heights
     DEFAULT(0.7),
     CORAL_INTAKE_CONVEYOR(0.5),
     CORAL_L1(0.2),
@@ -80,8 +79,8 @@ public class Elevator extends SubsystemBase {
     switch (currentState) {
       case DEFAULT -> io.runPositionMeters(ElevatorStates.DEFAULT.position(), ffVoltage);
 
-      case CORAL_INTAKE_CONVEYOR ->
-          io.runPositionMeters(ElevatorStates.CORAL_INTAKE_CONVEYOR.position(), ffVoltage);
+      case CORAL_INTAKE_CONVEYOR -> io.runPositionMeters(
+          ElevatorStates.CORAL_INTAKE_CONVEYOR.position(), ffVoltage);
 
       case CORAL_L1 -> io.runPositionMeters(ElevatorStates.CORAL_L1.position(), ffVoltage);
 

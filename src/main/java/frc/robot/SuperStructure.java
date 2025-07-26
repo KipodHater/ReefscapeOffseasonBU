@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AlignCoralCommand;
@@ -178,76 +177,112 @@ public class SuperStructure extends SubsystemBase {
       case PLACE_CORAL_ALIGN_L1 -> {
         if (previousState != currentState) {
           CommandScheduler.getInstance().cancelAll();
-          currentCommand = new AlignCoralCommand(drive, arm, elevator, gripper, 1, () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/null);
+          currentCommand =
+              new AlignCoralCommand(
+                  drive,
+                  arm,
+                  elevator,
+                  gripper,
+                  1,
+                  () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
+                  null);
         }
       }
 
       case PLACE_CORAL_L1 -> {
-        if(previousState != currentState) {
+        if (previousState != currentState) {
           CommandScheduler.getInstance().cancelAll();
-          currentCommand = 
-              SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 1);
+          currentCommand = SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 1);
           currentCommand.schedule();
         }
-        if(!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          currentState = SuperStructureStates.INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          currentState =
+              SuperStructureStates
+                  .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
         }
       }
 
       case PLACE_CORAL_ALIGN_L2 -> {
         if (previousState != currentState) {
           CommandScheduler.getInstance().cancelAll();
-          currentCommand = new AlignCoralCommand(drive, arm, elevator, gripper, 2, () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/null);
+          currentCommand =
+              new AlignCoralCommand(
+                  drive,
+                  arm,
+                  elevator,
+                  gripper,
+                  2,
+                  () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
+                  null);
         }
-    }
+      }
 
       case PLACE_CORAL_L2 -> {
-        if(previousState != currentState) {
+        if (previousState != currentState) {
           CommandScheduler.getInstance().cancelAll();
-          currentCommand = 
-              SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 2);
+          currentCommand = SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 2);
           currentCommand.schedule();
         }
-        if(!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          currentState = SuperStructureStates.INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          currentState =
+              SuperStructureStates
+                  .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
         }
       }
 
       case PLACE_CORAL_ALIGN_L3 -> {
         if (previousState != currentState) {
           CommandScheduler.getInstance().cancelAll();
-          currentCommand = new AlignCoralCommand(drive, arm, elevator, gripper, 3, () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/null);
+          currentCommand =
+              new AlignCoralCommand(
+                  drive,
+                  arm,
+                  elevator,
+                  gripper,
+                  3,
+                  () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
+                  null);
         }
       }
 
       case PLACE_CORAL_L3 -> {
-        if(previousState != currentState) {
+        if (previousState != currentState) {
           CommandScheduler.getInstance().cancelAll();
-          currentCommand = 
-              SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 3);
+          currentCommand = SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 3);
           currentCommand.schedule();
         }
-        if(!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          currentState = SuperStructureStates.INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          currentState =
+              SuperStructureStates
+                  .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
         }
       }
 
       case PLACE_CORAL_ALIGN_L4 -> {
         if (previousState != currentState) {
           CommandScheduler.getInstance().cancelAll();
-          currentCommand = new AlignCoralCommand(drive, arm, elevator, gripper, 4, () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/null);
+          currentCommand =
+              new AlignCoralCommand(
+                  drive,
+                  arm,
+                  elevator,
+                  gripper,
+                  4,
+                  () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
+                  null);
         }
       }
 
       case PLACE_CORAL_L4 -> {
-        if(previousState != currentState) {
+        if (previousState != currentState) {
           CommandScheduler.getInstance().cancelAll();
-          currentCommand = 
-              SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 4);
+          currentCommand = SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 4);
           currentCommand.schedule();
         }
-        if(!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          currentState = SuperStructureStates.INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          currentState =
+              SuperStructureStates
+                  .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
         }
       }
 
@@ -275,9 +310,9 @@ public class SuperStructure extends SubsystemBase {
     drive.setState(DriveStates.FIELD_DRIVE);
     elevator.setState(ElevatorStates.DEFAULT);
 
-    if(elevator.isSafeForArm()) arm.setState(ArmStates.DEFAULT);
+    if (elevator.isSafeForArm()) arm.setState(ArmStates.DEFAULT);
     else arm.setState(ArmStates.IDLE); // TODO: change this to hold current position state
-    
+
     gripper.setState(GripperStates.IDLE);
     intakeDeploy.setState(IntakeDeployStates.CLOSED);
     intakeRollers.setState(IntakeRollersStates.IDLE);
@@ -289,9 +324,9 @@ public class SuperStructure extends SubsystemBase {
     drive.setState(DriveStates.ASSISTED_DRIVE);
     elevator.setState(ElevatorStates.DEFAULT);
 
-    if(elevator.isSafeForArm()) arm.setState(ArmStates.DEFAULT);
+    if (elevator.isSafeForArm()) arm.setState(ArmStates.DEFAULT);
     else arm.setState(ArmStates.IDLE); // TODO: change this to hold current position state
-    
+
     gripper.setState(GripperStates.IDLE);
     intakeDeploy.setState(IntakeDeployStates.DEPLOY);
     intakeRollers.setState(IntakeRollersStates.INTAKE);
@@ -356,15 +391,15 @@ public class SuperStructure extends SubsystemBase {
     // need a smart way to close the arm again
   }
 
-  private void setWantedState(SuperStructureStates wantedState){
+  private void setWantedState(SuperStructureStates wantedState) {
     this.wantedState = wantedState;
   }
 
-  public Command setWantedStateCommand(SuperStructureStates wantedState){
+  public Command setWantedStateCommand(SuperStructureStates wantedState) {
     return new InstantCommand(() -> setWantedState(wantedState));
   }
 
-  public Command setWantedStateCommand(SuperStructureStates wantedState, int scoreL){
+  public Command setWantedStateCommand(SuperStructureStates wantedState, int scoreL) {
     return new InstantCommand(() -> setWantedState(wantedState));
   }
 }

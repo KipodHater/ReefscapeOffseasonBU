@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -13,6 +11,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.Elevator.ElevatorStates;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.Gripper.GripperStates;
+import java.util.function.Supplier;
 
 public class SimpleCommands {
 
@@ -76,8 +75,7 @@ public class SimpleCommands {
         elevator);
   }
 
-
-  public static Command nonStopAutoAlignCommand(Drive drive, Supplier<Pose2d> poseSupplier){
+  public static Command nonStopAutoAlignCommand(Drive drive, Supplier<Pose2d> poseSupplier) {
     return new FunctionalCommand(
         () -> drive.setStateAutoAlign(poseSupplier),
         () -> {},
@@ -86,7 +84,8 @@ public class SimpleCommands {
         drive);
   }
 
-  public static Command placeCoralCommandTeleop(Elevator elevator, Arm arm, Gripper gripper, Drive drive, int Lx) {
+  public static Command placeCoralCommandTeleop(
+      Elevator elevator, Arm arm, Gripper gripper, Drive drive, int Lx) {
     return new FunctionalCommand(
         () -> {
           elevator.setReefState(Lx);
@@ -94,13 +93,16 @@ public class SimpleCommands {
           gripper.setState(GripperStates.IDLE);
         },
         () -> {
-          if(arm.atScoreGoal()) {
+          if (arm.atScoreGoal()) {
             gripper.setState(GripperStates.EJECT_CORAL);
             drive.setStateSlowlyForward(RobotState.getInstance().getCoralScoringInfo().backside());
           }
         },
         interrupted -> {},
         () -> arm.atGoal(),
-        arm, elevator, gripper, drive);
+        arm,
+        elevator,
+        gripper,
+        drive);
   }
 }
