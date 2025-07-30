@@ -70,7 +70,6 @@ public class ObjectVision extends SubsystemBase {
       // Translation2d targetTranslation = fieldToRobot.getTranslation().plus(robotToTarget);
 
       Pose2d targetPose = new Pose2d(fieldToTarget, new Rotation2d());
-      // TODO: add here clamping target values into field
 
       targetTranslations.add(targetPose);
     }
