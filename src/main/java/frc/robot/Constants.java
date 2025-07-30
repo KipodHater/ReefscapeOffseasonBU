@@ -13,6 +13,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -36,4 +41,74 @@ public final class Constants {
   }
 
   public static final double CYCLE_TIME = 0.02;
+  public static final double FIELD_LENGTH = 16.5;
+  public static final double FIELD_WIDTH = 8.3;
+  public static final double POSE_BUFFER_SIZE = 2.0; // seconds
+
+  public static class FieldConstants {
+
+    public static AprilTagFieldLayout aprilTagLayout =
+        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+
+    public static final double fieldLength = aprilTagLayout.getFieldLength();
+
+    public static final double fieldWidth = aprilTagLayout.getFieldLength();
+    ;
+    public static final double startingLineX =
+        Units.inchesToMeters(299.438); // Measured from the inside of starting line
+    public static final double algaeDiameter = Units.inchesToMeters(16);
+    public static final double coralDiameter = Units.inchesToMeters(4.5);
+    public static final int aprilTagCount = 22;
+
+    public static class Processor {
+      public static final Pose2d centerFace =
+          new Pose2d(aprilTagLayout.getTagPose(16).get().getX(), 0, Rotation2d.fromDegrees(90));
+      public static final Pose2d opposingCenterFace =
+          new Pose2d(
+              aprilTagLayout.getTagPose(3).get().getX(), fieldWidth, Rotation2d.fromDegrees(-90));
+    }
+  }
+
+  public final class RobotState {
+
+    public static final double SWITCH_SCORE_FRONT_THRESHOLD = 100; // deg
+
+    public static final Pose2d[] CORAL_SCORE_POSES = {
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d()
+    };
+
+    public static final Pose2d[] CORAL_ALIGN_POSES = {
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d()
+    };
+
+    public static final Pose2d[] ALGAE_ALIGN_POSES = {
+      new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()
+    };
+
+    public static final Pose2d[] ALGAE_INTAKE_POSES = {
+      new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()
+    };
+  }
 }
