@@ -54,12 +54,12 @@ public class RobotState {
   // private RobotState(Pose2d initialPose) {}
 
   public static RobotState getInstance() {
-    System.out.println(1);
+    // System.out.println(1);
     if (instance == null) {
-      System.out.println(2);
+      // System.out.println(2);
       instance = new RobotState();
     }
-    System.out.println(3);
+    // System.out.println(3);
     return instance;
   }
 
@@ -464,9 +464,11 @@ public class RobotState {
 
   public void setUpReefAlgae() {
     int closestFace = getClosestReefFaceAlgae();
+    System.out.println(closestFace);
     boolean isBackSide = true;
 
     Pose2d alignPose = AllianceFlipping.apply(ALGAE_ALIGN_POSES[closestFace]);
+    System.out.println(alignPose.toString());
     Pose2d scorePose = AllianceFlipping.apply(ALGAE_INTAKE_POSES[closestFace]);
     if (Math.abs(estimatedPose.getRotation().getDegrees() - scorePose.getRotation().getDegrees())
         > SWITCH_SCORE_FRONT_THRESHOLD) {

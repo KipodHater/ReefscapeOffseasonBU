@@ -39,13 +39,13 @@ public class AlignAlgaeReefCommand extends SequentialCommandGroup {
                     SimpleCommands.driveAutoAlignTolerance(
                         drive,
                         () -> RobotState.getInstance().getAlgaeScoringInfo().alignPose(),
-                        0.1,
-                        2),
+                        0.3,
+                        5),
                     SimpleCommands.driveAutoAlignTolerance(
                         drive,
                         () -> RobotState.getInstance().getAlgaeScoringInfo().scorePose(),
-                        0.1,
-                        2),
+                        0.3,
+                        5),
                     // Commands.parallel(
 
                     Commands.runOnce(

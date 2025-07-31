@@ -354,6 +354,11 @@ public class RobotContainer {
     SmartDashboard.putData("sub-arm", arm);
     SmartDashboard.putData("sub-drive", drive);
     SmartDashboard.putData("sub-gripper", gripper);
+
+    // SmartDashboard.putData(
+    //     "rgtrh",
+    //     new AlignAlgaeReefCommand(drive, arm, elevator, gripper, false, () -> false, () ->
+    // true));
   }
 
   public void resetSimulation() {

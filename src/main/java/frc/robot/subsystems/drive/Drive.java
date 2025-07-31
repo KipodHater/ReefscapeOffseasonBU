@@ -55,6 +55,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
+import org.dyn4j.geometry.Transform;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -134,10 +136,10 @@ public class Drive extends SubsystemBase {
 
   private final ProfiledPIDController linearVelocityController =
       new ProfiledPIDController(
-          5, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5)); // kp 1.2
+          2, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5)); // kp 1.2
   private final ProfiledPIDController rotationController =
       new ProfiledPIDController(
-          0.8, 0, 0, new Constraints(getMaxAngularSpeedRadPerSec(), 10)); // kp 0.8
+          0.3, 0, 0, new Constraints(getMaxAngularSpeedRadPerSec(), 10)); // kp 0.8
 
   public Drive(
       GyroIO gyroIO,
@@ -304,13 +306,16 @@ public class Drive extends SubsystemBase {
 
       case AUTO_ALIGN: // Align the robot with reef
         autoAlignTarget =
-            autoAlignTarget != null ? autoAlignTarget : () -> new Pose2d(3, 3, new Rotation2d());
-        Transform2d distance = getPose().minus(autoAlignTarget.get());
+            // autoAlignTarget != null ? autoAlignTarget : () -> new Pose2d(3, 3, new Rotation2d());
+            () -> new Pose2d(3,3,new Rotation2d());
+        // Transform2d distance = getPose().minus(autoAlignTarget.get());
+        Transform2d distance = autoAlignTarget.get().minus(getPose());
         double linearVelocity =
-            linearVelocityController.calculate(Math.hypot(distance.getX(), distance.getY()), 0);
+            linearVelocityController.calculate(0, Math.hypot(distance.getX(), distance.getY()));
         Translation2d linearVelocityTranslation =
             new Translation2d(
                 linearVelocity, new Rotation2d(Math.atan2(distance.getY(), distance.getX())));
+                System.out.println(autoAlignTarget.get().toString());
         runVelocity(
             new ChassisSpeeds(
                 linearVelocityTranslation.getX(),

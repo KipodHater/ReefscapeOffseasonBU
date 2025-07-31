@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import static frc.robot.Constants.FIELD_LENGTH;
+import static frc.robot.Constants.FIELD_WIDTH;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -16,8 +17,8 @@ public class AllianceFlipping {
     return shouldFlip() ? FIELD_LENGTH - x : x;
   }
 
-  public static double applyY(double x) {
-    return shouldFlip() ? FIELD_LENGTH - x : x;
+  public static double applyY(double y) {
+    return shouldFlip() ? FIELD_WIDTH - y : y;
   }
 
   public static Translation2d apply(Translation2d translation) {

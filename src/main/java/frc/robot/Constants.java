@@ -104,11 +104,21 @@ public final class Constants {
     };
 
     public static final Pose2d[] ALGAE_ALIGN_POSES = {
-      new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()
+      new Pose2d(3, 3, new Rotation2d()),
+      new Pose2d(3, 3, new Rotation2d()),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d()
     };
 
     public static final Pose2d[] ALGAE_INTAKE_POSES = {
-      new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()
+      new Pose2d(3, 3, new Rotation2d()),
+      new Pose2d(3, 3, new Rotation2d()),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d(),
+      new Pose2d()
     };
   }
 }
