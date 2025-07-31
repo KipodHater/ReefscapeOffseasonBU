@@ -60,7 +60,9 @@ public class SimpleCommands {
   private static boolean moveToAlgaeLx(Arm arm, Elevator elevator, int lx, boolean isBackside) {
     arm.setState(ArmStates.ALGAE_INTAKE_REEF);
     elevator.setAlgaeReefState(lx);
-    return arm.atGoal();
+
+    return elevator.atGoal();
+    // return arm.atGoal();
   }
 
   public static Command moveToAlgaeLxCommand(
@@ -153,6 +155,8 @@ public class SimpleCommands {
               drive.getPose() != null ? drive.getPose() : new Pose2d(1, 1, new Rotation2d());
           Pose2d targetPose =
               other.get() != null ? other.get() : new Pose2d(1, 1, new Rotation2d());
+          System.out.println(currentPose.toString());
+          System.out.println(targetPose.toString());
           return currentPose.getTranslation().getDistance(targetPose.getTranslation()) < tolerance
               && Math.abs(
                       currentPose.getRotation().getDegrees()

@@ -119,7 +119,7 @@ public class RobotState {
   }
 
   public Pose2d getEstimatedPose() {
-    return odometryPose;
+    return estimatedPose;
   }
 
   public ChassisSpeeds getRobotVelocity() {
@@ -468,7 +468,6 @@ public class RobotState {
     boolean isBackSide = true;
 
     Pose2d alignPose = AllianceFlipping.apply(ALGAE_ALIGN_POSES[closestFace]);
-    System.out.println(alignPose.toString());
     Pose2d scorePose = AllianceFlipping.apply(ALGAE_INTAKE_POSES[closestFace]);
     if (Math.abs(estimatedPose.getRotation().getDegrees() - scorePose.getRotation().getDegrees())
         > SWITCH_SCORE_FRONT_THRESHOLD) {

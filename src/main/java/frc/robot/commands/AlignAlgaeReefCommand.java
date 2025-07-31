@@ -46,18 +46,11 @@ public class AlignAlgaeReefCommand extends SequentialCommandGroup {
                         () -> RobotState.getInstance().getAlgaeScoringInfo().scorePose(),
                         0.3,
                         5),
-                    // Commands.parallel(
-
                     Commands.runOnce(
                         () ->
                             drive.setStateSlowlyForward(
                                 RobotState.getInstance().getAlgaeScoringInfo().backside()),
-                        drive)
-                    // Commands.waitSeconds(0.1).andThen(SimpleCommands.moveToHomeCommand(arm,
-                    // elevator, gripper))
-
-                    // )
-                    )),
+                        drive))),
             Commands.none(),
             () -> !gripperHasPiece.getAsBoolean() || ignoreGripperSensor.getAsBoolean()));
   }
