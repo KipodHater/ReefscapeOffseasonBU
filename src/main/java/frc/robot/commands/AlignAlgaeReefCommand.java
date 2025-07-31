@@ -15,58 +15,50 @@ import java.util.function.BooleanSupplier;
 
 public class AlignAlgaeReefCommand extends SequentialCommandGroup {
 
-    public AlignAlgaeReefCommand(
-            Drive drive,
-            Arm arm,
-            Elevator elevator,
-            Gripper gripper,
-            boolean isL2,
-            BooleanSupplier gripperHasPiece,
-            BooleanSupplier ignoreGripperSensor) {
+  public AlignAlgaeReefCommand(
+      Drive drive,
+      Arm arm,
+      Elevator elevator,
+      Gripper gripper,
+      boolean isL2,
+      BooleanSupplier gripperHasPiece,
+      BooleanSupplier ignoreGripperSensor) {
 
-        RobotState.getInstance().setUpIntakeTargetAlgae();
-        addRequirements(drive, arm, elevator, gripper);
+    RobotState.getInstance().setUpReefAlgae();
+    addRequirements(drive, arm, elevator, gripper);
 
-        // if (!gripperHasPiece || ignoreGripperSensor) {
-        // addCommands(
-        // Commands.runOnce(
-        // () ->
-        // drive.setStateAutoAlign(
-        // () ->
-        // RobotState.getInstance().getCoralScoringInfo().alignPose())));
-        // }
+    addCommands(
+        Commands.either(
+            Commands.parallel(
+                SimpleCommands.moveToAlgaeLxCommand(
+                    arm,
+                    elevator,
+                    isL2 ? 2 : 3,
+                    RobotState.getInstance().getAlgaeScoringInfo().backside()),
+                Commands.sequence(
+                    SimpleCommands.driveAutoAlignTolerance(
+                        drive,
+                        () -> RobotState.getInstance().getAlgaeScoringInfo().alignPose(),
+                        0.1,
+                        2),
+                    SimpleCommands.driveAutoAlignTolerance(
+                        drive,
+                        () -> RobotState.getInstance().getAlgaeScoringInfo().scorePose(),
+                        0.1,
+                        2),
+                    // Commands.parallel(
 
-        addCommands(
-                Commands.either(
-                        Commands.parallel(
-                                SimpleCommands.moveToAlgaeLxCommand(
-                                        arm,
-                                        elevator,
-                                        isL2 ? 2 : 3,
-                                        RobotState.getInstance().getCoralScoringInfo().backside()),
-                                Commands.sequence(
-                                        SimpleCommands.driveAutoAlignTolerance(
-                                                drive,
-                                                () -> RobotState.getInstance().getCoralScoringInfo().alignPose(),
-                                                0.1,
-                                                2),
-                                        SimpleCommands.driveAutoAlignTolerance(
-                                                drive,
-                                                () -> RobotState.getInstance().getCoralScoringInfo().scorePose(),
-                                                0.1,
-                                                2),
-                                        // Commands.parallel(
+                    Commands.runOnce(
+                        () ->
+                            drive.setStateSlowlyForward(
+                                RobotState.getInstance().getAlgaeScoringInfo().backside()),
+                        drive)
+                    // Commands.waitSeconds(0.1).andThen(SimpleCommands.moveToHomeCommand(arm,
+                    // elevator, gripper))
 
-                                        Commands.runOnce(
-                                                () -> drive.setStateSlowlyForward(
-                                                        RobotState.getInstance().getCoralScoringInfo().backside()),
-                                                drive)
-                                // Commands.waitSeconds(0.1).andThen(SimpleCommands.moveToHomeCommand(arm,
-                                // elevator, gripper))
-
-                                // )
-                                )),
-                        Commands.none(),
-                        () -> !gripperHasPiece.getAsBoolean() || ignoreGripperSensor.getAsBoolean()));
-    }
+                    // )
+                    )),
+            Commands.none(),
+            () -> !gripperHasPiece.getAsBoolean() || ignoreGripperSensor.getAsBoolean()));
+  }
 }

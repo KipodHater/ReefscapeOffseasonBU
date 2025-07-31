@@ -94,7 +94,7 @@ public class RobotContainer {
   private final IntakeRollers intakeRollers;
   private final IntakeDeploy IntakeDeploy;
   private final ObjectVision ObjectVision;
-  private final RobotState robotState = RobotState.getInstance();
+  private final RobotState robotState;
   private SwerveDriveSimulation driveSimulation = null;
 
   private final SuperStructure structure;
@@ -111,6 +111,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    robotState = RobotState.getInstance();
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -133,9 +134,7 @@ public class RobotContainer {
         conveyor = new Conveyor(new ConveyorIOSpark());
         intakeRollers = new IntakeRollers(new IntakeRollersIOSpark());
         IntakeDeploy = new IntakeDeploy(new IntakeDeployIOSpark());
-        ObjectVision =
-            new ObjectVision(
-                () -> drive.getPose(), new ObjectVisionIOPhoton("herg", new Transform3d()));
+        ObjectVision = new ObjectVision(new ObjectVisionIOPhoton("herg", new Transform3d()));
         vision =
             new Vision(
                 robotState::addVisionObservation,
@@ -176,9 +175,7 @@ public class RobotContainer {
         climb = new Climb(new ClimbIO() {});
         intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
         IntakeDeploy = new IntakeDeploy(new IntakeDeployIO() {});
-        ObjectVision =
-            new ObjectVision(
-                () -> drive.getPose(), new ObjectVisionIOPhoton("herg", new Transform3d()));
+        ObjectVision = new ObjectVision(new ObjectVisionIOPhoton("herg", new Transform3d()));
         vision =
             new Vision(
                 robotState::addVisionObservation,
@@ -216,7 +213,7 @@ public class RobotContainer {
         dashboard = new Dashboard();
         intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
         IntakeDeploy = new IntakeDeploy(new IntakeDeployIO() {});
-        ObjectVision = new ObjectVision(() -> drive.getPose(), new ObjectVisionIO() {});
+        ObjectVision = new ObjectVision(new ObjectVisionIO() {});
         vision = new Vision(robotState::addVisionObservation, new VisionIO[] {});
         break;
     }

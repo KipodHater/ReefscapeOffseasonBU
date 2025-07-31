@@ -149,8 +149,10 @@ public class SimpleCommands {
         () -> {},
         interrupted -> {},
         () -> {
-          Pose2d currentPose = drive.getPose() != null ? drive.getPose() : new Pose2d(1,1, new Rotation2d());
-          Pose2d targetPose = other.get() != null ? other.get() : new Pose2d(1,1,new Rotation2d());
+          Pose2d currentPose =
+              drive.getPose() != null ? drive.getPose() : new Pose2d(1, 1, new Rotation2d());
+          Pose2d targetPose =
+              other.get() != null ? other.get() : new Pose2d(1, 1, new Rotation2d());
           return currentPose.getTranslation().getDistance(targetPose.getTranslation()) < tolerance
               && Math.abs(
                       currentPose.getRotation().getDegrees()

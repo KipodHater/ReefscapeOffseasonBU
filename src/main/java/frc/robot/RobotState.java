@@ -38,7 +38,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -55,9 +54,12 @@ public class RobotState {
   // private RobotState(Pose2d initialPose) {}
 
   public static RobotState getInstance() {
+    System.out.println(1);
     if (instance == null) {
+      System.out.println(2);
       instance = new RobotState();
     }
+    System.out.println(3);
     return instance;
   }
 
@@ -71,8 +73,8 @@ public class RobotState {
     }
   }
 
-  @Getter @AutoLogOutput private Pose2d odometryPose = Pose2d.kZero;
-  @Getter @AutoLogOutput private Pose2d estimatedPose = Pose2d.kZero;
+  @AutoLogOutput private Pose2d odometryPose = Pose2d.kZero;
+  @AutoLogOutput private Pose2d estimatedPose = Pose2d.kZero;
 
   private final TimeInterpolatableBuffer<Pose2d> poseBuffer =
       TimeInterpolatableBuffer.createBuffer(POSE_BUFFER_SIZE);
@@ -93,7 +95,6 @@ public class RobotState {
   private final Map<Integer, TxTyPoseRecord> txTyPoses = new HashMap<>();
   private Set<coralPoseRecord> coralPoses = new HashSet<>();
 
-  @Getter
   @AutoLogOutput(key = "RobotState/RobotVelocity")
   private ChassisSpeeds robotVelocity = new ChassisSpeeds();
 
@@ -111,6 +112,18 @@ public class RobotState {
     kinematics = new SwerveDriveKinematics(Drive.getModuleTranslations());
 
     // maybe add here vision standart devs idk wtf
+  }
+
+  public Pose2d getOdometryPose() {
+    return odometryPose;
+  }
+
+  public Pose2d getEstimatedPose() {
+    return odometryPose;
+  }
+
+  public ChassisSpeeds getRobotVelocity() {
+    return robotVelocity;
   }
 
   public void resetPose(Pose2d newPose) {
