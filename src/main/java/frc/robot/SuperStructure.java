@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.AlignAlgaeReefCommand;
 import frc.robot.commands.AlignCoralCommand;
 import frc.robot.commands.SimpleCommands;
 import frc.robot.subsystems.arm.Arm;
@@ -124,6 +125,7 @@ public class SuperStructure extends SubsystemBase {
   public void periodic() {
     currentState = handleStateTransition(wantedState);
     stateMachine();
+    wantedState = currentState;
   }
 
   private SuperStructureStates handleStateTransition(SuperStructureStates wantedState) {
@@ -154,6 +156,8 @@ public class SuperStructure extends SubsystemBase {
       case ALGAE_PROCESSOR -> SuperStructureStates.ALGAE_PROCESSOR;
 
       case ALGAE_NET -> SuperStructureStates.ALGAE_NET;
+
+      case ALGAE_HOME -> SuperStructureStates.ALGAE_HOME;
 
       case OPEN_CLIMB -> SuperStructureStates.OPEN_CLIMB;
 
@@ -286,7 +290,18 @@ public class SuperStructure extends SubsystemBase {
         }
       }
 
-      case INTAKE_ALGAE_REEF -> {}
+      case INTAKE_ALGAE_REEF -> {
+        if (previousState != currentState) {
+          CommandScheduler.getInstance().cancelAll();
+          currentCommand =
+              new AlignAlgaeReefCommand(
+                  drive, arm, elevator, gripper, true, () -> false, () -> false);
+          currentCommand.schedule();
+        }
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          currentState = SuperStructureStates.ALGAE_HOME;
+        }
+      }
 
       case INTAKE_ALGAE_FLOOR -> {}
 
@@ -294,7 +309,17 @@ public class SuperStructure extends SubsystemBase {
 
       case ALGAE_NET -> {}
 
-      case ALGAE_HOME -> {}
+      case ALGAE_HOME -> {
+        if (previousState != currentState) {
+          CommandScheduler.getInstance().cancelAll();
+          currentCommand = SimpleCommands.moveToHomeCommand(arm, elevator, gripper, false);
+          currentCommand.schedule();
+        }
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          currentCommand.cancel();
+          currentState = SuperStructureStates.TRAVEL;
+        }
+      }
 
       case OPEN_CLIMB -> {}
 

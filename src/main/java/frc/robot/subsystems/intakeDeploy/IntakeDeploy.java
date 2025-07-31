@@ -39,6 +39,7 @@ public class IntakeDeploy extends SubsystemBase {
     this.io = io;
   }
 
+  @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("IntakeDeploy/inputs", inputs);
@@ -49,8 +50,7 @@ public class IntakeDeploy extends SubsystemBase {
   private void stateMachine() {
     double ffVoltage =
         feedforwardController.calculate(
-            currentState.position() * (Math.PI / 180.0),
-            inputs.velocityDegPerSec * (Math.PI / 180.0));
+            inputs.positionDeg * (Math.PI / 180.0), inputs.velocityDegPerSec * (Math.PI / 180.0));
     // Convert velocity to radians per second
 
     switch (currentState) {
