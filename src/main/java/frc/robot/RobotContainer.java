@@ -27,8 +27,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -94,6 +94,7 @@ public class RobotContainer {
   private final IntakeRollers intakeRollers;
   private final IntakeDeploy IntakeDeploy;
   private final ObjectVision ObjectVision;
+  private final RobotState robotState = RobotState.getInstance();
   private SwerveDriveSimulation driveSimulation = null;
 
   private final SuperStructure structure;
@@ -137,7 +138,7 @@ public class RobotContainer {
                 () -> drive.getPose(), new ObjectVisionIOPhoton("herg", new Transform3d()));
         vision =
             new Vision(
-                drive::addVisionMeasurement,
+                robotState::addVisionObservation,
                 new VisionIO[] {
                   /*
                   new VisionIOPhoton("camera0", VisionConstants.robotToCamera0),
@@ -180,18 +181,18 @@ public class RobotContainer {
                 () -> drive.getPose(), new ObjectVisionIOPhoton("herg", new Transform3d()));
         vision =
             new Vision(
-                drive::addVisionMeasurement, new VisionIO[] {}
-                //   new VisionIOPhotonSim(
-                //       "camera0",
-                //       VisionConstants.robotToCamera0,
-                //       driveSimulation::getSimulatedDriveTrainPose),
-                //   new VisionIOPhotonSim(
-                //       "camera1",
-                //       VisionConstants.robotToCamera1,
-                //       driveSimulation::getSimulatedDriveTrainPose)
-                //   // new VisionIOTest()
-                // }
-                );
+                robotState::addVisionObservation,
+                new VisionIO[] {
+                  new VisionIOPhotonSim(
+                      "camera0",
+                      VisionConstants.robotToCamera0,
+                      driveSimulation::getSimulatedDriveTrainPose),
+                  new VisionIOPhotonSim(
+                      "camera1",
+                      VisionConstants.robotToCamera1,
+                      driveSimulation::getSimulatedDriveTrainPose)
+                  // new VisionIOTest()
+                });
         break;
 
       default:
@@ -216,7 +217,7 @@ public class RobotContainer {
         intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
         IntakeDeploy = new IntakeDeploy(new IntakeDeployIO() {});
         ObjectVision = new ObjectVision(() -> drive.getPose(), new ObjectVisionIO() {});
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO[] {});
+        vision = new Vision(robotState::addVisionObservation, new VisionIO[] {});
         break;
     }
 
@@ -293,8 +294,10 @@ public class RobotContainer {
 
     final Runnable resetGyro =
         Constants.currentMode == Constants.Mode.SIM
-            ? () -> drive.setPose(driveSimulation.getSimulatedDriveTrainPose())
-            : () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
+            ? () -> RobotState.getInstance().resetPose(driveSimulation.getSimulatedDriveTrainPose())
+            : () ->
+                RobotState.getInstance()
+                    .resetPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
 
     controller.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
@@ -350,17 +353,16 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    long startTime = RobotController.getFPGATime(); // Get the start time in microseconds
-    vision.periodic();
-    Logger.recordOutput("diffff", (RobotController.getFPGATime() - startTime) * 1e-3);
-    gripper.periodic();
-    elevator.periodic();
+    SmartDashboard.putData("sub-Elevator", elevator);
+    SmartDashboard.putData("sub-arm", arm);
+    SmartDashboard.putData("sub-drive", drive);
+    SmartDashboard.putData("sub-gripper", gripper);
   }
 
   public void resetSimulation() {
     if (Constants.currentMode != Constants.Mode.SIM) return;
 
-    drive.setPose(new Pose2d(3, 3, new Rotation2d()));
+    RobotState.getInstance().resetPose(new Pose2d(3, 3, new Rotation2d()));
     SimulatedArena.getInstance().resetFieldForAuto();
   }
 

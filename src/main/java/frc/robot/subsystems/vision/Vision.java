@@ -106,7 +106,7 @@ public class Vision extends SubsystemBase {
           angularStdDev *= cameraStdDevFactors[cameraIndex];
         }
 
-        // Send vision observation
+        // send to pose estimator
         consumer.accept(
             observation.pose().toPose2d(),
             observation.timestamp(),
