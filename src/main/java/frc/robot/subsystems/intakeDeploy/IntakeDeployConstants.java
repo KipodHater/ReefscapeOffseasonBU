@@ -18,6 +18,8 @@ public class IntakeDeployConstants {
 
   public static final double POSITION_CONVERSION_FACTOR = 360.0; // to degrees
   public static final double VELOCITY_CONVERSION_FACTOR = 360.0 / 60.0; // to degrees per second
+  public static final double ENCODER_OFFSET = 0.0; // degrees
+  public static final boolean ENCODER_INVERTED = false;
 
   public record Gains(
       double KP, double KI, double KD, double KS, double KV, double KA, double KG) {}

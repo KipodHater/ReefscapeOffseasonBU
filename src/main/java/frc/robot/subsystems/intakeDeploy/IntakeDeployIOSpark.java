@@ -42,6 +42,7 @@ public class IntakeDeployIOSpark implements IntakeDeployIO {
         .encoder
         .positionConversionFactor(POSITION_CONVERSION_FACTOR)
         .velocityConversionFactor(VELOCITY_CONVERSION_FACTOR)
+        .inverted(ENCODER_INVERTED)
         .uvwMeasurementPeriod(10);
 
     tryUntilOk(
@@ -66,7 +67,11 @@ public class IntakeDeployIOSpark implements IntakeDeployIO {
     ifOk(
         motor,
         encoder::getPosition,
-        (position) -> inputs.positionDeg = position > 180 ? position % 360 - 360 : position % 360);
+        (position) ->
+            inputs.positionDeg =
+                (position - ENCODER_OFFSET) > 180
+                    ? (position - ENCODER_OFFSET) % 360 - 360
+                    : (position - ENCODER_OFFSET) % 360);
     ifOk(motor, encoder::getVelocity, (velocity) -> inputs.velocityDegPerSec = velocity);
 
     ifOk(motor, motor::getBusVoltage, (voltage) -> inputs.motorVoltage = voltage);
