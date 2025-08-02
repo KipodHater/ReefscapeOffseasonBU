@@ -18,6 +18,7 @@ public class Elevator extends SubsystemBase {
 
   public enum ElevatorStates { // TODO: set actuaL heights
     DEFAULT(0.7),
+    HOME(0.2),
     CORAL_INTAKE_CONVEYOR(0.5),
     CORAL_L1(0.2),
     CORAL_L2(0.3),
@@ -131,6 +132,13 @@ public class Elevator extends SubsystemBase {
       case 2 -> setState(ElevatorStates.CORAL_L2);
       case 3 -> setState(ElevatorStates.CORAL_L3);
       case 4 -> setState(ElevatorStates.CORAL_L4);
+    }
+  }
+
+  public void setAlgaeReefState(int Lx) {
+    switch (Lx) {
+      case 2 -> setState(ElevatorStates.ALGAE_INTAKE_REEF_L2);
+      case 3 -> setState(ElevatorStates.ALGAE_INTAKE_REEF_L3);
     }
   }
 

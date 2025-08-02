@@ -20,20 +20,30 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.SuperStructure.SuperStructureStates;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.arm.*;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
+import frc.robot.subsystems.climb.ClimbIOSpark;
+import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.ConveyorIO;
+import frc.robot.subsystems.conveyor.ConveyorIOSim;
+import frc.robot.subsystems.conveyor.ConveyorIOSpark;
+import frc.robot.subsystems.dashboard.Dashboard;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.Drive.DriveStates;
 import frc.robot.subsystems.drive.DriveConstants;
@@ -44,10 +54,19 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.Elevator.ElevatorStates;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.elevator.ElevatorIOSpark;
 import frc.robot.subsystems.gripper.*;
+import frc.robot.subsystems.intakeDeploy.IntakeDeploy;
+import frc.robot.subsystems.intakeDeploy.IntakeDeployIO;
+import frc.robot.subsystems.intakeDeploy.IntakeDeployIOSpark;
+import frc.robot.subsystems.intakeRollers.IntakeRollers;
+import frc.robot.subsystems.intakeRollers.IntakeRollersIO;
+import frc.robot.subsystems.intakeRollers.IntakeRollersIOSpark;
+import frc.robot.subsystems.objectVision.ObjectVision;
+import frc.robot.subsystems.objectVision.ObjectVisionIO;
+import frc.robot.subsystems.objectVision.ObjectVisionIOPhoton;
 import frc.robot.subsystems.vision.*;
 import java.util.function.DoubleSupplier;
 import org.ironmaple.simulation.SimulatedArena;
@@ -69,7 +88,16 @@ public class RobotContainer {
   private final Arm arm;
   private final Vision vision;
   private final Elevator elevator;
+  private final Conveyor conveyor;
+  private final Climb climb;
+  private final Dashboard dashboard;
+  private final IntakeRollers intakeRollers;
+  private final IntakeDeploy IntakeDeploy;
+  private final ObjectVision ObjectVision;
+  private final RobotState robotState;
   private SwerveDriveSimulation driveSimulation = null;
+
+  private final SuperStructure structure;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -83,6 +111,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    robotState = RobotState.getInstance();
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -99,10 +128,16 @@ public class RobotContainer {
                 () -> controller.getRawAxis(4));
         gripper = new Gripper(new GripperIOSpark(), new GripperSensorIORev());
         arm = new Arm(new ArmIOSpark());
-        elevator = new Elevator(new ElevatorIO() {});
+        elevator = new Elevator(new ElevatorIOSpark());
+        climb = new Climb(new ClimbIOSpark());
+        dashboard = new Dashboard();
+        conveyor = new Conveyor(new ConveyorIOSpark());
+        intakeRollers = new IntakeRollers(new IntakeRollersIOSpark());
+        IntakeDeploy = new IntakeDeploy(new IntakeDeployIOSpark());
+        ObjectVision = new ObjectVision(new ObjectVisionIOPhoton("herg", new Transform3d()));
         vision =
             new Vision(
-                drive::addVisionMeasurement,
+                robotState::addVisionObservation,
                 new VisionIO[] {
                   /*
                   new VisionIOPhoton("camera0", VisionConstants.robotToCamera0),
@@ -135,9 +170,15 @@ public class RobotContainer {
         gripper = new Gripper(new GripperIOSim(driveSimulation), new GripperSensorIO() {});
         arm = new Arm(new ArmIOSim());
         elevator = new Elevator(new ElevatorIOSim());
+        conveyor = new Conveyor(new ConveyorIOSim());
+        dashboard = new Dashboard();
+        climb = new Climb(new ClimbIO() {});
+        intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
+        IntakeDeploy = new IntakeDeploy(new IntakeDeployIO() {});
+        ObjectVision = new ObjectVision(new ObjectVisionIOPhoton("herg", new Transform3d()));
         vision =
             new Vision(
-                drive::addVisionMeasurement,
+                robotState::addVisionObservation,
                 new VisionIO[] {
                   new VisionIOPhotonSim(
                       "camera0",
@@ -167,9 +208,29 @@ public class RobotContainer {
         gripper = new Gripper(new GripperIO() {}, new GripperSensorIO() {});
         arm = new Arm(new ArmIO() {});
         elevator = new Elevator(new ElevatorIO() {});
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO[] {});
+        conveyor = new Conveyor(new ConveyorIO() {});
+        climb = new Climb(new ClimbIO() {});
+        dashboard = new Dashboard();
+        intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
+        IntakeDeploy = new IntakeDeploy(new IntakeDeployIO() {});
+        ObjectVision = new ObjectVision(new ObjectVisionIO() {});
+        vision = new Vision(robotState::addVisionObservation, new VisionIO[] {});
         break;
     }
+
+    structure =
+        new SuperStructure(
+            arm,
+            climb,
+            conveyor,
+            dashboard,
+            drive,
+            elevator,
+            gripper,
+            IntakeDeploy,
+            intakeRollers,
+            ObjectVision,
+            vision);
 
     m_controllerLeftX = controller::getLeftX;
     m_controllerLeftY = controller::getLeftY;
@@ -230,8 +291,10 @@ public class RobotContainer {
 
     final Runnable resetGyro =
         Constants.currentMode == Constants.Mode.SIM
-            ? () -> drive.setPose(driveSimulation.getSimulatedDriveTrainPose())
-            : () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
+            ? () -> RobotState.getInstance().resetPose(driveSimulation.getSimulatedDriveTrainPose())
+            : () ->
+                RobotState.getInstance()
+                    .resetPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
 
     controller.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
@@ -243,9 +306,10 @@ public class RobotContainer {
       Trigger stupidshit2 = new Trigger(() -> controllerHID.getRawButton(2));
       Trigger stupidshit3 = new Trigger(() -> controllerHID.getRawButton(3));
 
-      stupidshit.onTrue(Commands.runOnce(() -> elevator.setState(ElevatorStates.CORAL_L4)));
-      stupidshit2.onTrue(Commands.runOnce(() -> elevator.setState(ElevatorStates.CORAL_L3_SCORE)));
-      stupidshit3.onTrue(Commands.runOnce(() -> elevator.setState(ElevatorStates.CORAL_L2_SCORE)));
+      // stupidshit.onTrue(Commands.runOnce(() -> elevator.setState(ElevatorStates.CORAL_L4)));
+      stupidshit2.onTrue(structure.setWantedStateCommand(SuperStructureStates.INTAKE_ALGAE_REEF));
+      // stupidshit3.onTrue(Commands.runOnce(() ->
+      // elevator.setState(ElevatorStates.CORAL_L2_SCORE)));
 
       // L1 Placement
       controller
@@ -286,17 +350,21 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    long startTime = RobotController.getFPGATime(); // Get the start time in microseconds
-    vision.periodic();
-    Logger.recordOutput("diffff", (RobotController.getFPGATime() - startTime) * 1e-3);
-    gripper.periodic();
-    elevator.periodic();
+    SmartDashboard.putData("sub-Elevator", elevator);
+    SmartDashboard.putData("sub-arm", arm);
+    SmartDashboard.putData("sub-drive", drive);
+    SmartDashboard.putData("sub-gripper", gripper);
+
+    // SmartDashboard.putData(
+    //     "rgtrh",
+    //     new AlignAlgaeReefCommand(drive, arm, elevator, gripper, false, () -> false, () ->
+    // true));
   }
 
   public void resetSimulation() {
     if (Constants.currentMode != Constants.Mode.SIM) return;
 
-    drive.setPose(new Pose2d(3, 3, new Rotation2d()));
+    RobotState.getInstance().resetPose(new Pose2d(3, 3, new Rotation2d()));
     SimulatedArena.getInstance().resetFieldForAuto();
   }
 

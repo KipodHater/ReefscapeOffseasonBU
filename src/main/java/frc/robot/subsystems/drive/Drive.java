@@ -27,9 +27,7 @@ import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -39,19 +37,21 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.RobotState;
+import frc.robot.RobotState.OdometryObservation;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -118,12 +118,12 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition(),
         new SwerveModulePosition()
       };
-  private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(
-          kinematics,
-          rawGyroRotation,
-          lastModulePositions,
-          new Pose2d()); // can switch this with potential kalman filter
+  // private SwerveDrivePoseEstimator poseEstimator =
+  //     new SwerveDrivePoseEstimator(
+  //         kinematics,
+  //         rawGyroRotation,
+  //         lastModulePositions,
+  //         new Pose2d()); // can switch this with potential kalman filter
 
   private final Consumer<Pose2d> resetSimulationPoseCallBack;
 
@@ -133,9 +133,11 @@ public class Drive extends SubsystemBase {
   private boolean isBackside = false; // Used for auto-aligning to the reef
 
   private final ProfiledPIDController linearVelocityController =
-      new ProfiledPIDController(1.2, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5));
+      new ProfiledPIDController(
+          2, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5)); // kp 1.2
   private final ProfiledPIDController rotationController =
-      new ProfiledPIDController(0.8, 0, 0, new Constraints(getMaxAngularSpeedRadPerSec(), 10));
+      new ProfiledPIDController(
+          0.3, 0, 0, new Constraints(getMaxAngularSpeedRadPerSec(), 10)); // kp 0.8
 
   public Drive(
       GyroIO gyroIO,
@@ -164,7 +166,7 @@ public class Drive extends SubsystemBase {
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
         this::getPose,
-        this::setPose,
+        RobotState.getInstance()::resetPose,
         this::getChassisSpeeds,
         this::runVelocity,
         new PPHolonomicDriveController(
@@ -243,8 +245,10 @@ public class Drive extends SubsystemBase {
     //   poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
     // }
 
-    poseEstimator.update(
-        rawGyroRotation, getModulePositions()); // Update with latest gyro and module positions
+    RobotState.getInstance()
+        .addOdometryObservation(
+            new OdometryObservation(
+                modulePositions, Optional.of(rawGyroRotation), RobotController.getFPGATime()));
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
@@ -293,13 +297,18 @@ public class Drive extends SubsystemBase {
 
       case SLOWLY_FORWARD: // Drive backwards slowly
         robotCentricJoystickDrive(
-            0, 0.05 * getMaxLinearSpeedMetersPerSec(), 0); // TODO: check if forward is x or y
+            0,
+            0.05 * getMaxLinearSpeedMetersPerSec() * (isBackside ? -1 : 1),
+            0); // TODO: check if forward is x or y
         break;
 
       case AUTO_ALIGN: // Align the robot with reef
-        Transform2d distance = getPose().minus(autoAlignTarget.get());
+        autoAlignTarget =
+            autoAlignTarget != null ? autoAlignTarget : () -> new Pose2d(3, 3, new Rotation2d());
+
+        Transform2d distance = autoAlignTarget.get().minus(getPose());
         double linearVelocity =
-            linearVelocityController.calculate(Math.hypot(distance.getX(), distance.getY()), 0);
+            linearVelocityController.calculate(0, Math.hypot(distance.getX(), distance.getY()));
         Translation2d linearVelocityTranslation =
             new Translation2d(
                 linearVelocity, new Rotation2d(Math.atan2(distance.getY(), distance.getX())));
@@ -444,27 +453,12 @@ public class Drive extends SubsystemBase {
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
-    return poseEstimator.getEstimatedPosition();
+    return RobotState.getInstance().getEstimatedPose();
   }
 
   /** Returns the current odometry rotation. */
   public Rotation2d getRotation() {
     return getPose().getRotation();
-  }
-
-  /** Resets the current odometry pose. */
-  public void setPose(Pose2d pose) {
-    resetSimulationPoseCallBack.accept(pose);
-    poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
-  }
-
-  /** Adds a new timestamped vision measurement. */
-  public void addVisionMeasurement(
-      Pose2d visionRobotPoseMeters,
-      double timestampSeconds,
-      Matrix<N3, N1> visionMeasurementStdDevs) {
-    poseEstimator.addVisionMeasurement(
-        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
 
   /** Returns the maximum linear speed in meters per sec. */

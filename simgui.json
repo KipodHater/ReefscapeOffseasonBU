@@ -10,10 +10,18 @@
       "/SmartDashboard/Auto Choices": "String Chooser",
       "/SmartDashboard/PathPlanner": "Alerts",
       "/SmartDashboard/PhotonAlerts": "Alerts",
-      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d",
+      "/SmartDashboard/rgtrh": "Command",
+      "/SmartDashboard/sub-Elevator": "Subsystem",
+      "/SmartDashboard/sub-arm": "Subsystem",
+      "/SmartDashboard/sub-drive": "Subsystem",
+      "/SmartDashboard/sub-gripper": "Subsystem"
     }
   },
   "NetworkTables Info": {
     "visible": true
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
