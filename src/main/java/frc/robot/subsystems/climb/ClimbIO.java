@@ -2,6 +2,8 @@ package frc.robot.subsystems.climb;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+
 public interface ClimbIO {
   @AutoLog
   public static class ClimbIOInputs {
@@ -10,6 +12,7 @@ public interface ClimbIO {
     double motorVoltage = 0; // volts
     double positionDeg = 0; // degrees
     double velocityDegPerSec = 0; // degrees/second
+    double motorCurrent = 0; // amps
     double motorTemp = 0; // celsius
   }
 
@@ -28,12 +31,12 @@ public interface ClimbIO {
   public default void setPID(double KP, double KI, double KD) {}
   ;
 
+  public default void setConstraints(Constraints constraints) {}
+  ;
+
   public default void setBrakeMode(boolean isBrake) {}
   ;
 
-  public default void setConstraints(double maxVelocity, double maxAcceleration) {}
-  ;
-
-  public default void setSoftLimits(double forwardLimit, double reverseLimit) {}
-  ;
+  // public default void setSoftLimits(double forwardLimit, double reverseLimit) {}
+  // ;
 }

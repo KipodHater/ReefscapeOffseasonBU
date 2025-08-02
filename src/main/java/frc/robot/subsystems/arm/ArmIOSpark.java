@@ -3,7 +3,7 @@ package frc.robot.subsystems.arm;
 import static frc.robot.subsystems.arm.ArmConstants.*;
 import static frc.robot.util.SparkUtil.*;
 
-import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -18,16 +18,13 @@ import org.littletonrobotics.junction.AutoLogOutput;
 public class ArmIOSpark implements ArmIO {
 
   private final SparkMax motor;
-  private final SparkMax follower;
   private final SparkMaxConfig config;
-  private final SparkMaxConfig followerConfig;
 
-  private final AbsoluteEncoder armEncoder;
+  private final SparkAbsoluteEncoder armEncoder;
 
   private final ProfiledPIDController armPIDController;
 
   private final Debouncer motorDebouncer = new Debouncer(0.5);
-  private final Debouncer followerDebouncer = new Debouncer(0.5);
 
   private boolean brakeEnabled = true;
 
@@ -36,10 +33,8 @@ public class ArmIOSpark implements ArmIO {
 
   public ArmIOSpark() {
     motor = new SparkMax(ArmConstants.MOTOR_ID, MotorType.kBrushless);
-    follower = new SparkMax(ArmConstants.FOLLOWER_ID, MotorType.kBrushless);
 
     config = new SparkMaxConfig();
-    followerConfig = new SparkMaxConfig();
 
     armEncoder = motor.getAbsoluteEncoder();
 
@@ -47,13 +42,11 @@ public class ArmIOSpark implements ArmIO {
 
     config.idleMode(IdleMode.kBrake).smartCurrentLimit(50).voltageCompensation(12.0);
 
-    followerConfig.apply(config);
-    followerConfig.follow(motor, true);
-
     config
         .encoder
         .positionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR)
         .velocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR)
+        .inverted(ArmConstants.ENCODER_INVERTED)
         .uvwMeasurementPeriod(10);
 
     tryUntilOk(
@@ -62,12 +55,6 @@ public class ArmIOSpark implements ArmIO {
         () ->
             motor.configure(
                 config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
-    tryUntilOk(
-        follower,
-        5,
-        () ->
-            follower.configure(
-                followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     armPIDController =
         new ProfiledPIDController(GAINS.KP(), GAINS.KI(), GAINS.KD(), ARM_CONSTRAINTS);
@@ -80,7 +67,8 @@ public class ArmIOSpark implements ArmIO {
     ifOk(
         motor,
         armEncoder::getPosition,
-        (position) -> inputs.positionDeg = position > 180 ? position % 360 - 360 : position % 360);
+        (position) -> inputs.positionDeg = (position-ArmConstants.ARM_ENCODER_OFFSET) > 180 ?
+         (position-ArmConstants.ARM_ENCODER_OFFSET) % 360 - 360 : (position-ArmConstants.ARM_ENCODER_OFFSET) % 360);
     ifOk(motor, armEncoder::getVelocity, (velocity) -> inputs.velocityDegPerSec = velocity);
 
     ifOk(motor, motor::getBusVoltage, (voltage) -> inputs.motorVoltage = voltage);
@@ -88,18 +76,15 @@ public class ArmIOSpark implements ArmIO {
     ifOk(motor, motor::getOutputCurrent, (current) -> inputs.motorCurrent = current);
 
     inputs.motorConnected = motorDebouncer.calculate(sparkStickyFault);
-
-    sparkStickyFault = false;
-
-    ifOk(follower, follower::getBusVoltage, (voltage) -> inputs.followerVoltage = voltage);
-    ifOk(follower, follower::getMotorTemperature, (temp) -> inputs.motorTemp = temp);
-    ifOk(follower, follower::getOutputCurrent, (current) -> inputs.motorCurrent = current);
-
-    inputs.followerConnected = followerDebouncer.calculate(sparkStickyFault);
   }
 
   @Override
   public void runVoltage(double voltage) {
+    if (voltage > 12.0) {
+      voltage = 12.0;
+  } else if (voltage < -12.0) {
+      voltage = -12.0;
+  }
     motor.setVoltage(voltage);
   }
 
@@ -131,6 +116,7 @@ public class ArmIOSpark implements ArmIO {
     brakeEnabled = isBrake;
     if (isBrake) config.idleMode(IdleMode.kBrake);
     else config.idleMode(IdleMode.kCoast);
+    
     tryUntilOk(
         motor,
         5,
