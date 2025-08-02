@@ -23,7 +23,7 @@ public class ArmIOSim implements ArmIO {
         new ProfiledPIDController(GAINS.KP(), GAINS.KI(), GAINS.KD(), ARM_CONSTRAINTS);
     armSim =
         new SingleJointedArmSim(
-            LinearSystemId.createSingleJointedArmSystem(DCMotor.getNEO(2), ARM_MOI, 100.0),
+            LinearSystemId.createSingleJointedArmSystem(DCMotor.getNEO(1), ARM_MOI, 100.0),
             DCMotor.getNEO(2),
             ARM_GEAR_RATIO,
             ARM_LENGTH_METERS,
@@ -41,11 +41,8 @@ public class ArmIOSim implements ArmIO {
     inputs.positionDeg = armSim.getAngleRads() * 180 / Math.PI;
     inputs.velocityDegPerSec = armSim.getVelocityRadPerSec() * 180 / Math.PI;
     inputs.motorVoltage = appliedVoltage;
-    inputs.followerVoltage = appliedVoltage;
     inputs.motorTemp = 0;
-    inputs.followerTemp = 0;
     inputs.motorConnected = true;
-    inputs.followerConnected = true;
   }
 
   public void runVoltage(double voltage) {

@@ -1,8 +1,7 @@
 package frc.robot.subsystems.climb;
 
-import org.littletonrobotics.junction.AutoLog;
-
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import org.littletonrobotics.junction.AutoLog;
 
 public interface ClimbIO {
   @AutoLog

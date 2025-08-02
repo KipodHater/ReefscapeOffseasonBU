@@ -67,7 +67,11 @@ public class IntakeDeployIOSpark implements IntakeDeployIO {
     ifOk(
         motor,
         encoder::getPosition,
-        (position) -> inputs.positionDeg = (position - ENCODER_OFFSET) > 180 ? (position - ENCODER_OFFSET) % 360 - 360 : (position - ENCODER_OFFSET) % 360);
+        (position) ->
+            inputs.positionDeg =
+                (position - ENCODER_OFFSET) > 180
+                    ? (position - ENCODER_OFFSET) % 360 - 360
+                    : (position - ENCODER_OFFSET) % 360);
     ifOk(motor, encoder::getVelocity, (velocity) -> inputs.velocityDegPerSec = velocity);
 
     ifOk(motor, motor::getBusVoltage, (voltage) -> inputs.motorVoltage = voltage);

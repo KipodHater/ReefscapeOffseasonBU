@@ -10,7 +10,8 @@ public class ClimbConstants {
         default -> new Gains(0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
       };
 
-  public static final double CLIMB_MAX_VELOCITY = 800, CLIMB_MAX_ACCELARATION = 1000; // deg/s, deg/s2
+  public static final double CLIMB_MAX_VELOCITY = 800,
+      CLIMB_MAX_ACCELARATION = 1000; // deg/s, deg/s2
   public static final Constraints CLIMB_CONSTRAINTS =
       new Constraints(CLIMB_MAX_VELOCITY, CLIMB_MAX_ACCELARATION);
 

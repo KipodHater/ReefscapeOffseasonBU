@@ -67,8 +67,11 @@ public class ArmIOSpark implements ArmIO {
     ifOk(
         motor,
         armEncoder::getPosition,
-        (position) -> inputs.positionDeg = (position-ArmConstants.ARM_ENCODER_OFFSET) > 180 ?
-         (position-ArmConstants.ARM_ENCODER_OFFSET) % 360 - 360 : (position-ArmConstants.ARM_ENCODER_OFFSET) % 360);
+        (position) ->
+            inputs.positionDeg =
+                (position - ArmConstants.ARM_ENCODER_OFFSET) > 180
+                    ? (position - ArmConstants.ARM_ENCODER_OFFSET) % 360 - 360
+                    : (position - ArmConstants.ARM_ENCODER_OFFSET) % 360);
     ifOk(motor, armEncoder::getVelocity, (velocity) -> inputs.velocityDegPerSec = velocity);
 
     ifOk(motor, motor::getBusVoltage, (voltage) -> inputs.motorVoltage = voltage);
@@ -82,9 +85,9 @@ public class ArmIOSpark implements ArmIO {
   public void runVoltage(double voltage) {
     if (voltage > 12.0) {
       voltage = 12.0;
-  } else if (voltage < -12.0) {
+    } else if (voltage < -12.0) {
       voltage = -12.0;
-  }
+    }
     motor.setVoltage(voltage);
   }
 
@@ -116,7 +119,7 @@ public class ArmIOSpark implements ArmIO {
     brakeEnabled = isBrake;
     if (isBrake) config.idleMode(IdleMode.kBrake);
     else config.idleMode(IdleMode.kCoast);
-    
+
     tryUntilOk(
         motor,
         5,

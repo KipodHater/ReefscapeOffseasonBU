@@ -1,8 +1,5 @@
 package frc.robot.subsystems.leds;
 
-import org.littletonrobotics.junction.AutoLogOutput;
-
-import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -10,59 +7,61 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class leds extends SubsystemBase {
-    public enum ledsStates {
-        OFF(LEDPattern.kOff),
-        ALGAE(LEDPattern.solid(Color.kGhostWhite)),
-        CORAL(LEDPattern.solid(Color.kAqua)),
-        RED(LEDPattern.solid(Color.kRed)),
-        PURPLE(LEDPattern.solid(Color.kPurple)),
-        BLINK_PURPLE(LEDPattern.solid(Color.kPurple).blink(Time.ofBaseUnits(.2, Units.Seconds), Time.ofBaseUnits(.1,  Units.Seconds))),
-        BLUE(LEDPattern.solid(Color.kBlue));
+  public enum ledsStates {
+    OFF(LEDPattern.kOff),
+    ALGAE(LEDPattern.solid(Color.kGhostWhite)),
+    CORAL(LEDPattern.solid(Color.kAqua)),
+    RED(LEDPattern.solid(Color.kRed)),
+    PURPLE(LEDPattern.solid(Color.kPurple)),
+    BLINK_PURPLE(
+        LEDPattern.solid(Color.kPurple)
+            .blink(Time.ofBaseUnits(.2, Units.Seconds), Time.ofBaseUnits(.1, Units.Seconds))),
+    BLUE(LEDPattern.solid(Color.kBlue));
 
+    LEDPattern value;
 
-        LEDPattern value;
-
-        ledsStates(LEDPattern value) {
-            this.value = value;
-        }
-
-        public LEDPattern pattern() {
-            return this.value;
-        }
+    ledsStates(LEDPattern value) {
+      this.value = value;
     }
 
-    @AutoLogOutput (key = "leds/ledsState")
-    private ledsStates currentState = ledsStates.OFF;
-
-    private final AddressableLED addressableLEDs = new AddressableLED(0);
-    private final AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(150);
-
-    public leds() {
-        addressableLEDs.setLength(ledBuffer.getLength());
-        addressableLEDs.setData(ledBuffer);
-        addressableLEDs.start();
+    public LEDPattern pattern() {
+      return this.value;
     }
+  }
 
-    @Override
-    public void periodic() {
-        switch (currentState) {
-            case OFF -> ledsStates.OFF.pattern().applyTo(ledBuffer);
-            case ALGAE -> ledsStates.ALGAE.pattern().applyTo(ledBuffer);
-            case CORAL -> ledsStates.CORAL.pattern().applyTo(ledBuffer);
-            case RED -> ledsStates.RED.pattern().applyTo(ledBuffer);
-            case PURPLE -> ledsStates.PURPLE.pattern().applyTo(ledBuffer);
-            case BLINK_PURPLE -> ledsStates.BLINK_PURPLE.pattern().applyTo(ledBuffer);
-            case BLUE -> ledsStates.BLUE.pattern().applyTo(ledBuffer);
-            default -> ledsStates.OFF.pattern().applyTo(ledBuffer);
-        }
-    }
+  @AutoLogOutput(key = "leds/ledsState")
+  private ledsStates currentState = ledsStates.OFF;
 
-    public void setState(ledsStates state) {
-        if(currentState == state) {
-            return;
-        }
-        currentState = state;
+  private final AddressableLED addressableLEDs = new AddressableLED(0);
+  private final AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(150);
+
+  public leds() {
+    addressableLEDs.setLength(ledBuffer.getLength());
+    addressableLEDs.setData(ledBuffer);
+    addressableLEDs.start();
+  }
+
+  @Override
+  public void periodic() {
+    switch (currentState) {
+      case OFF -> ledsStates.OFF.pattern().applyTo(ledBuffer);
+      case ALGAE -> ledsStates.ALGAE.pattern().applyTo(ledBuffer);
+      case CORAL -> ledsStates.CORAL.pattern().applyTo(ledBuffer);
+      case RED -> ledsStates.RED.pattern().applyTo(ledBuffer);
+      case PURPLE -> ledsStates.PURPLE.pattern().applyTo(ledBuffer);
+      case BLINK_PURPLE -> ledsStates.BLINK_PURPLE.pattern().applyTo(ledBuffer);
+      case BLUE -> ledsStates.BLUE.pattern().applyTo(ledBuffer);
+      default -> ledsStates.OFF.pattern().applyTo(ledBuffer);
     }
+  }
+
+  public void setState(ledsStates state) {
+    if (currentState == state) {
+      return;
+    }
+    currentState = state;
+  }
 }
