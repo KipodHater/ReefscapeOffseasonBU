@@ -132,6 +132,8 @@ public class Drive extends SubsystemBase {
   private Supplier<Pose2d> autoAlignTarget;
   private boolean isBackside = false; // Used for auto-aligning to the reef
 
+  private double lastBigRotation;
+
   private final ProfiledPIDController linearVelocityController =
       new ProfiledPIDController(
           2, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5)); // kp 1.2
@@ -149,6 +151,10 @@ public class Drive extends SubsystemBase {
       DoubleSupplier xJoystickVelocity,
       DoubleSupplier yJoystickVelocity,
       DoubleSupplier rJoystickVelocity) {
+
+    lastBigRotation = RobotController.getFPGATime() * 1e-6;
+    rotationController.enableContinuousInput(0, 360);
+    rotationController.setTolerance(1);
 
     this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0, TunerConstants.FrontLeft);
@@ -212,6 +218,8 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
+
+    if(Math.abs(rJoystickVelocity.getAsDouble()) > 0.4) lastBigRotation = RobotController.getFPGATime() * 1e-6;
 
     // // Update odometry
     // double[] sampleTimestamps =
@@ -292,7 +300,29 @@ public class Drive extends SubsystemBase {
         break;
 
       case ASSISTED_DRIVE: // Field drive but with assistance from the robot
-        // This is a placeholder for assisted drive logic
+        Optional<Translation2d> coral = RobotState.getInstance().getBestCoral();
+        if(!coral.isPresent()) fieldCentricJoystickDrive(
+          xJoystickVelocity.getAsDouble(),
+          yJoystickVelocity.getAsDouble(),
+          rJoystickVelocity.getAsDouble());
+        else {
+          Translation2d pathToCoral = coral.get().minus(getPose().getTranslation());
+          double pidGain = rotationController.calculate(getPose().getRotation().getDegrees(),
+              Math.toDegrees(Math.atan2(pathToCoral.getY(), pathToCoral.getX())));
+          double rMag = Math.abs(rJoystickVelocity.getAsDouble());
+          // double velMag = Math.hypot(xJoystickVelocity.getAsDouble(), yJoystickVelocity.getAsDouble());
+          double linearVelocity =
+            linearVelocityController.calculate(0, Math.hypot(pathToCoral.getX(), pathToCoral.getY()));
+            Translation2d linearVelocityTranslation =
+            new Translation2d(
+                linearVelocity, new Rotation2d(Math.atan2(pathToCoral.getY(), pathToCoral.getX())));
+          if(RobotController.getFPGATime() * 1e-6 - lastBigRotation < 0.5) rMag = 1;
+          
+          fieldCentricJoystickDrive(
+              xJoystickVelocity.getAsDouble() * (1-ASSISTED_DRIVE_PERCENTAGE) + linearVelocityTranslation.getX() * ASSISTED_DRIVE_PERCENTAGE,
+              yJoystickVelocity.getAsDouble() * (1-ASSISTED_DRIVE_PERCENTAGE) + linearVelocityTranslation.getY() * ASSISTED_DRIVE_PERCENTAGE,
+              rMag * rJoystickVelocity.getAsDouble() + (1-rMag) * pidGain);
+        }
         break;
 
       case SLOWLY_FORWARD: // Drive backwards slowly
