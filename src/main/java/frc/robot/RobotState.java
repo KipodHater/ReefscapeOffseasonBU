@@ -447,7 +447,7 @@ public class RobotState {
   }
 
   public int getClosestReefFaceAlgae() {
-    // closest is 0 right and then clockwise positive
+    // closest is 0 and then clockwise positive
     double minDistance = Double.POSITIVE_INFINITY;
     int closestFace = 0;
     for (int i = 0; i < 6; i++) {

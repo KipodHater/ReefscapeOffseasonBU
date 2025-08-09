@@ -25,6 +25,4 @@ public interface ConveyorIO {
   // public default void setPID(double KP, double KI, double KD) {}
 
   public default void setBrakeMode(boolean isBrake) {}
-
-  public default void checkCurrent() {}
 }

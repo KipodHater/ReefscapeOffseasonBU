@@ -57,6 +57,7 @@ public class IntakeFromConveyor extends Command {
   @Override
   public void initialize() {
     gripper.setState(GripperStates.IDLE);
+    gripper.setNextGamepieceCoral(true);
     currentState = IntakeFromConveyorStates.MOVE_DEFAULT;
   }
 

@@ -64,6 +64,7 @@ import frc.robot.subsystems.intakeDeploy.IntakeDeployIOSpark;
 import frc.robot.subsystems.intakeRollers.IntakeRollers;
 import frc.robot.subsystems.intakeRollers.IntakeRollersIO;
 import frc.robot.subsystems.intakeRollers.IntakeRollersIOSpark;
+import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.objectVision.ObjectVision;
 import frc.robot.subsystems.objectVision.ObjectVisionIO;
 import frc.robot.subsystems.objectVision.ObjectVisionIOPhoton;
@@ -93,6 +94,7 @@ public class RobotContainer {
   private final Dashboard dashboard;
   private final IntakeRollers intakeRollers;
   private final IntakeDeploy IntakeDeploy;
+  private final Leds leds;
   private final ObjectVision ObjectVision;
   private final RobotState robotState;
   private SwerveDriveSimulation driveSimulation = null;
@@ -134,6 +136,7 @@ public class RobotContainer {
         conveyor = new Conveyor(new ConveyorIOSpark());
         intakeRollers = new IntakeRollers(new IntakeRollersIOSpark());
         IntakeDeploy = new IntakeDeploy(new IntakeDeployIOSpark());
+        leds = new Leds();
         ObjectVision = new ObjectVision(new ObjectVisionIOPhoton("herg", new Transform3d()));
         vision =
             new Vision(
@@ -175,6 +178,7 @@ public class RobotContainer {
         climb = new Climb(new ClimbIO() {});
         intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
         IntakeDeploy = new IntakeDeploy(new IntakeDeployIO() {});
+        leds = new Leds();
         ObjectVision = new ObjectVision(new ObjectVisionIOPhoton("herg", new Transform3d()));
         vision =
             new Vision(
@@ -213,6 +217,7 @@ public class RobotContainer {
         dashboard = new Dashboard();
         intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
         IntakeDeploy = new IntakeDeploy(new IntakeDeployIO() {});
+        leds = new Leds();
         ObjectVision = new ObjectVision(new ObjectVisionIO() {});
         vision = new Vision(robotState::addVisionObservation, new VisionIO[] {});
         break;
@@ -229,6 +234,7 @@ public class RobotContainer {
             gripper,
             IntakeDeploy,
             intakeRollers,
+            leds,
             ObjectVision,
             vision);
 
