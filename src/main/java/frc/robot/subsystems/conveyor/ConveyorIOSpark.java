@@ -13,6 +13,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.Timer;
+
 import java.util.function.DoubleSupplier;
 
 public class ConveyorIOSpark implements ConveyorIO {
@@ -22,10 +24,7 @@ public class ConveyorIOSpark implements ConveyorIO {
 
   private RelativeEncoder motorEncoder;
 
-  private Debouncer debouncer = new Debouncer(0.1);
   private Debouncer connectedDebouncer = new Debouncer(0.5);
-
-  private boolean overCurrent;
 
   private BangBangController controller;
 
@@ -38,7 +37,8 @@ public class ConveyorIOSpark implements ConveyorIO {
     config
         .idleMode(MOTOR_BRAKE ? IdleMode.kBrake : IdleMode.kCoast)
         .inverted(MOTOR_INVERTED)
-        .voltageCompensation(12.0);
+        .voltageCompensation(12.0)
+        .smartCurrentLimit(50);
 
     config.encoder.velocityConversionFactor(VELOCITY_CONVERSION_FACTOR);
 
@@ -95,13 +95,5 @@ public class ConveyorIOSpark implements ConveyorIO {
         () ->
             motor.configure(
                 config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
-  }
-
-  @Override
-  public void checkCurrent() {
-
-    overCurrent = motor.getOutputCurrent() > currentThreshold;
-
-    runVoltage(debouncer.calculate(overCurrent) ? 0.0 : -4);
   }
 }

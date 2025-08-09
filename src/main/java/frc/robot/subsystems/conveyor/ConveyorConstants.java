@@ -9,6 +9,7 @@ public class ConveyorConstants {
   public static double VELOCITY_CONVERSION_FACTOR = 360.0 / 60.0; // to degrees per second
 
   public static double currentThreshold = 40.0; // amps
+  public static double REVERSE_VOLTAGE = -3.0;
 
   public static double KP = 0.1;
 }

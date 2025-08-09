@@ -28,6 +28,8 @@ import frc.robot.subsystems.intakeDeploy.IntakeDeploy;
 import frc.robot.subsystems.intakeDeploy.IntakeDeploy.IntakeDeployStates;
 import frc.robot.subsystems.intakeRollers.IntakeRollers;
 import frc.robot.subsystems.intakeRollers.IntakeRollers.IntakeRollersStates;
+import frc.robot.subsystems.leds.Leds;
+import frc.robot.subsystems.leds.Leds.ledsStates;
 import frc.robot.subsystems.objectVision.ObjectVision;
 import frc.robot.subsystems.vision.Vision;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -93,6 +95,7 @@ public class SuperStructure extends SubsystemBase {
   private final Gripper gripper;
   private final IntakeDeploy intakeDeploy;
   private final IntakeRollers intakeRollers;
+  private final Leds leds;
   private final ObjectVision objectVision;
   private final Vision vision;
 
@@ -106,6 +109,7 @@ public class SuperStructure extends SubsystemBase {
       Gripper gripper,
       IntakeDeploy intakeDeploy,
       IntakeRollers intakeRollers,
+      Leds leds,
       ObjectVision ObjectVision,
       Vision vision) {
     this.arm = arm;
@@ -117,20 +121,22 @@ public class SuperStructure extends SubsystemBase {
     this.gripper = gripper;
     this.intakeDeploy = intakeDeploy;
     this.intakeRollers = intakeRollers;
+    this.leds = leds;
     this.objectVision = ObjectVision;
     this.vision = vision;
   }
 
   @Override
   public void periodic() {
-    currentState = handleStateTransition(wantedState);
+    previousState = currentState;
+    if(wantedState != currentState) currentState = handleStateTransition(wantedState);
     stateMachine();
     wantedState = currentState;
   }
 
   private SuperStructureStates handleStateTransition(SuperStructureStates wantedState) {
     // TODO: add logic with algae in gripper
-    previousState = currentState;
+    
     return switch (wantedState) {
       case HOME -> SuperStructureStates.HOME;
 
@@ -149,15 +155,87 @@ public class SuperStructure extends SubsystemBase {
         }
       }
 
-      case INTAKE_ALGAE_REEF -> SuperStructureStates.INTAKE_ALGAE_REEF;
+      case PLACE_CORAL_L1 -> {
+        if (gripper.hasCoral()) {
+          yield SuperStructureStates.PLACE_CORAL_L1;
+        } else {
+          yield SuperStructureStates.TRAVEL;
+        }
+      }
 
-      case INTAKE_ALGAE_FLOOR -> SuperStructureStates.INTAKE_ALGAE_FLOOR;
+      case PLACE_CORAL_ALIGN_L2 -> {
+        if (conveyor.hasCoral() || gripper.hasCoral()) {
+          yield SuperStructureStates.PLACE_CORAL_ALIGN_L2;
+        } else {
+          yield previousState;
+        }
+      }
 
-      case ALGAE_PROCESSOR -> SuperStructureStates.ALGAE_PROCESSOR;
+      case PLACE_CORAL_L2 -> {
+        if (gripper.hasCoral()) {
+          yield SuperStructureStates.PLACE_CORAL_L2;
+        } else {
+          yield SuperStructureStates.TRAVEL;
+        }
+      }
 
-      case ALGAE_NET -> SuperStructureStates.ALGAE_NET;
+      case PLACE_CORAL_ALIGN_L3 -> {
+        if (conveyor.hasCoral() || gripper.hasCoral()) {
+          yield SuperStructureStates.PLACE_CORAL_ALIGN_L3;
+        } else {
+          yield previousState;
+        }
+      }
 
-      case ALGAE_HOME -> SuperStructureStates.ALGAE_HOME;
+      case PLACE_CORAL_L3 -> {
+        if (gripper.hasCoral()) {
+          yield SuperStructureStates.PLACE_CORAL_L3;
+        } else {
+          yield SuperStructureStates.TRAVEL;
+        }
+      }
+
+      case PLACE_CORAL_ALIGN_L4 -> {
+        if (conveyor.hasCoral() || gripper.hasCoral()) {
+          yield SuperStructureStates.PLACE_CORAL_ALIGN_L4;
+        } else {
+          yield previousState;
+        }
+      }
+
+      case PLACE_CORAL_L4 -> {
+        if (gripper.hasCoral()) {
+          yield SuperStructureStates.PLACE_CORAL_L4;
+        } else {
+          yield SuperStructureStates.TRAVEL;
+        }
+      }
+
+      case INTAKE_ALGAE_REEF -> {
+        if(!gripper.hasAlgae() && !gripper.hasCoral()) yield SuperStructureStates.INTAKE_ALGAE_REEF;
+        else yield previousState;
+      }
+
+      case INTAKE_ALGAE_FLOOR -> {
+        if(!gripper.hasAlgae() && !gripper.hasCoral()) yield SuperStructureStates.INTAKE_ALGAE_FLOOR;
+        else yield previousState;
+      }
+
+      case ALGAE_PROCESSOR -> {
+        if(gripper.hasAlgae()) yield SuperStructureStates.ALGAE_PROCESSOR;
+        else yield SuperStructureStates.TRAVEL;
+      }
+
+      case ALGAE_NET -> {
+        if(gripper.hasAlgae()) yield SuperStructureStates.ALGAE_NET;
+        else yield SuperStructureStates.TRAVEL;
+      }
+
+
+      case ALGAE_HOME -> {
+        if(gripper.hasAlgae()) yield SuperStructureStates.ALGAE_HOME;
+        else yield SuperStructureStates.TRAVEL;
+      }
 
       case OPEN_CLIMB -> SuperStructureStates.OPEN_CLIMB;
 
@@ -191,6 +269,9 @@ public class SuperStructure extends SubsystemBase {
                   () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
                   null);
         }
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          leds.setState(ledsStates.BLUE);
+        }
       }
 
       case PLACE_CORAL_L1 -> {
@@ -219,6 +300,9 @@ public class SuperStructure extends SubsystemBase {
                   () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
                   null);
         }
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          leds.setState(ledsStates.BLUE);
+        }
       }
 
       case PLACE_CORAL_L2 -> {
@@ -231,6 +315,9 @@ public class SuperStructure extends SubsystemBase {
           currentState =
               SuperStructureStates
                   .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
+        }
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          leds.setState(ledsStates.BLUE);
         }
       }
 
@@ -246,6 +333,9 @@ public class SuperStructure extends SubsystemBase {
                   3,
                   () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
                   null);
+        }
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          leds.setState(ledsStates.BLUE);
         }
       }
 
@@ -275,6 +365,9 @@ public class SuperStructure extends SubsystemBase {
                   () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
                   null);
         }
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          leds.setState(ledsStates.BLUE);
+        }
       }
 
       case PLACE_CORAL_L4 -> {
@@ -295,30 +388,59 @@ public class SuperStructure extends SubsystemBase {
           CommandScheduler.getInstance().cancelAll();
           currentCommand =
               new AlignAlgaeReefCommand(
-                  drive, arm, elevator, gripper, true, () -> false, () -> false);
+                  drive, arm, elevator, gripper, leds, () -> false, () -> false);
           currentCommand.schedule();
         }
         if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          currentState = SuperStructureStates.ALGAE_HOME;
+          leds.setState(ledsStates.BLUE);
+          drive.setDriveState(DriveStates.FIELD_DRIVE);
+          gripper.setState(GripperStates.HOLD_ALGAE);
         }
       }
 
-      case INTAKE_ALGAE_FLOOR -> {}
+      case INTAKE_ALGAE_FLOOR -> {
+        arm.setState(ArmStates.ALGAE_INTAKE_FLOOR);
+        climb.setState(ClimbStates.IDLE);
+        conveyor.setState(ConveyorStates.IDLE);
+        drive.setState(DriveStates.FIELD_DRIVE);
+        if(arm.isSafeForElevator()) elevator.setState(ElevatorStates.ALGAE_INTAKE_FLOOR);
+        else elevator.setState(ElevatorStates.IDLE); // TODO: change this to hold current position state
 
-      case ALGAE_PROCESSOR -> {}
+        gripper.setState(GripperStates.IDLE);
+        intakeDeploy.setState(IntakeDeployStates.DEPLOY);
+        intakeRollers.setState(IntakeRollersStates.INTAKE);
+      }
 
-      case ALGAE_NET -> {}
+      case ALGAE_PROCESSOR -> {
+        arm.setState(ArmStates.ALGAE_SCORE_PROCESSOR);
+        if(arm.isSafeForElevator()) elevator.setState(ElevatorStates.ALGAE_SCORE_PROCESSOR);
+        else elevator.setState(ElevatorStates.IDLE); // TODO: change this to hold current position state
+        conveyor.setState(ConveyorStates.IDLE);
+        drive.setState(DriveStates.FIELD_DRIVE);
+        gripper.setState(GripperStates.HOLD_ALGAE);
+        intakeDeploy.setState(IntakeDeployStates.CLOSED);
+      }
+
+      case ALGAE_NET -> {
+        arm.setState(ArmStates.ALGAE_SCORE_NET);
+        elevator.setState(ElevatorStates.ALGAE_SCORE_NET);
+        conveyor.setState(ConveyorStates.IDLE);
+        drive.setState(DriveStates.FIELD_DRIVE);
+        gripper.setState(GripperStates.HOLD_ALGAE);
+        intakeDeploy.setState(IntakeDeployStates.CLOSED); // add case for open intake
+        intakeRollers.setState(IntakeRollersStates.IDLE);
+        leds.setState(ledsStates.ALGAE);
+      }
 
       case ALGAE_HOME -> {
-        if (previousState != currentState) {
-          CommandScheduler.getInstance().cancelAll();
-          currentCommand = SimpleCommands.moveToHomeCommand(arm, elevator, gripper, false);
-          currentCommand.schedule();
-        }
-        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          currentCommand.cancel();
-          currentState = SuperStructureStates.TRAVEL;
-        }
+        arm.setState(ArmStates.HOME);
+        if(arm.isSafeForElevator()) elevator.setState(ElevatorStates.HOME);
+        conveyor.setState(ConveyorStates.IDLE);
+        drive.setState(DriveStates.FIELD_DRIVE);
+        gripper.setState(GripperStates.HOLD_ALGAE);
+        intakeDeploy.setState(IntakeDeployStates.CLOSED); // add case for open intake
+        intakeRollers.setState(IntakeRollersStates.IDLE);
+        leds.setState(ledsStates.ALGAE);
       }
 
       case OPEN_CLIMB -> {}
@@ -427,4 +549,8 @@ public class SuperStructure extends SubsystemBase {
   public Command setWantedStateCommand(SuperStructureStates wantedState, int scoreL) {
     return new InstantCommand(() -> setWantedState(wantedState));
   }
+
+  // public Command runCommandState(){
+
+  // }
 }

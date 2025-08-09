@@ -11,6 +11,10 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.gripper.Gripper;
+import frc.robot.subsystems.gripper.Gripper.GripperStates;
+import frc.robot.subsystems.leds.Leds;
+import frc.robot.subsystems.leds.Leds.ledsStates;
+
 import java.util.function.BooleanSupplier;
 
 public class AlignAlgaeReefCommand extends SequentialCommandGroup {
@@ -20,37 +24,46 @@ public class AlignAlgaeReefCommand extends SequentialCommandGroup {
       Arm arm,
       Elevator elevator,
       Gripper gripper,
-      boolean isL2,
+      Leds leds,
       BooleanSupplier gripperHasPiece,
       BooleanSupplier ignoreGripperSensor) {
 
     RobotState.getInstance().setUpReefAlgae();
-    addRequirements(drive, arm, elevator, gripper);
+    addRequirements(drive, arm, elevator, gripper, leds);
+    gripper.setNextGamepieceCoral(false);
 
     addCommands(
         Commands.either(
-            Commands.parallel(
-                SimpleCommands.moveToAlgaeLxCommand(
-                    arm,
-                    elevator,
-                    isL2 ? 2 : 3,
-                    RobotState.getInstance().getAlgaeScoringInfo().backside()),
-                Commands.sequence(
-                    SimpleCommands.driveAutoAlignTolerance(
-                        drive,
-                        () -> RobotState.getInstance().getAlgaeScoringInfo().alignPose(),
-                        0.3,
-                        5),
-                    SimpleCommands.driveAutoAlignTolerance(
-                        drive,
-                        () -> RobotState.getInstance().getAlgaeScoringInfo().scorePose(),
-                        0.3,
-                        5),
-                    Commands.runOnce(
-                        () ->
-                            drive.setStateSlowlyForward(
-                                RobotState.getInstance().getAlgaeScoringInfo().backside()),
-                        drive))),
+            Commands.sequence(
+                Commands.parallel(
+                    Commands.runOnce(() -> leds.setState(ledsStates.RED), leds),
+                    SimpleCommands.moveToAlgaeLxCommand(
+                        arm,
+                        elevator,
+                        RobotState.getInstance().getAlgaeScoringInfo().reefFace() % 2 == 1 ? 2 : 3,
+                        RobotState.getInstance().getAlgaeScoringInfo().backside()),
+                        SimpleCommands.driveAutoAlignTolerance(
+                            drive,
+                            () -> RobotState.getInstance().getAlgaeScoringInfo().alignPose(),
+                            0.3,
+                            5)),
+                Commands.runOnce(() -> gripper.setState(GripperStates.INTAKE_ALGAE), gripper),
+                SimpleCommands.driveAutoAlignTolerance(
+                    drive,
+                    () -> RobotState.getInstance().getAlgaeScoringInfo().scorePose(),
+                    0.3,
+                    3),
+                Commands.runOnce(() -> leds.setState(ledsStates.BLINK_PURPLE), leds),
+                Commands.waitSeconds(0.4),
+                Commands.runOnce(() -> gripper.setState(GripperStates.HOLD_ALGAE), gripper),
+                Commands.runOnce(() -> leds.setState(ledsStates.RED), leds),
+                Commands.runOnce(
+                     () ->
+                        drive.setStateSlowlyForward(
+                            RobotState.getInstance().getAlgaeScoringInfo().backside()),
+                    drive),
+                Commands.waitSeconds(1),
+                Commands.runOnce(() -> leds.setState(ledsStates.OFF), leds)),
             Commands.none(),
             () -> !gripperHasPiece.getAsBoolean() || ignoreGripperSensor.getAsBoolean()));
   }

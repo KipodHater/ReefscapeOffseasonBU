@@ -42,6 +42,13 @@ public class Gripper extends SubsystemBase {
   @AutoLogOutput(key = "Gripper/wantedState")
   private GripperStates wantedState = GripperStates.IDLE;
 
+  private boolean isNextPieceCoral = true; // true for coral, false for algae
+
+  @AutoLogOutput(key = "Gripper/hasCoral")
+  private boolean hasCoral = false;
+  @AutoLogOutput(key = "Gripper/hasAlgae")
+  private boolean hasAlgae = false;
+
   public Gripper(GripperIO io, GripperSensorIO ioSensor) {
     this.io = io;
     this.ioSensor = ioSensor;
@@ -50,7 +57,20 @@ public class Gripper extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Gripper", inputs);
-
+    ioSensor.updateInputs(sensorInputs);
+    Logger.processInputs("GripperSensor", sensorInputs);
+    if(sensorInputs.hasGamepiece) {
+      if (isNextPieceCoral) { // possible future problem here
+        hasCoral = true;
+        hasAlgae = false;
+      } else {
+        hasAlgae = true;
+        hasCoral = false;
+      }
+    } else {
+      hasCoral = false;
+      hasAlgae = false;
+    }
     currentState = handleStateTransition(wantedState);
     stateMachine();
 
@@ -150,7 +170,19 @@ public class Gripper extends SubsystemBase {
     io.autonomousInit();
   }
 
+  public void setNextGamepieceCoral(boolean isNextPieceCoral) {
+    if(!(hasCoral || hasAlgae)) this.isNextPieceCoral = isNextPieceCoral;
+  }
+
+  public boolean hasGamepiece() {
+    return sensorInputs.hasGamepiece;
+  }
+
   public boolean hasCoral() {
-    return false;
+    return hasCoral;
+  }
+
+  public boolean hasAlgae() {
+    return hasAlgae;
   }
 }

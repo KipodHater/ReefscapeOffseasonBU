@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 
-public class leds extends SubsystemBase {
+public class Leds extends SubsystemBase {
   public enum ledsStates {
     OFF(LEDPattern.kOff),
     ALGAE(LEDPattern.solid(Color.kGhostWhite)),
@@ -38,7 +38,7 @@ public class leds extends SubsystemBase {
   private final AddressableLED addressableLEDs = new AddressableLED(0);
   private final AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(150);
 
-  public leds() {
+  public Leds() {
     addressableLEDs.setLength(ledBuffer.getLength());
     addressableLEDs.setData(ledBuffer);
     addressableLEDs.start();
