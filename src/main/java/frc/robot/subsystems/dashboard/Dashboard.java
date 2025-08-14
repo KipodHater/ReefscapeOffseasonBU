@@ -114,6 +114,20 @@ public class Dashboard {
   }
 
   /**
+   * Sets/Updates a value in a specific category at the given index.
+   *
+   * @param categoryName The name of the category where the value will be set.
+   * @param index The index at which the value will be set.
+   * @param value The value to be set in the category.
+   */
+  public void setValueInCategory(String categoryName, int index, Object value) {
+    NetworkTable categoryTable = defaultTable.getSubTable(categoryName);
+    NetworkTable list = categoryTable.getSubTable(categoryName + " List");
+    list.getEntry(categoryName + " Value" + " " + index).setValue(value);
+    flush();
+  }
+
+  /**
    * Removes a value from a specific category at the given index.
    *
    * @param categoryName The name of the category from which the value will be removed.
