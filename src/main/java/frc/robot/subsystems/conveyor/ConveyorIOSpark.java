@@ -13,8 +13,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.wpilibj.Timer;
-
 import java.util.function.DoubleSupplier;
 
 public class ConveyorIOSpark implements ConveyorIO {

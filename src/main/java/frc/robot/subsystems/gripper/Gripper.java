@@ -46,6 +46,7 @@ public class Gripper extends SubsystemBase {
 
   @AutoLogOutput(key = "Gripper/hasCoral")
   private boolean hasCoral = false;
+
   @AutoLogOutput(key = "Gripper/hasAlgae")
   private boolean hasAlgae = false;
 
@@ -59,7 +60,7 @@ public class Gripper extends SubsystemBase {
     Logger.processInputs("Gripper", inputs);
     ioSensor.updateInputs(sensorInputs);
     Logger.processInputs("GripperSensor", sensorInputs);
-    if(sensorInputs.hasGamepiece) {
+    if (sensorInputs.hasGamepiece) {
       if (isNextPieceCoral) { // possible future problem here
         hasCoral = true;
         hasAlgae = false;
@@ -171,7 +172,7 @@ public class Gripper extends SubsystemBase {
   }
 
   public void setNextGamepieceCoral(boolean isNextPieceCoral) {
-    if(!(hasCoral || hasAlgae)) this.isNextPieceCoral = isNextPieceCoral;
+    if (!(hasCoral || hasAlgae)) this.isNextPieceCoral = isNextPieceCoral;
   }
 
   public boolean hasGamepiece() {

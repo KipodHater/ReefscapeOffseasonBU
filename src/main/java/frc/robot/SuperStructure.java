@@ -129,14 +129,14 @@ public class SuperStructure extends SubsystemBase {
   @Override
   public void periodic() {
     previousState = currentState;
-    if(wantedState != currentState) currentState = handleStateTransition(wantedState);
+    if (wantedState != currentState) currentState = handleStateTransition(wantedState);
     stateMachine();
     wantedState = currentState;
   }
 
   private SuperStructureStates handleStateTransition(SuperStructureStates wantedState) {
     // TODO: add logic with algae in gripper
-    
+
     return switch (wantedState) {
       case HOME -> SuperStructureStates.HOME;
 
@@ -212,28 +212,29 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case INTAKE_ALGAE_REEF -> {
-        if(!gripper.hasAlgae() && !gripper.hasCoral()) yield SuperStructureStates.INTAKE_ALGAE_REEF;
+        if (!gripper.hasAlgae() && !gripper.hasCoral())
+          yield SuperStructureStates.INTAKE_ALGAE_REEF;
         else yield previousState;
       }
 
       case INTAKE_ALGAE_FLOOR -> {
-        if(!gripper.hasAlgae() && !gripper.hasCoral()) yield SuperStructureStates.INTAKE_ALGAE_FLOOR;
+        if (!gripper.hasAlgae() && !gripper.hasCoral())
+          yield SuperStructureStates.INTAKE_ALGAE_FLOOR;
         else yield previousState;
       }
 
       case ALGAE_PROCESSOR -> {
-        if(gripper.hasAlgae()) yield SuperStructureStates.ALGAE_PROCESSOR;
+        if (gripper.hasAlgae()) yield SuperStructureStates.ALGAE_PROCESSOR;
         else yield SuperStructureStates.TRAVEL;
       }
 
       case ALGAE_NET -> {
-        if(gripper.hasAlgae()) yield SuperStructureStates.ALGAE_NET;
+        if (gripper.hasAlgae()) yield SuperStructureStates.ALGAE_NET;
         else yield SuperStructureStates.TRAVEL;
       }
 
-
       case ALGAE_HOME -> {
-        if(gripper.hasAlgae()) yield SuperStructureStates.ALGAE_HOME;
+        if (gripper.hasAlgae()) yield SuperStructureStates.ALGAE_HOME;
         else yield SuperStructureStates.TRAVEL;
       }
 
@@ -403,8 +404,10 @@ public class SuperStructure extends SubsystemBase {
         climb.setState(ClimbStates.IDLE);
         conveyor.setState(ConveyorStates.IDLE);
         drive.setState(DriveStates.FIELD_DRIVE);
-        if(arm.isSafeForElevator()) elevator.setState(ElevatorStates.ALGAE_INTAKE_FLOOR);
-        else elevator.setState(ElevatorStates.IDLE); // TODO: change this to hold current position state
+        if (arm.isSafeForElevator()) elevator.setState(ElevatorStates.ALGAE_INTAKE_FLOOR);
+        else
+          elevator.setState(
+              ElevatorStates.IDLE); // TODO: change this to hold current position state
 
         gripper.setState(GripperStates.IDLE);
         intakeDeploy.setState(IntakeDeployStates.DEPLOY);
@@ -413,8 +416,10 @@ public class SuperStructure extends SubsystemBase {
 
       case ALGAE_PROCESSOR -> {
         arm.setState(ArmStates.ALGAE_SCORE_PROCESSOR);
-        if(arm.isSafeForElevator()) elevator.setState(ElevatorStates.ALGAE_SCORE_PROCESSOR);
-        else elevator.setState(ElevatorStates.IDLE); // TODO: change this to hold current position state
+        if (arm.isSafeForElevator()) elevator.setState(ElevatorStates.ALGAE_SCORE_PROCESSOR);
+        else
+          elevator.setState(
+              ElevatorStates.IDLE); // TODO: change this to hold current position state
         conveyor.setState(ConveyorStates.IDLE);
         drive.setState(DriveStates.FIELD_DRIVE);
         gripper.setState(GripperStates.HOLD_ALGAE);
@@ -434,7 +439,7 @@ public class SuperStructure extends SubsystemBase {
 
       case ALGAE_HOME -> {
         arm.setState(ArmStates.HOME);
-        if(arm.isSafeForElevator()) elevator.setState(ElevatorStates.HOME);
+        if (arm.isSafeForElevator()) elevator.setState(ElevatorStates.HOME);
         conveyor.setState(ConveyorStates.IDLE);
         drive.setState(DriveStates.FIELD_DRIVE);
         gripper.setState(GripperStates.HOLD_ALGAE);

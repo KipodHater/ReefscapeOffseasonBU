@@ -1,11 +1,10 @@
 package frc.robot.subsystems.conveyor;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import static frc.robot.subsystems.conveyor.ConveyorConstants.REVERSE_VOLTAGE;
 import static frc.robot.subsystems.conveyor.ConveyorConstants.currentThreshold;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,8 +20,7 @@ public class Conveyor extends SubsystemBase {
 
   public enum ConveyorStates {
     IDLE(0.0),
-    INTAKE(12.0)
-  ;
+    INTAKE(12.0);
     double value;
 
     ConveyorStates(double value) {
@@ -49,11 +47,11 @@ public class Conveyor extends SubsystemBase {
     stateMachine();
   }
 
-  public void stateMachine(){
+  public void stateMachine() {
     switch (currentState) {
       case IDLE -> io.runVoltage(ConveyorStates.IDLE.getVoltage());
       case INTAKE -> {
-        if(inputs.motorCurrent > currentThreshold && !timer.isRunning()) {
+        if (inputs.motorCurrent > currentThreshold && !timer.isRunning()) {
           timer.start();
         }
         if (timer.isRunning() && timer.get() < 0.3) {
@@ -68,7 +66,7 @@ public class Conveyor extends SubsystemBase {
     }
   }
 
-  public boolean hasCoral(){
+  public boolean hasCoral() {
     return false;
   }
 }

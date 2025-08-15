@@ -14,7 +14,6 @@ import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.Gripper.GripperStates;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.leds.Leds.ledsStates;
-
 import java.util.function.BooleanSupplier;
 
 public class AlignAlgaeReefCommand extends SequentialCommandGroup {
@@ -42,11 +41,11 @@ public class AlignAlgaeReefCommand extends SequentialCommandGroup {
                         elevator,
                         RobotState.getInstance().getAlgaeScoringInfo().reefFace() % 2 == 1 ? 2 : 3,
                         RobotState.getInstance().getAlgaeScoringInfo().backside()),
-                        SimpleCommands.driveAutoAlignTolerance(
-                            drive,
-                            () -> RobotState.getInstance().getAlgaeScoringInfo().alignPose(),
-                            0.3,
-                            5)),
+                    SimpleCommands.driveAutoAlignTolerance(
+                        drive,
+                        () -> RobotState.getInstance().getAlgaeScoringInfo().alignPose(),
+                        0.3,
+                        5)),
                 Commands.runOnce(() -> gripper.setState(GripperStates.INTAKE_ALGAE), gripper),
                 SimpleCommands.driveAutoAlignTolerance(
                     drive,
@@ -58,7 +57,7 @@ public class AlignAlgaeReefCommand extends SequentialCommandGroup {
                 Commands.runOnce(() -> gripper.setState(GripperStates.HOLD_ALGAE), gripper),
                 Commands.runOnce(() -> leds.setState(ledsStates.RED), leds),
                 Commands.runOnce(
-                     () ->
+                    () ->
                         drive.setStateSlowlyForward(
                             RobotState.getInstance().getAlgaeScoringInfo().backside()),
                     drive),
