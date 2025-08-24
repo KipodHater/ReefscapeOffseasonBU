@@ -1,40 +1,39 @@
 package frc.robot.controllers;
 
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 public interface ControllerInterface {
-    
-    public Trigger scoreCoralButton();
 
-    public Trigger scoreEjectAlgaeButton();
+  public Trigger scoreCoralButton();
 
-    public Trigger openCloseIntakeButton();
+  public Trigger scoreEjectAlgaeButton();
 
-    public Trigger intakeAlgaeFloorButton();
+  public Trigger openCloseIntakeButton();
 
-    public Trigger l4NetButton();
+  public Trigger intakeAlgaeFloorButton();
 
-    public Trigger l3Button();
+  public Trigger l4NetButton();
 
-    public Trigger l2AlgaeHomeButton();
+  public Trigger l3Button();
 
-    public Trigger l1ProcessorButton();
+  public Trigger l2AlgaeHomeButton();
 
-    public Trigger resetGyroButton();
+  public Trigger l1ProcessorButton();
 
-    public Trigger purgeIntakeButton();
+  public Trigger resetGyroButton();
 
-    public Trigger returnToDefaultButton();
+  public Trigger purgeIntakeButton();
 
-    public Trigger forceInvertedNetButton();
+  public Trigger returnToDefaultButton();
 
-    public Trigger climbButton();
+  public Trigger forceInvertedNetButton();
 
-    public DoubleSupplier xVelocityAnalog();
+  public Trigger climbButton();
 
-    public DoubleSupplier yVelocityAnalog();
+  public DoubleSupplier xVelocityAnalog();
 
-    public DoubleSupplier rotationVelocityAnalog();
+  public DoubleSupplier yVelocityAnalog();
+
+  public DoubleSupplier rotationVelocityAnalog();
 }

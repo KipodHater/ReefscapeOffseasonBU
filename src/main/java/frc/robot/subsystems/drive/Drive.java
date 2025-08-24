@@ -219,7 +219,8 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
-    if(Math.abs(rJoystickVelocity.getAsDouble()) > 0.4) lastBigRotation = RobotController.getFPGATime() * 1e-6;
+    if (Math.abs(rJoystickVelocity.getAsDouble()) > 0.4)
+      lastBigRotation = RobotController.getFPGATime() * 1e-6;
 
     // // Update odometry
     // double[] sampleTimestamps =
@@ -301,27 +302,35 @@ public class Drive extends SubsystemBase {
 
       case ASSISTED_DRIVE: // Field drive but with assistance from the robot
         Optional<Translation2d> coral = RobotState.getInstance().getBestCoral();
-        if(!coral.isPresent()) fieldCentricJoystickDrive(
-          xJoystickVelocity.getAsDouble(),
-          yJoystickVelocity.getAsDouble(),
-          rJoystickVelocity.getAsDouble());
+        if (!coral.isPresent())
+          fieldCentricJoystickDrive(
+              xJoystickVelocity.getAsDouble(),
+              yJoystickVelocity.getAsDouble(),
+              rJoystickVelocity.getAsDouble());
         else {
           Translation2d pathToCoral = coral.get().minus(getPose().getTranslation());
-          double pidGain = rotationController.calculate(getPose().getRotation().getDegrees(),
-              Math.toDegrees(Math.atan2(pathToCoral.getY(), pathToCoral.getX())));
+          double pidGain =
+              rotationController.calculate(
+                  getPose().getRotation().getDegrees(),
+                  Math.toDegrees(Math.atan2(pathToCoral.getY(), pathToCoral.getX())));
           double rMag = Math.abs(rJoystickVelocity.getAsDouble());
-          // double velMag = Math.hypot(xJoystickVelocity.getAsDouble(), yJoystickVelocity.getAsDouble());
+          // double velMag = Math.hypot(xJoystickVelocity.getAsDouble(),
+          // yJoystickVelocity.getAsDouble());
           double linearVelocity =
-            linearVelocityController.calculate(0, Math.hypot(pathToCoral.getX(), pathToCoral.getY()));
-            Translation2d linearVelocityTranslation =
-            new Translation2d(
-                linearVelocity, new Rotation2d(Math.atan2(pathToCoral.getY(), pathToCoral.getX())));
-          if(RobotController.getFPGATime() * 1e-6 - lastBigRotation < 0.5) rMag = 1;
-          
+              linearVelocityController.calculate(
+                  0, Math.hypot(pathToCoral.getX(), pathToCoral.getY()));
+          Translation2d linearVelocityTranslation =
+              new Translation2d(
+                  linearVelocity,
+                  new Rotation2d(Math.atan2(pathToCoral.getY(), pathToCoral.getX())));
+          if (RobotController.getFPGATime() * 1e-6 - lastBigRotation < 0.5) rMag = 1;
+
           fieldCentricJoystickDrive(
-              xJoystickVelocity.getAsDouble() * (1-ASSISTED_DRIVE_PERCENTAGE) + linearVelocityTranslation.getX() * ASSISTED_DRIVE_PERCENTAGE,
-              yJoystickVelocity.getAsDouble() * (1-ASSISTED_DRIVE_PERCENTAGE) + linearVelocityTranslation.getY() * ASSISTED_DRIVE_PERCENTAGE,
-              rMag * rJoystickVelocity.getAsDouble() + (1-rMag) * pidGain);
+              xJoystickVelocity.getAsDouble() * (1 - ASSISTED_DRIVE_PERCENTAGE)
+                  + linearVelocityTranslation.getX() * ASSISTED_DRIVE_PERCENTAGE,
+              yJoystickVelocity.getAsDouble() * (1 - ASSISTED_DRIVE_PERCENTAGE)
+                  + linearVelocityTranslation.getY() * ASSISTED_DRIVE_PERCENTAGE,
+              rMag * rJoystickVelocity.getAsDouble() + (1 - rMag) * pidGain);
         }
         break;
 

@@ -198,7 +198,7 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean isSafeForElevator() {
-    return inputs.positionDeg > 90.0 && inputs.positionDeg < 210.0; 
+    return inputs.positionDeg > 90.0 && inputs.positionDeg < 210.0;
   }
 
   public void testPeriodic() {}
