@@ -287,6 +287,13 @@ public class RobotContainer {
     //             () -> -controller.getLeftX(),
     //             () -> new Rotation2d()));
 
+    dashboard.addCategory("blahblah", true, true, 1, 2, false, "test");
+    dashboard.addCategory("test", "testfgergetg2");
+    dashboard.addCategory("test2", 1, 2, 3, 4, 5);
+    dashboard.addCategory("test3", 1.5, 2.5, 3.5);
+    dashboard.addValueToCategory("test2", 5);
+    System.out.println(dashboard.getCategoryValue("test", 0));
+
     controller.a().onTrue(Commands.runOnce(() -> drive.setDriveState(DriveStates.AUTO_ALIGN)));
     controller.a().onFalse(Commands.runOnce(() -> drive.setDriveState(DriveStates.FIELD_DRIVE)));
 
