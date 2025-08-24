@@ -53,4 +53,8 @@ public class IntakeRollers extends SubsystemBase {
   public void setState(IntakeRollersStates wantedState) {
     currentState = wantedState;
   }
+
+  public boolean hasCoral() {
+    return false;
+  }
 }

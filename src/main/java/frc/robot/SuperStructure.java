@@ -84,6 +84,9 @@ public class SuperStructure extends SubsystemBase {
 
   private SuperStructureStates previousState = SuperStructureStates.TRAVEL;
 
+  @AutoLogOutput(key = "SuperStructure/wantedIntakeState")
+  private IntakeDeployStates wantedIntakeState = IntakeDeployStates.IDLE;
+
   public Command currentCommand = null;
 
   private final Arm arm;
@@ -257,135 +260,26 @@ public class SuperStructure extends SubsystemBase {
 
       case INTAKE_CORAL_FLOOR -> intakeCoralFloor();
 
-      case PLACE_CORAL_ALIGN_L1 -> {
-        if (previousState != currentState) {
-          CommandScheduler.getInstance().cancelAll();
-          currentCommand =
-              new AlignCoralCommand(
-                  drive,
-                  arm,
-                  elevator,
-                  gripper,
-                  1,
-                  () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
-                  null);
-        }
-        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          leds.setState(ledsStates.BLUE);
-        }
-      }
+      case PLACE_CORAL_ALIGN_L1 -> placeCoralAlignLx(1);
 
-      case PLACE_CORAL_L1 -> {
-        if (previousState != currentState) {
-          CommandScheduler.getInstance().cancelAll();
-          currentCommand = SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 1);
-          currentCommand.schedule();
-        }
-        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          currentState =
-              SuperStructureStates
-                  .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
-        }
-      }
+      case PLACE_CORAL_L1 -> placeCoralLx(1);
 
-      case PLACE_CORAL_ALIGN_L2 -> {
-        if (previousState != currentState) {
-          CommandScheduler.getInstance().cancelAll();
-          currentCommand =
-              new AlignCoralCommand(
-                  drive,
-                  arm,
-                  elevator,
-                  gripper,
-                  2,
-                  () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
-                  null);
-        }
-        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          leds.setState(ledsStates.BLUE);
-        }
-      }
+      case PLACE_CORAL_ALIGN_L2 -> placeCoralAlignLx(2);
 
-      case PLACE_CORAL_L2 -> {
-        if (previousState != currentState) {
-          CommandScheduler.getInstance().cancelAll();
-          currentCommand = SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 2);
-          currentCommand.schedule();
-        }
-        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          currentState =
-              SuperStructureStates
-                  .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
-        }
-        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          leds.setState(ledsStates.BLUE);
-        }
-      }
+      case PLACE_CORAL_L2 -> placeCoralLx(2);
 
-      case PLACE_CORAL_ALIGN_L3 -> {
-        if (previousState != currentState) {
-          CommandScheduler.getInstance().cancelAll();
-          currentCommand =
-              new AlignCoralCommand(
-                  drive,
-                  arm,
-                  elevator,
-                  gripper,
-                  3,
-                  () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
-                  null);
-        }
-        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          leds.setState(ledsStates.BLUE);
-        }
-      }
+      case PLACE_CORAL_ALIGN_L3 -> placeCoralAlignLx(3);
 
-      case PLACE_CORAL_L3 -> {
-        if (previousState != currentState) {
-          CommandScheduler.getInstance().cancelAll();
-          currentCommand = SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 3);
-          currentCommand.schedule();
-        }
-        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          currentState =
-              SuperStructureStates
-                  .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
-        }
-      }
+      case PLACE_CORAL_L3 -> placeCoralLx(3);
 
-      case PLACE_CORAL_ALIGN_L4 -> {
-        if (previousState != currentState) {
-          CommandScheduler.getInstance().cancelAll();
-          currentCommand =
-              new AlignCoralCommand(
-                  drive,
-                  arm,
-                  elevator,
-                  gripper,
-                  4,
-                  () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
-                  null);
-        }
-        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          leds.setState(ledsStates.BLUE);
-        }
-      }
+      case PLACE_CORAL_ALIGN_L4 -> placeCoralAlignLx(4);
 
-      case PLACE_CORAL_L4 -> {
-        if (previousState != currentState) {
-          CommandScheduler.getInstance().cancelAll();
-          currentCommand = SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, 4);
-          currentCommand.schedule();
-        }
-        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-          currentState =
-              SuperStructureStates
-                  .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
-        }
-      }
+      case PLACE_CORAL_L4 -> placeCoralLx(4);
 
       case INTAKE_ALGAE_REEF -> {
+        closeIntakeIfPossible();
         if (previousState != currentState) {
+          wantedIntakeState = IntakeDeployStates.CLOSED;
           CommandScheduler.getInstance().cancelAll();
           currentCommand =
               new AlignAlgaeReefCommand(
@@ -410,8 +304,7 @@ public class SuperStructure extends SubsystemBase {
               ElevatorStates.IDLE); // TODO: change this to hold current position state
 
         gripper.setState(GripperStates.IDLE);
-        intakeDeploy.setState(IntakeDeployStates.DEPLOY);
-        intakeRollers.setState(IntakeRollersStates.INTAKE);
+        intakeStateMachine();
       }
 
       case ALGAE_PROCESSOR -> {
@@ -423,7 +316,7 @@ public class SuperStructure extends SubsystemBase {
         conveyor.setState(ConveyorStates.IDLE);
         drive.setState(DriveStates.FIELD_DRIVE);
         gripper.setState(GripperStates.HOLD_ALGAE);
-        intakeDeploy.setState(IntakeDeployStates.CLOSED);
+        intakeStateMachine();
       }
 
       case ALGAE_NET -> {
@@ -432,8 +325,7 @@ public class SuperStructure extends SubsystemBase {
         conveyor.setState(ConveyorStates.IDLE);
         drive.setState(DriveStates.FIELD_DRIVE);
         gripper.setState(GripperStates.HOLD_ALGAE);
-        intakeDeploy.setState(IntakeDeployStates.CLOSED); // add case for open intake
-        intakeRollers.setState(IntakeRollersStates.IDLE);
+        intakeStateMachine();
         leds.setState(ledsStates.ALGAE);
       }
 
@@ -443,8 +335,7 @@ public class SuperStructure extends SubsystemBase {
         conveyor.setState(ConveyorStates.IDLE);
         drive.setState(DriveStates.FIELD_DRIVE);
         gripper.setState(GripperStates.HOLD_ALGAE);
-        intakeDeploy.setState(IntakeDeployStates.CLOSED); // add case for open intake
-        intakeRollers.setState(IntakeRollersStates.IDLE);
+        intakeStateMachine();
         leds.setState(ledsStates.ALGAE);
       }
 
@@ -466,8 +357,7 @@ public class SuperStructure extends SubsystemBase {
     else arm.setState(ArmStates.IDLE); // TODO: change this to hold current position state
 
     gripper.setState(GripperStates.IDLE);
-    intakeDeploy.setState(IntakeDeployStates.CLOSED);
-    intakeRollers.setState(IntakeRollersStates.IDLE);
+    closeIntakeIfPossible();
   }
 
   private void intakeCoralFloor() {
@@ -480,67 +370,97 @@ public class SuperStructure extends SubsystemBase {
     else arm.setState(ArmStates.IDLE); // TODO: change this to hold current position state
 
     gripper.setState(GripperStates.IDLE);
-    intakeDeploy.setState(IntakeDeployStates.DEPLOY);
-    intakeRollers.setState(IntakeRollersStates.INTAKE);
+    openIntakeIfPossible();
 
     if (conveyor.hasCoral() || gripper.hasCoral() /* ignore gripper || conveyor sensor */) {
       currentState = SuperStructureStates.TRAVEL;
     }
   }
 
-  // private void placeCoralAlign(int Lx, boolean shouldScoreRightSide) {
-  //   // run place coral command, when finished automatically move to intake floor or travel
-  // depended on if safe mode enabled
-  //   if(!conveyor.hasCoral() && !gripper.hasCoral()) { // gripper.hasAlgae()
-  //     currentState = SuperStructureStates.TRAVEL;
-  //     return;
-  //   }
+  private void placeCoralAlignLx(int lx) {
+    wantedIntakeState = IntakeDeployStates.CLOSED;
+    closeIntakeIfPossible();
+    if (previousState != currentState) {
 
-  //   if(conveyor.hasCoral() && !gripper.hasCoral()){
-  //     arm.setState(ArmStates.DEFAULT);
-  //     gripper.setState(GripperStates.INTAKE_CORAL);
-  //     if(arm.atGoal()){
-  //       elevator.setElevatorGoal(ElevatorStates.CORAL_INTAKE_CONVEYOR);
-  //     } else {
-  //       elevator.setElevatorGoal(ElevatorStates.DEFAULT);
-  //     }
-  //   } else if(gripper.hasCoral()){ // hasCoral is redundant but here for clarity
-  //     arm.setReefState(Lx, false);
-  //     elevator.setReefState(Lx);
-  //     if(arm.atGoal() && elevator.atGoal() && swerve.atPose(new Pose2d())) {
-  //       currentState = SuperStructureStates.PLACE_CORAL;
-  //       wantedState = SuperStructureStates.PLACE_CORAL;
-  //     }
-  //   }
-  // }
-
-  // private void placeCoral(int Lx){
-  //   gripper.setState(coast);
-  //   arm.setScoreState(Lx, scoreRightSide);
-  //   elevator.setReefState(Lx);
-  //   // and tell the swerve to slowly go backwords, can even add a timer here
-  //   if(!gripper.hasCoral()) currentState = SuperStructureStates.TRAVEL; // or is finished
-  // }
-
-  private void intakeAlgaeReef() {
-    // choose what reef face
-    // now command to take it from reef
-    // can even check a box that this reef face is clean if the command is successful
+      CommandScheduler.getInstance().cancelAll();
+      currentCommand =
+          new AlignCoralCommand(
+              drive,
+              arm,
+              elevator,
+              gripper,
+              lx,
+              () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
+              null);
+    }
+    if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+      leds.setState(ledsStates.BLUE);
+    }
   }
 
-  private void intakeAlgaeFloor() {
-    // just move every subsystem to the right place and thats it
-    // if has algae then move to default algae
+  private void placeCoralLx(int lx) {
+    wantedIntakeState = IntakeDeployStates.CLOSED;
+    closeIntakeIfPossible();
+    if (previousState != currentState) {
+      CommandScheduler.getInstance().cancelAll();
+      currentCommand = SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, lx);
+      currentCommand.schedule();
+    }
+    if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+      wantedIntakeState = IntakeDeployStates.DEPLOY;
+      wantedState =
+          SuperStructureStates
+              .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
+    }
   }
 
-  private void placeAlgaeProcessor() {
-    // just move the subsystems to the right place and thats it
-    // need a smart way to close the arm again
+  private void intakeStateMachine() {
+    switch (wantedIntakeState) {
+      case IDLE -> {
+        intakeDeploy.setState(IntakeDeployStates.CLOSED);
+        intakeRollers.setState(IntakeRollersStates.IDLE);
+      }
+      case DEPLOY -> openIntakeIfPossible();
+      case CLOSED -> closeIntakeIfPossible();
+      default -> System.out.println("intake logic is broken!");
+    }
   }
 
-  private void placeAlgaeNet() {
-    // just move the subsystems to the right place and thats it
-    // need a smart way to close the arm again
+  private void openIntakeIfPossible() {
+    if (conveyor.hasCoral()
+        || gripper.hasCoral()
+        || (currentState
+            == SuperStructureStates.CLIMBED)) { // TODO: add ignore sensors logic and intake coral
+      intakeDeploy.setState(IntakeDeployStates.CLOSED);
+      intakeRollers.setState(IntakeRollersStates.IDLE);
+    } else {
+      intakeDeploy.setState(IntakeDeployStates.DEPLOY);
+      intakeRollers.setState(IntakeRollersStates.INTAKE);
+    }
+  }
+
+  private void closeIntakeIfPossible() {
+    intakeRollers.setState(IntakeRollersStates.IDLE);
+    if (intakeRollers.hasCoral()) { // TODO: add ignore intake sensor and intake sensor
+      intakeDeploy.setState(IntakeDeployStates.CLOSED);
+    } else {
+      intakeDeploy.setState(IntakeDeployStates.DEPLOY);
+    }
+  }
+
+  public void intakeButtonPress() {
+
+    if (currentState == SuperStructureStates.INTAKE_CORAL_FLOOR) {
+      wantedState = SuperStructureStates.TRAVEL;
+      wantedIntakeState = IntakeDeployStates.CLOSED;
+    } else if (currentState == SuperStructureStates.TRAVEL) {
+      wantedState = SuperStructureStates.INTAKE_CORAL_FLOOR;
+      wantedIntakeState = IntakeDeployStates.DEPLOY;
+    } else if (wantedIntakeState == IntakeDeployStates.DEPLOY) {
+      wantedIntakeState = IntakeDeployStates.CLOSED;
+    } else {
+      wantedIntakeState = IntakeDeployStates.DEPLOY;
+    }
   }
 
   private void setWantedState(SuperStructureStates wantedState) {

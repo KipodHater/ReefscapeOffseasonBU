@@ -18,7 +18,7 @@ public class IntakeDeploy extends SubsystemBase {
   public enum IntakeDeployStates {
     CLOSED(0.0),
     DEPLOY(90.0),
-    RETRACT(0.0),
+    // RETRACT(0.0),
     IDLE(null);
 
     Double value;
@@ -58,7 +58,7 @@ public class IntakeDeploy extends SubsystemBase {
 
       case DEPLOY -> io.runPosition(IntakeDeployStates.DEPLOY.position(), ffVoltage);
 
-      case RETRACT -> io.runPosition(IntakeDeployStates.RETRACT.position(), ffVoltage);
+        // case RETRACT -> io.runPosition(IntakeDeployStates.RETRACT.position(), ffVoltage);
 
       case IDLE -> io.stop();
 
@@ -72,5 +72,9 @@ public class IntakeDeploy extends SubsystemBase {
 
   public void setBrakeMode(boolean isBrake) {
     io.setBrakeMode(isBrake);
+  }
+
+  public IntakeDeployStates getCurrentState() {
+    return currentState;
   }
 }
