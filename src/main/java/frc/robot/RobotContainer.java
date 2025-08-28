@@ -132,7 +132,7 @@ public class RobotContainer {
         arm = new Arm(new ArmIOSpark());
         elevator = new Elevator(new ElevatorIOSpark());
         climb = new Climb(new ClimbIOSpark());
-        dashboard = new Dashboard();
+        dashboard = Dashboard.getInstance();
         conveyor = new Conveyor(new ConveyorIOSpark());
         intakeRollers = new IntakeRollers(new IntakeRollersIOSpark());
         IntakeDeploy = new IntakeDeploy(new IntakeDeployIOSpark());
@@ -174,7 +174,7 @@ public class RobotContainer {
         arm = new Arm(new ArmIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         conveyor = new Conveyor(new ConveyorIOSim());
-        dashboard = new Dashboard();
+        dashboard = Dashboard.getInstance();
         climb = new Climb(new ClimbIO() {});
         intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
         IntakeDeploy = new IntakeDeploy(new IntakeDeployIO() {});
@@ -214,7 +214,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         conveyor = new Conveyor(new ConveyorIO() {});
         climb = new Climb(new ClimbIO() {});
-        dashboard = new Dashboard();
+        dashboard = Dashboard.getInstance();
         intakeRollers = new IntakeRollers(new IntakeRollersIO() {});
         IntakeDeploy = new IntakeDeploy(new IntakeDeployIO() {});
         leds = new Leds();
