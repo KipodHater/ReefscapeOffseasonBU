@@ -38,10 +38,18 @@ import java.util.ArrayList;
 public class Dashboard {
   private NetworkTableInstance ntInstance;
   private NetworkTable defaultTable;
+  private static Dashboard instance = null;
 
-  public Dashboard() {
+  private Dashboard() {
     ntInstance = NetworkTableInstance.getDefault();
     defaultTable = ntInstance.getTable("Dashboard");
+  }
+
+  public static Dashboard getInstance() {
+    if (instance == null) {
+      instance = new Dashboard();
+    }
+    return instance;
   }
 
   /**
