@@ -27,7 +27,7 @@ public class VisionIOPhotonSim extends VisionIOPhoton {
 
     SimCameraProperties cameraProp = new SimCameraProperties();
     // add here camera properties:
-    cameraProp.setCalibration(1280, 720, Rotation2d.fromDegrees(75));
+    cameraProp.setCalibration(1280, 720, Rotation2d.fromDegrees(94));
     cameraProp.setAvgLatencyMs(10);
     cameraSim = new PhotonCameraSim(camera, cameraProp, aprilTagLayout);
 

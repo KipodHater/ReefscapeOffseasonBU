@@ -18,18 +18,16 @@ public class VisionConstants {
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
   public static Transform3d robotToCamera0 =
-      new Transform3d(0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, 0.0));
+      new Transform3d(
+          0.36, 0.36, 0.1, new Rotation3d(0.0, -32 * Math.PI / 180, -15 * Math.PI / 180));
   public static Transform3d robotToCamera1 =
-      new Transform3d(-0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, Math.PI));
+      new Transform3d(
+          0.36, -0.36, 0.1, new Rotation3d(0.0, -32 * Math.PI / 180, 15 * Math.PI / 180));
 
-  public static Transform3d[] robotToCameras = {
-    new Transform3d(0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, 0.0)),
-    new Transform3d(-0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, Math.PI)),
-    new Transform3d()
-  };
+  public static Transform3d[] robotToCameras = {robotToCamera0, robotToCamera1, new Transform3d()};
 
   // Basic filtering thresholds
-  public static double maxAmbiguity = 0.3;
+  public static double maxAmbiguity = 0.4;
   public static double maxZError = 0.75;
 
   // Standard deviation baselines, for 1 meter distance and 1 tag
@@ -41,7 +39,7 @@ public class VisionConstants {
   // (Adjust to trust some cameras more than others)
   public static double[] cameraStdDevFactors =
       new double[] {
-        1.0, // Camera 0
+        0.1, // Camera 0
         1.0 // Camera 1
       };
 
