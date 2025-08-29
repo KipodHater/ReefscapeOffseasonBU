@@ -449,7 +449,6 @@ public class SuperStructure extends SubsystemBase {
   }
 
   public void intakeButtonPress() {
-
     if (currentState == SuperStructureStates.INTAKE_CORAL_FLOOR) {
       wantedState = SuperStructureStates.TRAVEL;
       wantedIntakeState = IntakeDeployStates.CLOSED;
@@ -474,8 +473,4 @@ public class SuperStructure extends SubsystemBase {
   public Command setWantedStateCommand(SuperStructureStates wantedState, int scoreL) {
     return new InstantCommand(() -> setWantedState(wantedState));
   }
-
-  // public Command runCommandState(){
-
-  // }
 }
