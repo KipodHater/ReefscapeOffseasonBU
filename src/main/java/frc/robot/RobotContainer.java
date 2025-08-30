@@ -13,28 +13,17 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degree;
-import static edu.wpi.first.units.Units.Meter;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.SuperStructure.SuperStructureStates;
 import frc.robot.controllers.ControllerInterface;
+import frc.robot.controllers.SimulationController;
 import frc.robot.controllers.SingleXboxController;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.arm.*;
@@ -47,7 +36,6 @@ import frc.robot.subsystems.conveyor.ConveyorIOSim;
 import frc.robot.subsystems.conveyor.ConveyorIOSpark;
 import frc.robot.subsystems.dashboard.Dashboard;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.Drive.DriveStates;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -74,7 +62,6 @@ import frc.robot.subsystems.vision.*;
 import java.util.function.DoubleSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -128,9 +115,9 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight),
                 (robotPose) -> {},
-                controller.xVelocityAnalog(),
-                controller.yVelocityAnalog(),
-                controller.rotationVelocityAnalog());
+                controller::xVelocityAnalog,
+                controller::yVelocityAnalog,
+                controller::rotationVelocityAnalog);
         gripper = new Gripper(new GripperIOSpark(), new GripperSensorIORev());
         arm = new Arm(new ArmIOSpark());
         elevator = new Elevator(new ElevatorIOSpark());
@@ -160,7 +147,7 @@ public class RobotContainer {
                 DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
 
         SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-        controller = new SingleXboxController();
+        controller = new SimulationController();
         drive =
             new Drive(
                 new GyroIOSim(driveSimulation.getGyroSimulation()),
@@ -169,9 +156,9 @@ public class RobotContainer {
                 new ModuleIOSim(driveSimulation.getModules()[2]),
                 new ModuleIOSim(driveSimulation.getModules()[3]),
                 (robotPose) -> driveSimulation.getSimulatedDriveTrainPose(),
-                controller.xVelocityAnalog(),
-                controller.yVelocityAnalog(),
-                controller.rotationVelocityAnalog());
+                controller::xVelocityAnalog,
+                controller::yVelocityAnalog,
+                controller::rotationVelocityAnalog);
 
         gripper = new Gripper(new GripperIOSim(driveSimulation), new GripperSensorIO() {});
         arm = new Arm(new ArmIOSim());
@@ -201,7 +188,7 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
-        controller = new SingleXboxController();
+        controller = new SimulationController();
         drive =
             new Drive(
                 new GyroIO() {},
@@ -210,9 +197,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 (robotPose) -> {},
-                controller.xVelocityAnalog(),
-                controller.yVelocityAnalog(),
-                controller.rotationVelocityAnalog());
+                controller::xVelocityAnalog,
+                controller::yVelocityAnalog,
+                controller::rotationVelocityAnalog);
         gripper = new Gripper(new GripperIO() {}, new GripperSensorIO() {});
         arm = new Arm(new ArmIO() {});
         elevator = new Elevator(new ElevatorIO() {});

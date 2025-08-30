@@ -2,7 +2,6 @@ package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import java.util.function.DoubleSupplier;
 
 public class SingleXboxController implements ControllerInterface {
 
@@ -78,17 +77,17 @@ public class SingleXboxController implements ControllerInterface {
   }
 
   @Override
-  public DoubleSupplier xVelocityAnalog() {
-    return (() -> controller.getLeftX());
+  public double xVelocityAnalog() {
+    return controller.getLeftX();
   }
 
   @Override
-  public DoubleSupplier yVelocityAnalog() {
-    return (() -> -controller.getLeftY());
+  public double yVelocityAnalog() {
+    return -controller.getLeftY();
   }
 
   @Override
-  public DoubleSupplier rotationVelocityAnalog() {
-    return (() -> controller.getRightX());
+  public double rotationVelocityAnalog() {
+    return controller.getRightX();
   }
 }
