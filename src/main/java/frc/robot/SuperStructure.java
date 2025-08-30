@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -32,6 +33,7 @@ import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.leds.Leds.ledsStates;
 import frc.robot.subsystems.objectVision.ObjectVision;
 import frc.robot.subsystems.vision.Vision;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class SuperStructure extends SubsystemBase {
@@ -56,25 +58,13 @@ public class SuperStructure extends SubsystemBase {
     OPEN_CLIMB,
     CLIMBED
   }
-  // public enum SuperStructureWantedStates{
-  //   HOME,
-  //   TRAVEL,
-  //   INTAKE_CORAL_FLOOR,
-  //   PLACE_CORAL_ALIGN_L4,
-  //   PLACE_CORAL_L4,
-  //   PLACE_CORAL_ALIGN_L3,
-  //   PLACE_CORAL_L3,
-  //   PLACE_CORAL_ALIGN_L2,
-  //   PLACE_CORAL_L2,
-  //   PLACE_CORAL_ALIGN_L1,
-  //   PLACE_CORAL_L1,
-  //   INTAKE_ALGAE_REEF,
-  //   INTAKE_ALGAE_FLOOR,
-  //   PLACE_ALGAE_PROCESSOR,
-  //   PLACE_ALGAE_NET,
-  //   OPEN_CLIMB,
-  //   CLIMBED
-  // }
+
+  public enum StructureIntakeStates {
+    IDLE,
+    DEPLOY,
+    CLOSED,
+    EXHAUST
+  }
 
   @AutoLogOutput(key = "SuperStructure/currentState")
   private SuperStructureStates currentState = SuperStructureStates.TRAVEL;
@@ -85,7 +75,10 @@ public class SuperStructure extends SubsystemBase {
   private SuperStructureStates previousState = SuperStructureStates.TRAVEL;
 
   @AutoLogOutput(key = "SuperStructure/wantedIntakeState")
-  private IntakeDeployStates wantedIntakeState = IntakeDeployStates.IDLE;
+  private StructureIntakeStates wantedIntakeState = StructureIntakeStates.IDLE;
+
+  @AutoLogOutput(key = "SuperStructure/previousIntakeState")
+  private StructureIntakeStates previousIntakeState = StructureIntakeStates.IDLE;
 
   public Command currentCommand = null;
 
@@ -101,6 +94,8 @@ public class SuperStructure extends SubsystemBase {
   private final Leds leds;
   private final ObjectVision objectVision;
   private final Vision vision;
+
+  private final Timer climbTimer = new Timer();
 
   public SuperStructure(
       Arm arm,
@@ -127,6 +122,9 @@ public class SuperStructure extends SubsystemBase {
     this.leds = leds;
     this.objectVision = ObjectVision;
     this.vision = vision;
+    
+    climbTimer.reset();
+    climbTimer.stop();
   }
 
   @Override
@@ -143,7 +141,10 @@ public class SuperStructure extends SubsystemBase {
     return switch (wantedState) {
       case HOME -> SuperStructureStates.HOME;
 
-      case TRAVEL -> SuperStructureStates.TRAVEL;
+      case TRAVEL -> {
+        if(gripper.hasAlgae() /*&& !ignoreGripperSensor*/) yield SuperStructureStates.ALGAE_HOME;
+        else yield SuperStructureStates.TRAVEL;
+      }
 
       case INTAKE_CORAL_FLOOR -> {
         if (conveyor.hasCoral() || gripper.hasCoral()) yield previousState;
@@ -151,7 +152,7 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_ALIGN_L1 -> {
-        if (conveyor.hasCoral() || gripper.hasCoral()) {
+        if ((conveyor.hasCoral() || gripper.hasCoral()) && !gripper.hasAlgae()) {
           yield SuperStructureStates.PLACE_CORAL_ALIGN_L1;
         } else {
           yield previousState;
@@ -159,15 +160,15 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_L1 -> {
-        if (gripper.hasCoral()) {
+        if (gripper.hasCoral() && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L1) {
           yield SuperStructureStates.PLACE_CORAL_L1;
         } else {
-          yield SuperStructureStates.TRAVEL;
+          yield previousState;
         }
       }
 
       case PLACE_CORAL_ALIGN_L2 -> {
-        if (conveyor.hasCoral() || gripper.hasCoral()) {
+        if ((conveyor.hasCoral() || gripper.hasCoral()) && !gripper.hasAlgae()) {
           yield SuperStructureStates.PLACE_CORAL_ALIGN_L2;
         } else {
           yield previousState;
@@ -175,15 +176,15 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_L2 -> {
-        if (gripper.hasCoral()) {
+        if (gripper.hasCoral() && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L2) {
           yield SuperStructureStates.PLACE_CORAL_L2;
         } else {
-          yield SuperStructureStates.TRAVEL;
+          yield previousState;
         }
       }
 
       case PLACE_CORAL_ALIGN_L3 -> {
-        if (conveyor.hasCoral() || gripper.hasCoral()) {
+        if ((conveyor.hasCoral() || gripper.hasCoral()) && !gripper.hasAlgae()) {
           yield SuperStructureStates.PLACE_CORAL_ALIGN_L3;
         } else {
           yield previousState;
@@ -191,15 +192,15 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_L3 -> {
-        if (gripper.hasCoral()) {
+        if (gripper.hasCoral() && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L3) {
           yield SuperStructureStates.PLACE_CORAL_L3;
         } else {
-          yield SuperStructureStates.TRAVEL;
+          yield previousState;
         }
       }
 
       case PLACE_CORAL_ALIGN_L4 -> {
-        if (conveyor.hasCoral() || gripper.hasCoral()) {
+        if ((conveyor.hasCoral() || gripper.hasCoral()) && !gripper.hasAlgae()) {
           yield SuperStructureStates.PLACE_CORAL_ALIGN_L4;
         } else {
           yield previousState;
@@ -207,10 +208,10 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_L4 -> {
-        if (gripper.hasCoral()) {
+        if (gripper.hasCoral() && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L4) {
           yield SuperStructureStates.PLACE_CORAL_L4;
         } else {
-          yield SuperStructureStates.TRAVEL;
+          yield previousState;
         }
       }
 
@@ -228,17 +229,17 @@ public class SuperStructure extends SubsystemBase {
 
       case ALGAE_PROCESSOR -> {
         if (gripper.hasAlgae()) yield SuperStructureStates.ALGAE_PROCESSOR;
-        else yield SuperStructureStates.TRAVEL;
+        else yield previousState;
       }
 
       case ALGAE_NET -> {
         if (gripper.hasAlgae()) yield SuperStructureStates.ALGAE_NET;
-        else yield SuperStructureStates.TRAVEL;
+        else yield previousState;
       }
 
       case ALGAE_HOME -> {
         if (gripper.hasAlgae()) yield SuperStructureStates.ALGAE_HOME;
-        else yield SuperStructureStates.TRAVEL;
+        else yield previousState;
       }
 
       case OPEN_CLIMB -> SuperStructureStates.OPEN_CLIMB;
@@ -279,8 +280,7 @@ public class SuperStructure extends SubsystemBase {
       case INTAKE_ALGAE_REEF -> {
         closeIntakeIfPossible();
         if (previousState != currentState) {
-          wantedIntakeState = IntakeDeployStates.CLOSED;
-          CommandScheduler.getInstance().cancelAll();
+          wantedIntakeState = StructureIntakeStates.CLOSED;
           currentCommand =
               new AlignAlgaeReefCommand(
                   drive, arm, elevator, gripper, leds, () -> false, () -> false);
@@ -378,11 +378,10 @@ public class SuperStructure extends SubsystemBase {
   }
 
   private void placeCoralAlignLx(int lx) {
-    wantedIntakeState = IntakeDeployStates.CLOSED;
+    wantedIntakeState = StructureIntakeStates.CLOSED;
     closeIntakeIfPossible();
     if (previousState != currentState) {
 
-      CommandScheduler.getInstance().cancelAll();
       currentCommand =
           new AlignCoralCommand(
               drive,
@@ -399,15 +398,14 @@ public class SuperStructure extends SubsystemBase {
   }
 
   private void placeCoralLx(int lx) {
-    wantedIntakeState = IntakeDeployStates.CLOSED;
+    wantedIntakeState = StructureIntakeStates.CLOSED;
     closeIntakeIfPossible();
     if (previousState != currentState) {
-      CommandScheduler.getInstance().cancelAll();
       currentCommand = SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, lx);
       currentCommand.schedule();
     }
     if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-      wantedIntakeState = IntakeDeployStates.DEPLOY;
+      wantedIntakeState = StructureIntakeStates.DEPLOY;
       wantedState =
           SuperStructureStates
               .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
@@ -448,21 +446,119 @@ public class SuperStructure extends SubsystemBase {
     }
   }
 
-  public void intakeButtonPress() {
-    if (currentState == SuperStructureStates.INTAKE_CORAL_FLOOR) {
-      wantedState = SuperStructureStates.TRAVEL;
-      wantedIntakeState = IntakeDeployStates.CLOSED;
-    } else if (currentState == SuperStructureStates.TRAVEL) {
-      wantedState = SuperStructureStates.INTAKE_CORAL_FLOOR;
-      wantedIntakeState = IntakeDeployStates.DEPLOY;
-    } else if (wantedIntakeState == IntakeDeployStates.DEPLOY) {
-      wantedIntakeState = IntakeDeployStates.CLOSED;
-    } else {
-      wantedIntakeState = IntakeDeployStates.DEPLOY;
+  public void scoreButtonPress() {
+    switch (currentState) {
+      case PLACE_CORAL_ALIGN_L1-> setWantedState(SuperStructureStates.PLACE_CORAL_L1);
+      case PLACE_CORAL_ALIGN_L2-> setWantedState(SuperStructureStates.PLACE_CORAL_L2);
+      case PLACE_CORAL_ALIGN_L3-> setWantedState(SuperStructureStates.PLACE_CORAL_L3);
+      case PLACE_CORAL_ALIGN_L4-> setWantedState(SuperStructureStates.PLACE_CORAL_L4);
+
+      default -> {}
     }
   }
 
+  public void intakeAlgaeReefButtonPress() {
+    if (currentState == SuperStructureStates.INTAKE_ALGAE_REEF && !gripper.hasAlgae()) { //TODO: add here ignore
+      wantedState = SuperStructureStates.TRAVEL;
+    } else {
+      wantedState = SuperStructureStates.INTAKE_ALGAE_REEF;
+    }
+  }
+
+  public void intakeButtonPress() {
+    if (currentState == SuperStructureStates.INTAKE_CORAL_FLOOR) {
+      wantedState = SuperStructureStates.TRAVEL;
+      wantedIntakeState = StructureIntakeStates.CLOSED;
+    } else if (currentState == SuperStructureStates.TRAVEL) { //TODO: check if driver prefers that algae floor moves automatically to INTAKE_CORAL_FLOOR or not
+      wantedState = SuperStructureStates.INTAKE_CORAL_FLOOR;
+      wantedIntakeState = StructureIntakeStates.DEPLOY;
+    } else if (wantedIntakeState == StructureIntakeStates.DEPLOY) {
+      wantedIntakeState = StructureIntakeStates.CLOSED;
+    } else {
+      wantedIntakeState = StructureIntakeStates.DEPLOY;
+    }
+  }
+
+  public void intakeAlgaeFloorButtonPress() {
+    if (currentState == SuperStructureStates.INTAKE_ALGAE_FLOOR && !gripper.hasAlgae()) { //TODO: add here ignore
+      wantedState = SuperStructureStates.TRAVEL;
+    } else {
+      wantedState = SuperStructureStates.INTAKE_ALGAE_FLOOR;
+    }
+  }
+
+  public void l4NetButtonPress() {
+    if (gripper.hasAlgae()) {
+      wantedState = SuperStructureStates.ALGAE_NET;
+    } else {
+      if(currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L4) {
+        wantedState = SuperStructureStates.TRAVEL;
+      } else {
+        wantedState = SuperStructureStates.PLACE_CORAL_ALIGN_L4;
+      }
+    }
+  }
+
+  public void l3ButtonPress() {
+    if (currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L3) {
+      wantedState = SuperStructureStates.TRAVEL;
+    } else {
+      wantedState = SuperStructureStates.PLACE_CORAL_ALIGN_L3;
+    }
+  }
+
+  public void l2AlgaeHomeButtonPress() {
+    if (gripper.hasAlgae()) {
+      wantedState = SuperStructureStates.ALGAE_HOME;
+    } else {
+      if(currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L2) {
+        wantedState = SuperStructureStates.TRAVEL;
+      } else {
+        wantedState = SuperStructureStates.PLACE_CORAL_ALIGN_L2;
+      }
+    }
+  }
+
+  public void l1ProcessorButtonPress() {
+    if (gripper.hasAlgae()) {
+      wantedState = SuperStructureStates.ALGAE_PROCESSOR;
+    } else {
+      if(currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L1) {
+        wantedState = SuperStructureStates.TRAVEL;
+      } else {
+        wantedState = SuperStructureStates.PLACE_CORAL_ALIGN_L1;
+      }
+    }
+  }
+
+  public void climbButtonPress() {
+    if(wantedState != SuperStructureStates.OPEN_CLIMB) {
+      climbTimer.reset();
+      climbTimer.start();
+      wantedState = SuperStructureStates.OPEN_CLIMB;
+    } else if(climbTimer.hasElapsed(0.5)) {
+      wantedState = SuperStructureStates.CLIMBED;
+      climbTimer.stop();
+    }
+  }
+
+  public void purgeIntakeButtonTrue() {
+    if(wantedIntakeState == StructureIntakeStates.EXHAUST) return;
+
+    previousIntakeState = wantedIntakeState;
+    wantedIntakeState = StructureIntakeStates.EXHAUST;
+  }
+
+  public void purgeIntakeButtonFalse() {
+    if(wantedIntakeState != StructureIntakeStates.EXHAUST) return;
+
+    wantedIntakeState = previousIntakeState;
+  }
   
+  public void returnToDefaultButtonPress() {
+    wantedState = SuperStructureStates.TRAVEL;
+    wantedIntakeState = StructureIntakeStates.CLOSED;
+  }
 
   private void setWantedState(SuperStructureStates wantedState) {
     this.wantedState = wantedState;

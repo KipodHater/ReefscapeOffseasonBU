@@ -12,12 +12,12 @@ public class SingleXboxController implements ControllerInterface {
   }
 
   @Override
-  public Trigger scoreCoralButton() {
+  public Trigger scoreButton() {
     return new Trigger(() -> controller.getRawAxis(3) > 0.8);
   }
 
   @Override
-  public Trigger scoreEjectAlgaeButton() {
+  public Trigger intakeAlgaeReefButton() {
     return new Trigger(() -> controller.getRightBumperButton());
   }
 
@@ -66,10 +66,10 @@ public class SingleXboxController implements ControllerInterface {
     return new Trigger(() -> controller.getPOV() == 180.0);
   }
 
-  @Override
-  public Trigger forceInvertedNetButton() {
-    return new Trigger(() -> controller.getPOV() == 270.0);
-  }
+  // @Override
+  // public Trigger forceInvertedNetButton() {
+  //   return new Trigger(() -> controller.getPOV() == 270.0);
+  // }
 
   @Override
   public Trigger climbButton() {

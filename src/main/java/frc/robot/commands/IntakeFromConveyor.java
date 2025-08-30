@@ -97,7 +97,7 @@ public class IntakeFromConveyor extends Command {
           gripper.setState(GripperStates.HOLD_CORAL);
           currentState = IntakeFromConveyorStates.FINAL_MOVE_DEFAULT;
         }
-        if (timer.get() > 0.3) { // can change this constant but i think its fine
+        if (timer.hasElapsed(0.4)) { // can change this constant but i think its fine
           gripper.setState(GripperStates.HOLD_CORAL);
           currentState = IntakeFromConveyorStates.FINAL_MOVE_DEFAULT; // timeout for intake time
         }
