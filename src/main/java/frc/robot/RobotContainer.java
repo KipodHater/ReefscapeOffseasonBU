@@ -34,6 +34,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.SuperStructure.SuperStructureStates;
+import frc.robot.controllers.ControllerInterface;
+import frc.robot.controllers.SingleXboxController;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.arm.*;
 import frc.robot.subsystems.climb.Climb;
@@ -102,7 +104,7 @@ public class RobotContainer {
   private final SuperStructure structure;
 
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final ControllerInterface controller;
 
   private DoubleSupplier m_controllerLeftX;
   private DoubleSupplier m_controllerLeftY;
@@ -117,6 +119,7 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
+        controller = new SingleXboxController();
         drive =
             new Drive(
                 new GyroIONavX(),
@@ -125,9 +128,9 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight),
                 (robotPose) -> {},
-                controller::getLeftX,
-                controller::getLeftY,
-                () -> controller.getRawAxis(4));
+                controller.xVelocityAnalog(),
+                controller.yVelocityAnalog(),
+                controller.rotationVelocityAnalog());
         gripper = new Gripper(new GripperIOSpark(), new GripperSensorIORev());
         arm = new Arm(new ArmIOSpark());
         elevator = new Elevator(new ElevatorIOSpark());
@@ -157,7 +160,7 @@ public class RobotContainer {
                 DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
 
         SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-
+        controller = new SingleXboxController();
         drive =
             new Drive(
                 new GyroIOSim(driveSimulation.getGyroSimulation()),
@@ -166,9 +169,9 @@ public class RobotContainer {
                 new ModuleIOSim(driveSimulation.getModules()[2]),
                 new ModuleIOSim(driveSimulation.getModules()[3]),
                 (robotPose) -> driveSimulation.getSimulatedDriveTrainPose(),
-                controller::getLeftX,
-                controller::getLeftY,
-                () -> controller.getRawAxis(2));
+                controller.xVelocityAnalog(),
+                controller.yVelocityAnalog(),
+                controller.rotationVelocityAnalog());
 
         gripper = new Gripper(new GripperIOSim(driveSimulation), new GripperSensorIO() {});
         arm = new Arm(new ArmIOSim());
@@ -198,6 +201,7 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
+        controller = new SingleXboxController();
         drive =
             new Drive(
                 new GyroIO() {},
@@ -206,9 +210,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 (robotPose) -> {},
-                controller::getLeftX,
-                controller::getLeftY,
-                () -> controller.getRawAxis(4));
+                controller.xVelocityAnalog(),
+                controller.yVelocityAnalog(),
+                controller.rotationVelocityAnalog());
         gripper = new Gripper(new GripperIO() {}, new GripperSensorIO() {});
         arm = new Arm(new ArmIO() {});
         elevator = new Elevator(new ElevatorIO() {});
@@ -237,10 +241,6 @@ public class RobotContainer {
             leds,
             ObjectVision,
             vision);
-
-    m_controllerLeftX = controller::getLeftX;
-    m_controllerLeftY = controller::getLeftY;
-    m_controllerRightX = () -> controller.getRawAxis(4);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -272,36 +272,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Default command, normal field-relative drive
-    // drive.setDefaultCommand(
-    //     DriveCommands.joystickDrive(
-    //         drive, m_controllerLeftX, m_controllerLeftY, m_controllerRightX));
-
-    // Lock to 0° when A button is held
-    // controller
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -controller.getLeftY(),
-    //             () -> -controller.getLeftX(),
-    //             () -> new Rotation2d()));
-
-    dashboard.addCategory("blahblah", true, true, 1, 2, false, "test");
-    dashboard.addCategory("test", "testfgergetg2");
-    dashboard.addCategory("test2", 1, 2, 3, 4, 5);
-    dashboard.addCategory("test3", 1.5, 2.5, 3.5);
-    dashboard.addValueToCategory("test2", 5);
-    System.out.println(dashboard.getCategoryValue("test", 0));
-
-    controller.a().onTrue(Commands.runOnce(() -> drive.setDriveState(DriveStates.AUTO_ALIGN)));
-    controller.a().onFalse(Commands.runOnce(() -> drive.setDriveState(DriveStates.FIELD_DRIVE)));
-
-    // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    // Reset gyro to 0° when B button is pressed
-
     final Runnable resetGyro =
         Constants.currentMode == Constants.Mode.SIM
             ? () -> RobotState.getInstance().resetPose(driveSimulation.getSimulatedDriveTrainPose())
@@ -309,47 +279,7 @@ public class RobotContainer {
                 RobotState.getInstance()
                     .resetPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
 
-    controller.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-
-    // Simulation Buttons
-    if (Constants.currentMode == Constants.Mode.SIM) {
-      GenericHID controllerHID = new GenericHID(0);
-
-      Trigger stupidshit = new Trigger(() -> controllerHID.getRawButton(1));
-      Trigger stupidshit2 = new Trigger(() -> controllerHID.getRawButton(2));
-      Trigger stupidshit3 = new Trigger(() -> controllerHID.getRawButton(3));
-
-      // stupidshit.onTrue(Commands.runOnce(() -> elevator.setState(ElevatorStates.CORAL_L4)));
-      stupidshit2.onTrue(structure.setWantedStateCommand(SuperStructureStates.INTAKE_ALGAE_REEF));
-      // stupidshit3.onTrue(Commands.runOnce(() ->
-      // elevator.setState(ElevatorStates.CORAL_L2_SCORE)));
-
-      // L1 Placement
-      controller
-          .b()
-          .onTrue(
-              Commands.runOnce(
-                  () ->
-                      SimulatedArena.getInstance()
-                          .addGamePieceProjectile(
-                              new ReefscapeCoralOnFly(
-                                  // Obtain robot position from drive simulation
-                                  new Translation2d(1, 1),
-                                  // The scoring mechanism is installed at (0.46, 0) (meters) on the
-                                  // robot
-                                  new Translation2d(0, 0),
-                                  // Obtain robot speed from drive simulation
-                                  new ChassisSpeeds(),
-                                  // Obtain robot facing from drive simulation
-                                  new Rotation2d(58),
-                                  // The height at which the coral is ejected
-                                  Distance.ofRelativeUnits(2, Meter),
-                                  // The initial speed ofzz the coral
-                                  LinearVelocity.ofRelativeUnits(1.5, MetersPerSecond),
-                                  // The coral is ejected at a 35-degree slope
-                                  Angle.ofRelativeUnits(-45, Degree)))));
-    }
-    // Human Player
+    controller.resetGyroButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
   }
 

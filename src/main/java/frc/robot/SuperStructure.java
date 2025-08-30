@@ -462,6 +462,8 @@ public class SuperStructure extends SubsystemBase {
     }
   }
 
+  
+
   private void setWantedState(SuperStructureStates wantedState) {
     this.wantedState = wantedState;
   }
