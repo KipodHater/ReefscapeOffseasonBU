@@ -40,13 +40,9 @@ public class SuperStructure extends SubsystemBase {
     HOME,
     TRAVEL,
     INTAKE_CORAL_FLOOR,
-    PLACE_CORAL_ALIGN_L1,
     PLACE_CORAL_L1,
-    PLACE_CORAL_ALIGN_L2,
     PLACE_CORAL_L2,
-    PLACE_CORAL_ALIGN_L3,
     PLACE_CORAL_L3,
-    PLACE_CORAL_ALIGN_L4,
     PLACE_CORAL_L4,
     INTAKE_ALGAE_REEF,
     INTAKE_ALGAE_FLOOR,
@@ -56,31 +52,15 @@ public class SuperStructure extends SubsystemBase {
     OPEN_CLIMB,
     CLIMBED
   }
-  // public enum SuperStructureWantedStates{
-  //   HOME,
-  //   TRAVEL,
-  //   INTAKE_CORAL_FLOOR,
-  //   PLACE_CORAL_ALIGN_L4,
-  //   PLACE_CORAL_L4,
-  //   PLACE_CORAL_ALIGN_L3,
-  //   PLACE_CORAL_L3,
-  //   PLACE_CORAL_ALIGN_L2,
-  //   PLACE_CORAL_L2,
-  //   PLACE_CORAL_ALIGN_L1,
-  //   PLACE_CORAL_L1,
-  //   INTAKE_ALGAE_REEF,
-  //   INTAKE_ALGAE_FLOOR,
-  //   PLACE_ALGAE_PROCESSOR,
-  //   PLACE_ALGAE_NET,
-  //   OPEN_CLIMB,
-  //   CLIMBED
-  // }
 
   @AutoLogOutput(key = "SuperStructure/currentState")
   private SuperStructureStates currentState = SuperStructureStates.TRAVEL;
 
   @AutoLogOutput(key = "SuperStructure/wantedState")
   private SuperStructureStates wantedState = SuperStructureStates.TRAVEL;
+
+  @AutoLogOutput(key = "SuperStructure/nextState")
+  private SuperStructureStates nextState = SuperStructureStates.TRAVEL;
 
   private SuperStructureStates previousState = SuperStructureStates.TRAVEL;
 
@@ -132,9 +112,18 @@ public class SuperStructure extends SubsystemBase {
   @Override
   public void periodic() {
     previousState = currentState;
-    if (wantedState != currentState) currentState = handleStateTransition(wantedState);
-    stateMachine();
-    wantedState = currentState;
+    if(!currentCommand.isScheduled()){
+      if(nextState != null){
+        currentState = nextState;
+        nextState = null;
+      }
+      if(currentState != wantedState){
+        nextState = handleStateTransition(wantedState);
+        // current command = ?
+        currentCommand.schedule();
+      }
+    }
+    if(!currentCommand.isScheduled()) stateMachine();
   }
 
   private SuperStructureStates handleStateTransition(SuperStructureStates wantedState) {
@@ -150,27 +139,11 @@ public class SuperStructure extends SubsystemBase {
         else yield SuperStructureStates.INTAKE_CORAL_FLOOR;
       }
 
-      case PLACE_CORAL_ALIGN_L1 -> {
-        if (conveyor.hasCoral() || gripper.hasCoral()) {
-          yield SuperStructureStates.PLACE_CORAL_ALIGN_L1;
-        } else {
-          yield previousState;
-        }
-      }
-
       case PLACE_CORAL_L1 -> {
         if (gripper.hasCoral()) {
           yield SuperStructureStates.PLACE_CORAL_L1;
         } else {
           yield SuperStructureStates.TRAVEL;
-        }
-      }
-
-      case PLACE_CORAL_ALIGN_L2 -> {
-        if (conveyor.hasCoral() || gripper.hasCoral()) {
-          yield SuperStructureStates.PLACE_CORAL_ALIGN_L2;
-        } else {
-          yield previousState;
         }
       }
 
@@ -182,27 +155,11 @@ public class SuperStructure extends SubsystemBase {
         }
       }
 
-      case PLACE_CORAL_ALIGN_L3 -> {
-        if (conveyor.hasCoral() || gripper.hasCoral()) {
-          yield SuperStructureStates.PLACE_CORAL_ALIGN_L3;
-        } else {
-          yield previousState;
-        }
-      }
-
       case PLACE_CORAL_L3 -> {
         if (gripper.hasCoral()) {
           yield SuperStructureStates.PLACE_CORAL_L3;
         } else {
           yield SuperStructureStates.TRAVEL;
-        }
-      }
-
-      case PLACE_CORAL_ALIGN_L4 -> {
-        if (conveyor.hasCoral() || gripper.hasCoral()) {
-          yield SuperStructureStates.PLACE_CORAL_ALIGN_L4;
-        } else {
-          yield previousState;
         }
       }
 
@@ -260,19 +217,11 @@ public class SuperStructure extends SubsystemBase {
 
       case INTAKE_CORAL_FLOOR -> intakeCoralFloor();
 
-      case PLACE_CORAL_ALIGN_L1 -> placeCoralAlignLx(1);
-
       case PLACE_CORAL_L1 -> placeCoralLx(1);
-
-      case PLACE_CORAL_ALIGN_L2 -> placeCoralAlignLx(2);
 
       case PLACE_CORAL_L2 -> placeCoralLx(2);
 
-      case PLACE_CORAL_ALIGN_L3 -> placeCoralAlignLx(3);
-
       case PLACE_CORAL_L3 -> placeCoralLx(3);
-
-      case PLACE_CORAL_ALIGN_L4 -> placeCoralAlignLx(4);
 
       case PLACE_CORAL_L4 -> placeCoralLx(4);
 
