@@ -253,15 +253,29 @@ public class RobotContainer {
     controller.resetGyroButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
     controller.scoreButton().onTrue(Commands.runOnce(() -> structure.scoreButtonPress()));
-    controller.openCloseIntakeButton().onTrue(Commands.runOnce(()->structure.intakeButtonPress()));
-    controller.intakeAlgaeReefButton().onTrue(Commands.runOnce(() -> structure.intakeAlgaeReefButtonPress()));
-    controller.intakeAlgaeFloorButton().onTrue(Commands.runOnce(() -> structure.intakeAlgaeFloorButtonPress()));
+    controller
+        .openCloseIntakeButton()
+        .onTrue(Commands.runOnce(() -> structure.intakeButtonPress()));
+    controller
+        .intakeAlgaeReefButton()
+        .onTrue(Commands.runOnce(() -> structure.intakeAlgaeReefButtonPress()));
+    controller
+        .intakeAlgaeFloorButton()
+        .onTrue(Commands.runOnce(() -> structure.intakeAlgaeFloorButtonPress()));
     controller.l4NetButton().onTrue(Commands.runOnce(() -> structure.l4NetButtonPress()));
     controller.l3Button().onTrue(Commands.runOnce(() -> structure.l3ButtonPress()));
-    controller.l2AlgaeHomeButton().onTrue(Commands.runOnce(() -> structure.l2AlgaeHomeButtonPress()));
-    controller.l1ProcessorButton().onTrue(Commands.runOnce(() -> structure.l1ProcessorButtonPress()));
-    controller.purgeIntakeButton().onTrue(Commands.runOnce(() -> structure.purgeIntakeButtonTrue()));
-    controller.purgeIntakeButton().onFalse(Commands.runOnce(() -> structure.purgeIntakeButtonFalse()));
+    controller
+        .l2AlgaeHomeButton()
+        .onTrue(Commands.runOnce(() -> structure.l2AlgaeHomeButtonPress()));
+    controller
+        .l1ProcessorButton()
+        .onTrue(Commands.runOnce(() -> structure.l1ProcessorButtonPress()));
+    controller
+        .purgeIntakeButton()
+        .onTrue(Commands.runOnce(() -> structure.purgeIntakeButtonTrue()));
+    controller
+        .purgeIntakeButton()
+        .onFalse(Commands.runOnce(() -> structure.purgeIntakeButtonFalse()));
     controller.climbButton().whileTrue(Commands.runOnce(() -> structure.climbButtonPress()));
   }
 

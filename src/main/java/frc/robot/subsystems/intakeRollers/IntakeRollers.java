@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intakeRollers;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -29,6 +30,7 @@ public class IntakeRollers extends SubsystemBase {
 
   public IntakeRollers(IntakeRollersIO io) {
     this.io = io;
+    SmartDashboard.putBoolean("Intake/Ignore Intake Sensor", false);
   }
 
   public void periodic() {
@@ -56,5 +58,9 @@ public class IntakeRollers extends SubsystemBase {
 
   public boolean hasCoral() {
     return false;
+  }
+
+  public boolean shouldIgnoreSensor() {
+    return SmartDashboard.getBoolean("Intake/Ignore Intake Sensor", false);
   }
 }

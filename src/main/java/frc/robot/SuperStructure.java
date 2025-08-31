@@ -33,7 +33,6 @@ import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.leds.Leds.ledsStates;
 import frc.robot.subsystems.objectVision.ObjectVision;
 import frc.robot.subsystems.vision.Vision;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class SuperStructure extends SubsystemBase {
@@ -122,7 +121,7 @@ public class SuperStructure extends SubsystemBase {
     this.leds = leds;
     this.objectVision = ObjectVision;
     this.vision = vision;
-    
+
     climbTimer.reset();
     climbTimer.stop();
   }
@@ -142,7 +141,8 @@ public class SuperStructure extends SubsystemBase {
       case HOME -> SuperStructureStates.HOME;
 
       case TRAVEL -> {
-        if(gripper.hasAlgae() /*&& !ignoreGripperSensor*/) yield SuperStructureStates.ALGAE_HOME;
+        if (gripper.hasAlgae() && !gripper.shouldIgnoreSensor())
+          yield SuperStructureStates.ALGAE_HOME;
         else yield SuperStructureStates.TRAVEL;
       }
 
@@ -152,7 +152,9 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_ALIGN_L1 -> {
-        if ((conveyor.hasCoral() || gripper.hasCoral()) && !gripper.hasAlgae()) {
+        if (((conveyor.hasCoral() || conveyor.shouldIgnoreSensor())
+            || (gripper.hasCoral() || gripper.shouldIgnoreSensor())
+                && (!gripper.hasAlgae() || gripper.shouldIgnoreSensor()))) {
           yield SuperStructureStates.PLACE_CORAL_ALIGN_L1;
         } else {
           yield previousState;
@@ -160,7 +162,8 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_L1 -> {
-        if (gripper.hasCoral() && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L1) {
+        if ((gripper.hasCoral() || gripper.shouldIgnoreSensor())
+            && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L1) {
           yield SuperStructureStates.PLACE_CORAL_L1;
         } else {
           yield previousState;
@@ -168,7 +171,9 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_ALIGN_L2 -> {
-        if ((conveyor.hasCoral() || gripper.hasCoral()) && !gripper.hasAlgae()) {
+        if (((conveyor.hasCoral() || conveyor.shouldIgnoreSensor())
+            || (gripper.hasCoral() || gripper.shouldIgnoreSensor())
+                && (!gripper.hasAlgae() || gripper.shouldIgnoreSensor()))) {
           yield SuperStructureStates.PLACE_CORAL_ALIGN_L2;
         } else {
           yield previousState;
@@ -176,7 +181,8 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_L2 -> {
-        if (gripper.hasCoral() && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L2) {
+        if ((gripper.hasCoral() || gripper.shouldIgnoreSensor())
+            && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L2) {
           yield SuperStructureStates.PLACE_CORAL_L2;
         } else {
           yield previousState;
@@ -184,7 +190,9 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_ALIGN_L3 -> {
-        if ((conveyor.hasCoral() || gripper.hasCoral()) && !gripper.hasAlgae()) {
+        if (((conveyor.hasCoral() || conveyor.shouldIgnoreSensor())
+            || (gripper.hasCoral() || gripper.shouldIgnoreSensor())
+                && (!gripper.hasAlgae() || gripper.shouldIgnoreSensor()))) {
           yield SuperStructureStates.PLACE_CORAL_ALIGN_L3;
         } else {
           yield previousState;
@@ -192,7 +200,8 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_L3 -> {
-        if (gripper.hasCoral() && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L3) {
+        if ((gripper.hasCoral() || gripper.shouldIgnoreSensor())
+            && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L3) {
           yield SuperStructureStates.PLACE_CORAL_L3;
         } else {
           yield previousState;
@@ -200,7 +209,9 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_ALIGN_L4 -> {
-        if ((conveyor.hasCoral() || gripper.hasCoral()) && !gripper.hasAlgae()) {
+        if (((conveyor.hasCoral() || conveyor.shouldIgnoreSensor())
+            || (gripper.hasCoral() || gripper.shouldIgnoreSensor())
+                && (!gripper.hasAlgae() || gripper.shouldIgnoreSensor()))) {
           yield SuperStructureStates.PLACE_CORAL_ALIGN_L4;
         } else {
           yield previousState;
@@ -208,7 +219,8 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case PLACE_CORAL_L4 -> {
-        if (gripper.hasCoral() && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L4) {
+        if ((gripper.hasCoral() || gripper.shouldIgnoreSensor())
+            && currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L4) {
           yield SuperStructureStates.PLACE_CORAL_L4;
         } else {
           yield previousState;
@@ -216,24 +228,26 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case INTAKE_ALGAE_REEF -> {
-        if (!gripper.hasAlgae() && !gripper.hasCoral())
+        if ((!gripper.hasAlgae() && !gripper.hasCoral()) || gripper.shouldIgnoreSensor())
           yield SuperStructureStates.INTAKE_ALGAE_REEF;
         else yield previousState;
       }
 
       case INTAKE_ALGAE_FLOOR -> {
-        if (!gripper.hasAlgae() && !gripper.hasCoral())
+        if ((!gripper.hasAlgae() && !gripper.hasCoral()) || gripper.shouldIgnoreSensor())
           yield SuperStructureStates.INTAKE_ALGAE_FLOOR;
         else yield previousState;
       }
 
       case ALGAE_PROCESSOR -> {
-        if (gripper.hasAlgae()) yield SuperStructureStates.ALGAE_PROCESSOR;
+        if (gripper.hasAlgae() || gripper.shouldIgnoreSensor())
+          yield SuperStructureStates.ALGAE_PROCESSOR;
         else yield previousState;
       }
 
       case ALGAE_NET -> {
-        if (gripper.hasAlgae()) yield SuperStructureStates.ALGAE_NET;
+        if (gripper.hasAlgae() || gripper.shouldIgnoreSensor())
+          yield SuperStructureStates.ALGAE_NET;
         else yield previousState;
       }
 
@@ -390,7 +404,7 @@ public class SuperStructure extends SubsystemBase {
               gripper,
               lx,
               () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
-              null);
+              () -> gripper.shouldIgnoreSensor());
     }
     if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
       leds.setState(ledsStates.BLUE);
@@ -425,10 +439,10 @@ public class SuperStructure extends SubsystemBase {
   }
 
   private void openIntakeIfPossible() {
-    if (conveyor.hasCoral()
-        || gripper.hasCoral()
-        || (currentState
-            == SuperStructureStates.CLIMBED)) { // TODO: add ignore sensors logic and intake coral
+    if ((conveyor.hasCoral()
+            || gripper.hasCoral()
+            || (currentState == SuperStructureStates.CLIMBED))
+        && (!conveyor.shouldIgnoreSensor() && !gripper.shouldIgnoreSensor())) {
       intakeDeploy.setState(IntakeDeployStates.CLOSED);
       intakeRollers.setState(IntakeRollersStates.IDLE);
     } else {
@@ -438,27 +452,35 @@ public class SuperStructure extends SubsystemBase {
   }
 
   private void closeIntakeIfPossible() {
-    intakeRollers.setState(IntakeRollersStates.IDLE);
-    if (intakeRollers.hasCoral()) { // TODO: add ignore intake sensor and intake sensor
+    if (intakeRollers.hasCoral()
+        || intakeRollers.shouldIgnoreSensor()) { // TODO: add ignore intake sensor and intake sensor
       intakeDeploy.setState(IntakeDeployStates.CLOSED);
+      intakeRollers.setState(IntakeRollersStates.IDLE);
     } else {
       intakeDeploy.setState(IntakeDeployStates.DEPLOY);
+      if (conveyor.hasCoral() && intakeRollers.hasCoral() && !conveyor.shouldIgnoreSensor()) {
+        intakeRollers.setState(IntakeRollersStates.IDLE);
+      } else {
+        intakeRollers.setState(IntakeRollersStates.INTAKE);
+      }
     }
   }
 
   public void scoreButtonPress() {
     switch (currentState) {
-      case PLACE_CORAL_ALIGN_L1-> setWantedState(SuperStructureStates.PLACE_CORAL_L1);
-      case PLACE_CORAL_ALIGN_L2-> setWantedState(SuperStructureStates.PLACE_CORAL_L2);
-      case PLACE_CORAL_ALIGN_L3-> setWantedState(SuperStructureStates.PLACE_CORAL_L3);
-      case PLACE_CORAL_ALIGN_L4-> setWantedState(SuperStructureStates.PLACE_CORAL_L4);
+      case PLACE_CORAL_ALIGN_L1 -> setWantedState(SuperStructureStates.PLACE_CORAL_L1);
+      case PLACE_CORAL_ALIGN_L2 -> setWantedState(SuperStructureStates.PLACE_CORAL_L2);
+      case PLACE_CORAL_ALIGN_L3 -> setWantedState(SuperStructureStates.PLACE_CORAL_L3);
+      case PLACE_CORAL_ALIGN_L4 -> setWantedState(SuperStructureStates.PLACE_CORAL_L4);
 
       default -> {}
     }
   }
 
   public void intakeAlgaeReefButtonPress() {
-    if (currentState == SuperStructureStates.INTAKE_ALGAE_REEF && !gripper.hasAlgae()) { //TODO: add here ignore
+    if (currentState == SuperStructureStates.INTAKE_ALGAE_REEF
+        && (gripper.hasAlgae() || gripper.hasCoral())
+        && !gripper.shouldIgnoreSensor()) {
       wantedState = SuperStructureStates.TRAVEL;
     } else {
       wantedState = SuperStructureStates.INTAKE_ALGAE_REEF;
@@ -469,7 +491,10 @@ public class SuperStructure extends SubsystemBase {
     if (currentState == SuperStructureStates.INTAKE_CORAL_FLOOR) {
       wantedState = SuperStructureStates.TRAVEL;
       wantedIntakeState = StructureIntakeStates.CLOSED;
-    } else if (currentState == SuperStructureStates.TRAVEL) { //TODO: check if driver prefers that algae floor moves automatically to INTAKE_CORAL_FLOOR or not
+    } else if (currentState
+        == SuperStructureStates
+            .TRAVEL) { // TODO: check if driver prefers that algae floor moves automatically to
+      // INTAKE_CORAL_FLOOR or not
       wantedState = SuperStructureStates.INTAKE_CORAL_FLOOR;
       wantedIntakeState = StructureIntakeStates.DEPLOY;
     } else if (wantedIntakeState == StructureIntakeStates.DEPLOY) {
@@ -480,7 +505,8 @@ public class SuperStructure extends SubsystemBase {
   }
 
   public void intakeAlgaeFloorButtonPress() {
-    if (currentState == SuperStructureStates.INTAKE_ALGAE_FLOOR && !gripper.hasAlgae()) { //TODO: add here ignore
+    if (currentState == SuperStructureStates.INTAKE_ALGAE_FLOOR
+        && !gripper.hasAlgae()) { // TODO: add here ignore
       wantedState = SuperStructureStates.TRAVEL;
     } else {
       wantedState = SuperStructureStates.INTAKE_ALGAE_FLOOR;
@@ -488,10 +514,10 @@ public class SuperStructure extends SubsystemBase {
   }
 
   public void l4NetButtonPress() {
-    if (gripper.hasAlgae()) {
+    if (gripper.hasAlgae() && !gripper.shouldIgnoreSensor()) {
       wantedState = SuperStructureStates.ALGAE_NET;
     } else {
-      if(currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L4) {
+      if (currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L4) {
         wantedState = SuperStructureStates.TRAVEL;
       } else {
         wantedState = SuperStructureStates.PLACE_CORAL_ALIGN_L4;
@@ -508,10 +534,10 @@ public class SuperStructure extends SubsystemBase {
   }
 
   public void l2AlgaeHomeButtonPress() {
-    if (gripper.hasAlgae()) {
+    if (gripper.hasAlgae() && !gripper.shouldIgnoreSensor()) {
       wantedState = SuperStructureStates.ALGAE_HOME;
     } else {
-      if(currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L2) {
+      if (currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L2) {
         wantedState = SuperStructureStates.TRAVEL;
       } else {
         wantedState = SuperStructureStates.PLACE_CORAL_ALIGN_L2;
@@ -520,10 +546,10 @@ public class SuperStructure extends SubsystemBase {
   }
 
   public void l1ProcessorButtonPress() {
-    if (gripper.hasAlgae()) {
+    if (gripper.hasAlgae() && !gripper.shouldIgnoreSensor()) {
       wantedState = SuperStructureStates.ALGAE_PROCESSOR;
     } else {
-      if(currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L1) {
+      if (currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L1) {
         wantedState = SuperStructureStates.TRAVEL;
       } else {
         wantedState = SuperStructureStates.PLACE_CORAL_ALIGN_L1;
@@ -532,29 +558,29 @@ public class SuperStructure extends SubsystemBase {
   }
 
   public void climbButtonPress() {
-    if(wantedState != SuperStructureStates.OPEN_CLIMB) {
+    if (wantedState != SuperStructureStates.OPEN_CLIMB) {
       climbTimer.reset();
       climbTimer.start();
       wantedState = SuperStructureStates.OPEN_CLIMB;
-    } else if(climbTimer.hasElapsed(0.5)) {
+    } else if (climbTimer.hasElapsed(0.5)) {
       wantedState = SuperStructureStates.CLIMBED;
       climbTimer.stop();
     }
   }
 
   public void purgeIntakeButtonTrue() {
-    if(wantedIntakeState == StructureIntakeStates.EXHAUST) return;
+    if (wantedIntakeState == StructureIntakeStates.EXHAUST) return;
 
     previousIntakeState = wantedIntakeState;
     wantedIntakeState = StructureIntakeStates.EXHAUST;
   }
 
   public void purgeIntakeButtonFalse() {
-    if(wantedIntakeState != StructureIntakeStates.EXHAUST) return;
+    if (wantedIntakeState != StructureIntakeStates.EXHAUST) return;
 
     wantedIntakeState = previousIntakeState;
   }
-  
+
   public void returnToDefaultButtonPress() {
     wantedState = SuperStructureStates.TRAVEL;
     wantedIntakeState = StructureIntakeStates.CLOSED;

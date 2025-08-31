@@ -1,53 +1,54 @@
 package frc.robot.controllers;
 
-import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-public class SimulationController implements ControllerInterface {
-  private final GenericHID controller;
+public class TwoControllers implements ControllerInterface {
 
-  public SimulationController() {
-    controller = new GenericHID(0);
+  private final XboxController controller;
+
+  public TwoControllers() {
+    controller = new XboxController(0);
   }
 
   @Override
   public Trigger scoreButton() {
-    return new Trigger(() -> controller.getRawButton(5));
+    return new Trigger(() -> controller.getRawAxis(3) > 0.8);
   }
 
   @Override
   public Trigger intakeAlgaeReefButton() {
-    return new Trigger(() -> controller.getRawButton(8));
+    return new Trigger(() -> controller.getRightBumperButton());
   }
 
   @Override
   public Trigger openCloseIntakeButton() {
-    return new Trigger(() -> controller.getRawButton(6));
+    return new Trigger(() -> controller.getRawAxis(2) > 0.8);
   }
 
   @Override
   public Trigger intakeAlgaeFloorButton() {
-    return new Trigger(() -> controller.getRawButton(7));
+    return new Trigger(() -> controller.getLeftBumperButton());
   }
 
   @Override
   public Trigger l4NetButton() {
-    return new Trigger(() -> controller.getRawButton(4));
+    return new Trigger(() -> controller.getYButton());
   }
 
   @Override
   public Trigger l3Button() {
-    return new Trigger(() -> controller.getRawButton(3));
+    return new Trigger(() -> controller.getXButton());
   }
 
   @Override
   public Trigger l2AlgaeHomeButton() {
-    return new Trigger(() -> controller.getRawButton(2));
+    return new Trigger(() -> controller.getBButton());
   }
 
   @Override
   public Trigger l1ProcessorButton() {
-    return new Trigger(() -> controller.getRawButton(1));
+    return new Trigger(() -> controller.getAButton());
   }
 
   @Override
@@ -57,12 +58,12 @@ public class SimulationController implements ControllerInterface {
 
   @Override
   public Trigger purgeIntakeButton() {
-    return new Trigger(() -> controller.getRawButton(10));
+    return new Trigger(() -> controller.getPOV() == 90.0);
   }
 
   @Override
   public Trigger returnToDefaultButton() {
-    return new Trigger(() -> controller.getRawButton(11));
+    return new Trigger(() -> controller.getPOV() == 180.0);
   }
 
   // @Override
@@ -72,21 +73,21 @@ public class SimulationController implements ControllerInterface {
 
   @Override
   public Trigger climbButton() {
-    return new Trigger(() -> controller.getRawButton(9));
+    return new Trigger(() -> controller.getRawButton(8) && controller.getRawButton(7));
   }
 
   @Override
   public double xVelocityAnalog() {
-    return controller.getRawAxis(0);
+    return controller.getLeftX();
   }
 
   @Override
   public double yVelocityAnalog() {
-    return -controller.getRawAxis(1);
+    return -controller.getLeftY();
   }
 
   @Override
   public double rotationVelocityAnalog() {
-    return controller.getRawAxis(4);
+    return controller.getRightX();
   }
 }

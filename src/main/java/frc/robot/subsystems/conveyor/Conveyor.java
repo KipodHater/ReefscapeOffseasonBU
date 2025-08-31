@@ -4,6 +4,7 @@ import static frc.robot.subsystems.conveyor.ConveyorConstants.REVERSE_VOLTAGE;
 import static frc.robot.subsystems.conveyor.ConveyorConstants.currentThreshold;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -34,6 +35,7 @@ public class Conveyor extends SubsystemBase {
 
   public Conveyor(ConveyorIO io) {
     this.io = io;
+    SmartDashboard.putBoolean("Conveyor/Ignore Conveyor Sensor", false);
   }
 
   public void setState(ConveyorStates state) {
@@ -68,5 +70,9 @@ public class Conveyor extends SubsystemBase {
 
   public boolean hasCoral() {
     return false;
+  }
+
+  public boolean shouldIgnoreSensor() {
+    return SmartDashboard.getBoolean("Conveyor/Ignore Conveyor Sensor", false);
   }
 }
