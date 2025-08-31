@@ -75,67 +75,9 @@ public class Gripper extends SubsystemBase {
       hasCoral = false;
       hasAlgae = false;
     }
-    currentState = handleStateTransition(wantedState);
     stateMachine();
 
     wantedState = currentState;
-  }
-
-  private GripperStates handleStateTransition(GripperStates wantedState) {
-    return switch (wantedState) {
-      case EJECT_CORAL -> {
-        if (sensorInputs.hasGamepiece) {
-          yield GripperStates.EJECT_CORAL;
-        } else {
-          yield GripperStates.IDLE;
-        }
-      }
-      case EJECT_CORAL_L1 -> {
-        if (sensorInputs.hasGamepiece) {
-          yield GripperStates.EJECT_CORAL_L1;
-        } else {
-          yield GripperStates.IDLE;
-        }
-      }
-      case EJECT_ALGAE -> {
-        if (sensorInputs.hasGamepiece) {
-          yield GripperStates.EJECT_ALGAE;
-        } else {
-          yield GripperStates.IDLE;
-        }
-      }
-      case INTAKE_CORAL -> {
-        if (sensorInputs.hasGamepiece) {
-          yield GripperStates.HOLD_CORAL;
-        } else {
-          yield GripperStates.INTAKE_CORAL;
-        }
-      }
-      case INTAKE_ALGAE -> {
-        if (sensorInputs.hasGamepiece) {
-          yield GripperStates.HOLD_ALGAE;
-        } else {
-          yield GripperStates.INTAKE_ALGAE;
-        }
-      }
-      case HOLD_CORAL -> {
-        if (sensorInputs.hasGamepiece) {
-          yield GripperStates.HOLD_CORAL;
-        } else {
-          yield GripperStates.IDLE;
-        }
-      }
-      case HOLD_ALGAE -> {
-        if (sensorInputs.hasGamepiece) {
-          yield GripperStates.HOLD_ALGAE;
-        } else {
-          yield GripperStates.IDLE;
-        }
-      }
-      default -> {
-        yield GripperStates.EJECT_CORAL;
-      }
-    };
   }
 
   private void stateMachine() {
@@ -165,7 +107,7 @@ public class Gripper extends SubsystemBase {
   }
 
   public void setState(GripperStates wantedState) {
-    this.wantedState = wantedState;
+    this.currentState = wantedState;
   }
 
   public void testPeriodic() {}

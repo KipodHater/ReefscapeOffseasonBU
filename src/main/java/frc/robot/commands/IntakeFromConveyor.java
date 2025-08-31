@@ -14,7 +14,6 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.Elevator.ElevatorStates;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.Gripper.GripperStates;
-import java.util.function.BooleanSupplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeFromConveyor extends Command {
@@ -31,26 +30,16 @@ public class IntakeFromConveyor extends Command {
   private final Arm arm;
   private final Elevator elevator;
   private final Gripper gripper;
-  private final BooleanSupplier gripperHasCoral;
-  private final BooleanSupplier ignoreGripperSensor;
   private boolean isFinished = false;
 
   private final Debouncer sensorDebouncer = new Debouncer(0.3, DebounceType.kRising);
   private final Timer timer = new Timer();
 
-  public IntakeFromConveyor(
-      Arm arm,
-      Elevator elevator,
-      Gripper gripper,
-      BooleanSupplier gripperHasCoral,
-      BooleanSupplier ignoreGripperSensor) {
+  public IntakeFromConveyor(Arm arm, Elevator elevator, Gripper gripper) {
     this.arm = arm;
     this.elevator = elevator;
     this.gripper = gripper;
     addRequirements(arm, elevator, gripper);
-
-    this.gripperHasCoral = gripperHasCoral;
-    this.ignoreGripperSensor = ignoreGripperSensor;
   }
 
   // Called when the command is initially scheduled.
@@ -92,8 +81,7 @@ public class IntakeFromConveyor extends Command {
         arm.setState(ArmStates.DEFAULT);
         elevator.setState(ElevatorStates.CORAL_INTAKE_CONVEYOR);
         gripper.setState(GripperStates.INTAKE_CORAL);
-        if (sensorDebouncer.calculate(gripperHasCoral.getAsBoolean())
-            && !ignoreGripperSensor.getAsBoolean()) {
+        if (sensorDebouncer.calculate(gripper.hasCoral()) && !gripper.shouldIgnoreSensor()) {
           gripper.setState(GripperStates.HOLD_CORAL);
           currentState = IntakeFromConveyorStates.FINAL_MOVE_DEFAULT;
         }

@@ -85,7 +85,7 @@ public final class Constants {
       new Pose2d(),
       new Pose2d(),
       new Pose2d(),
-      new Pose2d()
+      new Pose2d(5.3, 2.5, Rotation2d.fromDegrees(-60))
     };
 
     public static final Pose2d[] CORAL_ALIGN_POSES = {
@@ -100,7 +100,7 @@ public final class Constants {
       new Pose2d(),
       new Pose2d(),
       new Pose2d(),
-      new Pose2d()
+      new Pose2d(5.1, 2.7, Rotation2d.fromDegrees(-60))
     };
 
     public static final Pose2d[] ALGAE_ALIGN_POSES = {

@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.controllers.ControllerInterface;
 import frc.robot.controllers.SimulationController;
@@ -293,7 +294,7 @@ public class RobotContainer {
     SmartDashboard.putData("sub-arm", arm);
     SmartDashboard.putData("sub-drive", drive);
     SmartDashboard.putData("sub-gripper", gripper);
-
+    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     // SmartDashboard.putData(
     //     "rgtrh",
     //     new AlignAlgaeReefCommand(drive, arm, elevator, gripper, false, () -> false, () ->

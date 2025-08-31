@@ -11,7 +11,7 @@ public class ArmConstants {
   public static final Gains GAINS =
       switch (Constants.currentMode) {
         case REAL -> new Gains(0.26, 0, 0.01, 0.01, 0.1, 0.0, 0.1);
-        default -> new Gains(0.1, 0, 0, 0, 0, 0, 0);
+        default -> new Gains(0.03, 0, 0, 0, 0, 0, 0);
       };
 
   public static final double ARM_GEAR_RATIO = 14.0 / (36.0 * 60.0); // 100:1
@@ -22,8 +22,8 @@ public class ArmConstants {
 
   public static final int ARM_CURRENT_LIMIT = 50;
   public static final double ARM_ENCODER_OFFSET = 55.0 - 16 - 40 + 74 + 6;
-  public static final double ARM_POSITION_TOLERANCE_DEG = 1.0;
-  public static final double ARM_SCORE_POSITION_TOLERANCE_DEG = 6.0;
+  public static final double ARM_POSITION_TOLERANCE_DEG = 2.0;
+  public static final double ARM_SCORE_POSITION_TOLERANCE_DEG = 2.0;
   public static final boolean ARM_INVERTED = false;
   public static final boolean ARM_BRAKE = true;
   public static final double POSITION_CONVERSION_FACTOR = 360; // makes it degrees

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -71,6 +72,7 @@ public class SuperStructure extends SubsystemBase {
   @AutoLogOutput(key = "SuperStructure/wantedState")
   private SuperStructureStates wantedState = SuperStructureStates.TRAVEL;
 
+  @AutoLogOutput(key = "SuperStructure/previousState")
   private SuperStructureStates previousState = SuperStructureStates.TRAVEL;
 
   @AutoLogOutput(key = "SuperStructure/wantedIntakeState")
@@ -122,6 +124,7 @@ public class SuperStructure extends SubsystemBase {
     this.objectVision = ObjectVision;
     this.vision = vision;
 
+    SmartDashboard.putBoolean("Structure/got here", false);
     climbTimer.reset();
     climbTimer.stop();
   }
@@ -395,18 +398,10 @@ public class SuperStructure extends SubsystemBase {
     wantedIntakeState = StructureIntakeStates.CLOSED;
     closeIntakeIfPossible();
     if (previousState != currentState) {
-
-      currentCommand =
-          new AlignCoralCommand(
-              drive,
-              arm,
-              elevator,
-              gripper,
-              lx,
-              () -> gripper.hasCoral(), /* dashboard.ignoreGripperSensor*/
-              () -> gripper.shouldIgnoreSensor());
+      currentCommand = new AlignCoralCommand(drive, arm, elevator, gripper, lx);
+      currentCommand.schedule();
     }
-    if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+    if (!currentCommand.isScheduled()) {
       leds.setState(ledsStates.BLUE);
     }
   }
@@ -452,8 +447,7 @@ public class SuperStructure extends SubsystemBase {
   }
 
   private void closeIntakeIfPossible() {
-    if (intakeRollers.hasCoral()
-        || intakeRollers.shouldIgnoreSensor()) { // TODO: add ignore intake sensor and intake sensor
+    if (intakeRollers.hasCoral() || intakeRollers.shouldIgnoreSensor()) {
       intakeDeploy.setState(IntakeDeployStates.CLOSED);
       intakeRollers.setState(IntakeRollersStates.IDLE);
     } else {
