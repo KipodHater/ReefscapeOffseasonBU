@@ -24,7 +24,7 @@ public class ArmIOSim implements ArmIO {
     armSim =
         new SingleJointedArmSim(
             LinearSystemId.createSingleJointedArmSystem(DCMotor.getNEO(1), ARM_MOI, 100.0),
-            DCMotor.getNEO(2),
+            DCMotor.getNEO(1),
             ARM_GEAR_RATIO,
             ARM_LENGTH_METERS,
             MIN_ANGLE * Math.PI / 180.0,
