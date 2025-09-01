@@ -410,7 +410,9 @@ public class SuperStructure extends SubsystemBase {
     wantedIntakeState = StructureIntakeStates.CLOSED;
     closeIntakeIfPossible();
     if (previousState != currentState) {
-      currentCommand = SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, lx);
+      currentCommand =
+          SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, lx)
+              .withTimeout(0.3);
       currentCommand.schedule();
     }
     if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {

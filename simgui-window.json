@@ -11,8 +11,8 @@
       "style": "0",
       "userScale": "2",
       "width": "1920",
-      "xpos": "191",
-      "ypos": "47"
+      "xpos": "312",
+      "ypos": "92"
     }
   },
   "Table": {
@@ -27,12 +27,12 @@
     "###FMS": {
       "Collapsed": "0",
       "Pos": "714,496",
-      "Size": "169,184"
+      "Size": "175,184"
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "444,75",
-      "Size": "796,138"
+      "Size": "796,149"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",

@@ -117,7 +117,6 @@ public class SimpleCommands {
         },
         () -> {
           if (arm.atScoreGoal()) {
-            System.out.println("no im the problem!");
             gripper.setState(GripperStates.EJECT_CORAL);
             drive.setStateSlowlyForward(RobotState.getInstance().getCoralScoringInfo().backside());
           }
