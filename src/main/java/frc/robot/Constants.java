@@ -200,37 +200,6 @@ public final class Constants {
           FieldConstants.REEF_BRANCHES[11].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[5])),
           FieldConstants.REEF_ANGLES[5].plus(Rotation2d.fromDegrees(90)))
-
-    public static final double SCORE_DISTANCE = 0.3;
-    public static final Pose2d[] CORAL_SCORE_POSES = {
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[0]), FieldConstants.REEF_ANGLES[0]),
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[0]), FieldConstants.REEF_ANGLES[0]),
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[1]), FieldConstants.REEF_ANGLES[1]),
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[1]), FieldConstants.REEF_ANGLES[1]),
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[2]), FieldConstants.REEF_ANGLES[2]),
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[2]), FieldConstants.REEF_ANGLES[2]),
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[3]), FieldConstants.REEF_ANGLES[3]),
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[3]), FieldConstants.REEF_ANGLES[3]),
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[4]), FieldConstants.REEF_ANGLES[4]),
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[4]), FieldConstants.REEF_ANGLES[4]),
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[5]), FieldConstants.REEF_ANGLES[5]),
-      new Pose2d(new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[5]), FieldConstants.REEF_ANGLES[5])
-    };
-
-    public static final double ALIGN_DISTANCE = 0.5;
-    public static final Pose2d[] CORAL_ALIGN_POSES = {
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[0]), FieldConstants.REEF_ANGLES[0]),
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[0]), FieldConstants.REEF_ANGLES[0]),
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[1]), FieldConstants.REEF_ANGLES[1]),
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[1]), FieldConstants.REEF_ANGLES[1]),
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[2]), FieldConstants.REEF_ANGLES[2]),
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[2]), FieldConstants.REEF_ANGLES[2]),
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[3]), FieldConstants.REEF_ANGLES[3]),
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[3]), FieldConstants.REEF_ANGLES[3]),
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[4]), FieldConstants.REEF_ANGLES[4]),
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[4]), FieldConstants.REEF_ANGLES[4]),
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[5]), FieldConstants.REEF_ANGLES[5]),
-      new Pose2d(new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[5]), FieldConstants.REEF_ANGLES[5])
     };
 
     public static final Pose2d[] ALGAE_ALIGN_POSES = {
