@@ -136,10 +136,10 @@ public class Drive extends SubsystemBase {
 
   private final ProfiledPIDController linearVelocityController =
       new ProfiledPIDController(
-          2, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5)); // kp 1.2
+          3, 0, 0, new Constraints(getMaxLinearSpeedMetersPerSec(), 5)); // kp 1.2
   private final ProfiledPIDController rotationController =
       new ProfiledPIDController(
-          0.3, 0, 0, new Constraints(getMaxAngularSpeedRadPerSec(), 10)); // kp 0.8
+          0.8, 0, 0, new Constraints(getMaxAngularSpeedRadPerSec(), 50)); // kp 0.8
 
   public Drive(
       GyroIO gyroIO,

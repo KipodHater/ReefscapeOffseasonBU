@@ -1,15 +1,14 @@
 package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import java.util.function.DoubleSupplier;
 
 public interface ControllerInterface {
 
-  public Trigger scoreCoralButton();
-
-  public Trigger scoreEjectAlgaeButton();
+  public Trigger scoreButton();
 
   public Trigger openCloseIntakeButton();
+
+  public Trigger intakeAlgaeReefButton();
 
   public Trigger intakeAlgaeFloorButton();
 
@@ -27,13 +26,13 @@ public interface ControllerInterface {
 
   public Trigger returnToDefaultButton();
 
-  public Trigger forceInvertedNetButton();
+  // public Trigger forceInvertedNetButton();
 
   public Trigger climbButton();
 
-  public DoubleSupplier xVelocityAnalog();
+  public double xVelocityAnalog();
 
-  public DoubleSupplier yVelocityAnalog();
+  public double yVelocityAnalog();
 
-  public DoubleSupplier rotationVelocityAnalog();
+  public double rotationVelocityAnalog();
 }

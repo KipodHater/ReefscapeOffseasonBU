@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotState;
@@ -11,26 +12,18 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.gripper.Gripper;
-import java.util.function.BooleanSupplier;
 
 public class AlignCoralCommand extends SequentialCommandGroup {
 
-  public AlignCoralCommand(
-      Drive drive,
-      Arm arm,
-      Elevator elevator,
-      Gripper gripper,
-      int lx,
-      BooleanSupplier gripperHasCoral,
-      BooleanSupplier ignoreGripperSensor) {
+  public AlignCoralCommand(Drive drive, Arm arm, Elevator elevator, Gripper gripper, int lx) {
     // Use addRequirements() here to declare subsystem dependencies.
     RobotState.getInstance().setUpScoringTargetCoral();
     addRequirements(drive, arm, elevator, gripper);
-
-    if (!gripperHasCoral.getAsBoolean() || ignoreGripperSensor.getAsBoolean()) {
+    SmartDashboard.putBoolean("Structure/got here", true);
+    if (!gripper.hasCoral() || gripper.shouldIgnoreSensor()) {
       addCommands(
           Commands.parallel(
-              new IntakeFromConveyor(arm, elevator, gripper, gripperHasCoral, ignoreGripperSensor),
+              new IntakeFromConveyor(arm, elevator, gripper),
               Commands.runOnce(
                   () ->
                       drive.setStateAutoAlign(
@@ -52,6 +45,6 @@ public class AlignCoralCommand extends SequentialCommandGroup {
                 SimpleCommands.nonStopAutoAlignCommand(
                     drive, () -> RobotState.getInstance().getCoralScoringInfo().scorePose())),
             Commands.none(),
-            () -> (gripperHasCoral.getAsBoolean() || ignoreGripperSensor.getAsBoolean())));
+            () -> (gripper.hasCoral() || gripper.shouldIgnoreSensor())));
   }
 }
