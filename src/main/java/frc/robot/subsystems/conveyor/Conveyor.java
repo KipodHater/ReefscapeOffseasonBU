@@ -1,8 +1,8 @@
 package frc.robot.subsystems.conveyor;
 
-import static frc.robot.subsystems.conveyor.ConveyorConstants.REVERSE_VOLTAGE;
-import static frc.robot.subsystems.conveyor.ConveyorConstants.currentThreshold;
+import static frc.robot.subsystems.conveyor.ConveyorConstants.*;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,8 +11,11 @@ import org.littletonrobotics.junction.Logger;
 
 public class Conveyor extends SubsystemBase {
 
-  public ConveyorIO io;
-  public ConveyorIOInputsAutoLogged inputs = new ConveyorIOInputsAutoLogged();
+  private final ConveyorIO io;
+  private final ConveyorIOInputsAutoLogged inputs = new ConveyorIOInputsAutoLogged();
+
+  private final DigitalInput beambrake;
+
 
   private Timer timer = new Timer();
 
@@ -35,6 +38,7 @@ public class Conveyor extends SubsystemBase {
 
   public Conveyor(ConveyorIO io) {
     this.io = io;
+    beambrake = new DigitalInput(DIGITAL_INPUT_CHANNEL);
     SmartDashboard.putBoolean("Conveyor/Ignore Conveyor Sensor", false);
   }
 
@@ -69,7 +73,7 @@ public class Conveyor extends SubsystemBase {
   }
 
   public boolean hasCoral() {
-    return false;
+    return !beambrake.get();
   }
 
   public boolean shouldIgnoreSensor() {

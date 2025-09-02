@@ -1,13 +1,19 @@
 package frc.robot.subsystems.intakeRollers;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import static frc.robot.subsystems.intakeRollers.IntakeRollersConstants.*;
+
 public class IntakeRollers extends SubsystemBase {
+
   private final IntakeRollersIO io;
   private final IntakeRollersIOInputsAutoLogged inputs = new IntakeRollersIOInputsAutoLogged();
+
+  private final DigitalInput beambrake;
 
   public enum IntakeRollersStates {
     IDLE(0.0),
@@ -30,6 +36,7 @@ public class IntakeRollers extends SubsystemBase {
 
   public IntakeRollers(IntakeRollersIO io) {
     this.io = io;
+    beambrake = new DigitalInput(BEAMBRAKE_ID);
     SmartDashboard.putBoolean("Intake/Ignore Intake Sensor", false);
   }
 
@@ -57,7 +64,7 @@ public class IntakeRollers extends SubsystemBase {
   }
 
   public boolean hasCoral() {
-    return false;
+    return !beambrake.get();
   }
 
   public boolean shouldIgnoreSensor() {

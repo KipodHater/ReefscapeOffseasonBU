@@ -15,5 +15,7 @@ public class ConveyorConstants {
   public static double currentThreshold = 40.0; // amps
   public static double REVERSE_VOLTAGE = -3.0;
 
+  public static int DIGITAL_INPUT_CHANNEL = 1;
+
   public static double KP = 0.1;
 }
