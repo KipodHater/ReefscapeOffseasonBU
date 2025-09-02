@@ -9,10 +9,6 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.Constants;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class ElevatorIOSim implements ElevatorIO {
   private final ProfiledPIDController elevatorPIDController;

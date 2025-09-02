@@ -16,7 +16,6 @@ public class Conveyor extends SubsystemBase {
 
   private final DigitalInput beambrake;
 
-
   private Timer timer = new Timer();
 
   @AutoLogOutput(key = "Conveyor/currentState")

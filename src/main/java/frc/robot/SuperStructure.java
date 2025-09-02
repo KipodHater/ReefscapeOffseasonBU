@@ -298,7 +298,7 @@ public class SuperStructure extends SubsystemBase {
         closeIntakeIfPossible();
         if (previousState != currentState) {
           wantedIntakeState = StructureIntakeStates.CLOSED;
-          currentCommand.cancel();
+          if (currentCommand != null) currentCommand.cancel();
           currentCommand =
               new AlignAlgaeReefCommand(
                   drive, arm, elevator, gripper, leds, () -> false, () -> false);
@@ -312,7 +312,7 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case INTAKE_ALGAE_FLOOR -> {
-        currentCommand.cancel();
+        if (currentCommand != null) currentCommand.cancel();
         arm.setState(ArmStates.ALGAE_INTAKE_FLOOR);
         climb.setState(ClimbStates.IDLE);
         conveyor.setState(ConveyorStates.IDLE);
@@ -327,7 +327,7 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case ALGAE_PROCESSOR -> {
-        currentCommand.cancel();
+        if (currentCommand != null) currentCommand.cancel();
         arm.setState(ArmStates.ALGAE_SCORE_PROCESSOR);
         if (arm.isSafeForElevator()) elevator.setState(ElevatorStates.ALGAE_SCORE_PROCESSOR);
         else
@@ -340,7 +340,7 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case ALGAE_NET -> {
-        currentCommand.cancel();
+        if (currentCommand != null) currentCommand.cancel();
         arm.setState(ArmStates.ALGAE_SCORE_NET);
         elevator.setState(ElevatorStates.ALGAE_SCORE_NET);
         conveyor.setState(ConveyorStates.IDLE);
@@ -351,7 +351,7 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case ALGAE_HOME -> {
-        currentCommand.cancel();
+        if (currentCommand != null) currentCommand.cancel();
         arm.setState(ArmStates.HOME);
         if (arm.isSafeForElevator()) elevator.setState(ElevatorStates.HOME);
         conveyor.setState(ConveyorStates.IDLE);
@@ -370,7 +370,7 @@ public class SuperStructure extends SubsystemBase {
   }
 
   private void travel() {
-    currentCommand.cancel();
+    if (currentCommand != null) currentCommand.cancel();
     climb.setState(ClimbStates.IDLE);
     conveyor.setState(ConveyorStates.IDLE);
     drive.setState(DriveStates.FIELD_DRIVE);
@@ -384,7 +384,7 @@ public class SuperStructure extends SubsystemBase {
   }
 
   private void intakeCoralFloor() {
-    currentCommand.cancel();
+    if (currentCommand != null) currentCommand.cancel();
     climb.setState(ClimbStates.IDLE);
     conveyor.setState(ConveyorStates.INTAKE);
     drive.setState(DriveStates.ASSISTED_DRIVE);
@@ -405,7 +405,7 @@ public class SuperStructure extends SubsystemBase {
     wantedIntakeState = StructureIntakeStates.CLOSED;
     closeIntakeIfPossible();
     if (previousState != currentState) {
-      currentCommand.cancel();
+      if (currentCommand != null) currentCommand.cancel();
       currentCommand = new AlignCoralCommand(drive, arm, elevator, gripper, lx);
       currentCommand.schedule();
     }
@@ -418,7 +418,7 @@ public class SuperStructure extends SubsystemBase {
     wantedIntakeState = StructureIntakeStates.CLOSED;
     closeIntakeIfPossible();
     if (previousState != currentState) {
-      currentCommand.cancel();
+      if (currentCommand != null) currentCommand.cancel();
       currentCommand =
           SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, lx)
               .withTimeout(0.3);

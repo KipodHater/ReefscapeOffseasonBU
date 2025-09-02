@@ -6,13 +6,13 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class GripperSensorIOBeam implements GripperSensorIO {
 
-    private final DigitalInput beamBreak; // TODO: set channel
+  private final DigitalInput beamBreak; // TODO: set channel
 
-    public GripperSensorIOBeam() {
-        beamBreak = new DigitalInput(BEAMBRAKE_ID);
-    }
-    
-    public void updateInputs(GripperSensorIOInputs inputs) {
-        inputs.hasGamepiece = !beamBreak.get();
-    }
+  public GripperSensorIOBeam() {
+    beamBreak = new DigitalInput(BEAMBRAKE_ID);
+  }
+
+  public void updateInputs(GripperSensorIOInputs inputs) {
+    inputs.hasGamepiece = !beamBreak.get();
+  }
 }

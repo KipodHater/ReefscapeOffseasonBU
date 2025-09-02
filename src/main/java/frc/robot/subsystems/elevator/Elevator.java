@@ -4,12 +4,12 @@ import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotState;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
-import frc.robot.RobotState;
 
 public class Elevator extends SubsystemBase {
 
@@ -25,21 +25,21 @@ public class Elevator extends SubsystemBase {
           ElevatorConstants.GAINS.KS(), ElevatorConstants.GAINS.KG(), ElevatorConstants.GAINS.KV());
 
   public enum ElevatorStates { // TODO: set actuaL heights
-    DEFAULT(0.7),
+    DEFAULT(1.0),
     HOME(0.2),
-    CORAL_INTAKE_CONVEYOR(0.5),
-    CORAL_L1(0.2),
-    CORAL_L2(0.3),
-    CORAL_L3(0.5),
-    CORAL_L4(0.6),
-    CORAL_L2_SCORE(0.25),
-    CORAL_L3_SCORE(0.45),
-    CORAL_L4_SCORE(0.55),
-    ALGAE_INTAKE_REEF_L2(0.4),
-    ALGAE_INTAKE_REEF_L3(0.6),
-    ALGAE_INTAKE_LOLIPOP(0.1),
-    ALGAE_INTAKE_FLOOR(0.0),
-    ALGAE_SCORE_PROCESSOR(0.0),
+    CORAL_INTAKE_CONVEYOR(0.8),
+    CORAL_L1(0.8),
+    CORAL_L2(1.0),
+    CORAL_L3(1.3),
+    CORAL_L4(1.6),
+    CORAL_L2_SCORE(1.0),
+    CORAL_L3_SCORE(1.3),
+    CORAL_L4_SCORE(1.6),
+    ALGAE_INTAKE_REEF_L2(0.9),
+    ALGAE_INTAKE_REEF_L3(1.4),
+    ALGAE_INTAKE_LOLIPOP(0.2),
+    ALGAE_INTAKE_FLOOR(0.6),
+    ALGAE_SCORE_PROCESSOR(0.6),
     ALGAE_SCORE_NET(1.7),
     IDLE(null);
 
@@ -70,7 +70,7 @@ public class Elevator extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Elevator", inputs);
 
-    RobotState.getInstance().setElevatorOverallHeight(inputs.positionMeters+0.07);
+    RobotState.getInstance().setElevatorOverallHeight(inputs.positionMeters + 0.07);
     elevatorMechanism.setLength(inputs.positionMeters);
     Logger.recordOutput("Elevator/Mechanism", mechanism2d);
 

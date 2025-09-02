@@ -1,12 +1,12 @@
 package frc.robot.subsystems.intakeRollers;
 
+import static frc.robot.subsystems.intakeRollers.IntakeRollersConstants.*;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.subsystems.intakeRollers.IntakeRollersConstants.*;
 
 public class IntakeRollers extends SubsystemBase {
 
