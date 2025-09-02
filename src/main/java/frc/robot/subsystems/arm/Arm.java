@@ -11,7 +11,7 @@ public class Arm extends SubsystemBase {
 
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
-
+  
   private final ArmFeedforward feedforwardController =
       new ArmFeedforward(ArmConstants.GAINS.KS(), ArmConstants.GAINS.KG(), ArmConstants.GAINS.KV());
 

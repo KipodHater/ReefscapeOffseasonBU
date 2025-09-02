@@ -20,7 +20,7 @@ public class Leds extends SubsystemBase {
         LEDPattern.solid(Color.kPurple)
             .blink(Time.ofBaseUnits(.2, Units.Seconds), Time.ofBaseUnits(.1, Units.Seconds))),
     BLUE(LEDPattern.solid(Color.kBlue));
-
+    
     LEDPattern value;
 
     ledsStates(LEDPattern value) {
