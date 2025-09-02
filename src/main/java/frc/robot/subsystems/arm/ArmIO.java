@@ -7,16 +7,12 @@ public interface ArmIO {
   @AutoLog
   public static class ArmIOInputs {
     public boolean motorConnected = false;
-    public boolean followerConnected = false;
 
     public double positionDeg = 0; // degrees
     public double velocityDegPerSec = 0; // degrees/second
     public double motorVoltage = 0; // volts
-    public double followerVoltage = 0; // volts
     public double motorTemp = 0; // celsius
-    public double followerTemp = 0; // celsius
     public double motorCurrent = 0; // amps
-    public double followerCurrent = 0; // amps
   }
 
   public default void updateInputs(ArmIOInputs inputs) {}

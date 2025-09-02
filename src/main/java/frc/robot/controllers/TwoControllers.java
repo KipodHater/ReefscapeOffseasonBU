@@ -3,11 +3,11 @@ package frc.robot.controllers;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-public class SingleXboxController implements ControllerInterface {
+public class TwoControllers implements ControllerInterface {
 
   private final XboxController controller;
 
-  public SingleXboxController() {
+  public TwoControllers() {
     controller = new XboxController(0);
   }
 

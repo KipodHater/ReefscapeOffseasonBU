@@ -80,7 +80,10 @@ public class SimpleCommands {
       Arm arm, Elevator elevator, Gripper gripper, int lx, boolean isBackside) {
     arm.setScoreReefState(lx, isBackside);
     elevator.setReefState(lx);
-    if (arm.atScoreGoal()) gripper.setState(GripperStates.EJECT_CORAL);
+    if (arm.atScoreGoal()) {
+      System.out.println("im the problem!");
+      gripper.setState(GripperStates.EJECT_CORAL);
+    }
     return arm.atGoal();
   }
 
@@ -125,24 +128,6 @@ public class SimpleCommands {
         gripper,
         drive);
   }
-
-  // public static void moveToHome(Arm arm, Elevator elevator, Gripper gripper, boolean holdCoral) {
-  //   arm.setState(ArmStates.HOME);
-  //   elevator.setState(ElevatorStates.HOME);
-  //   gripper.setState(holdCoral ? GripperStates.HOLD_CORAL : GripperStates.IDLE);
-  // }
-
-  // public static Command moveToHomeCommand(
-  //     Arm arm, Elevator elevator, Gripper gripper, boolean holdCoral) {
-  //   return new FunctionalCommand(
-  //       () -> moveToHome(arm, elevator, gripper, holdCoral),
-  //       () -> {},
-  //       interrupted -> {},
-  //       () -> arm.atGoal() && elevator.atGoal(),
-  //       arm,
-  //       elevator,
-  //       gripper);
-  // }
 
   public static Command driveAutoAlignTolerance(
       Drive drive, Supplier<Pose2d> other, double tolerance, double angleTolerance) {
