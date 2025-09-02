@@ -11,8 +11,6 @@ public class GripperSensorIORev implements GripperSensorIO {
   }
 
   public void updateInputs(GripperSensorIOInputs inputs) {
-    inputs.isConnected = colorSensor.isConnected();
-
     inputs.hasGamepiece = colorSensor.getProximity() > 1200; // TODO: tune
   }
 }

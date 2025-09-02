@@ -17,45 +17,46 @@ import java.util.function.DoubleSupplier;
 
 public class ConveyorIOSpark implements ConveyorIO {
 
-  private SparkMax motor;
-  private SparkMaxConfig config;
+  private final SparkMax motor;
+  private final SparkMaxConfig motorConfig;
 
-  private RelativeEncoder motorEncoder;
+  private final SparkMax follower;
+  private final SparkMaxConfig followerConfig;
 
-  private Debouncer connectedDebouncer = new Debouncer(0.5);
-
-  private BangBangController controller;
+  private Debouncer motorConnectedDebouncer = new Debouncer(0.5);
+  private Debouncer followerConnectedDebouncer = new Debouncer(0.5);
 
   public ConveyorIOSpark() {
     motor = new SparkMax(MOTOR_ID, MotorType.kBrushless);
-    config = new SparkMaxConfig();
+    motorConfig = new SparkMaxConfig();
+    follower = new SparkMax(FOLLOWER_ID, MotorType.kBrushless);
+    followerConfig = new SparkMaxConfig();
 
-    motorEncoder = motor.getEncoder();
-
-    config
+    motorConfig
         .idleMode(MOTOR_BRAKE ? IdleMode.kBrake : IdleMode.kCoast)
         .inverted(MOTOR_INVERTED)
         .voltageCompensation(12.0)
         .smartCurrentLimit(50);
 
-    config.encoder.velocityConversionFactor(VELOCITY_CONVERSION_FACTOR);
+    followerConfig
+        .idleMode(FOLLOWER_BRAKE ? IdleMode.kBrake : IdleMode.kCoast)
+        .inverted(FOLLOWER_INVERTED)
+        .voltageCompensation(12.0)
+        .smartCurrentLimit(50);
 
     tryUntilOk(
-        motor,
+        follower,
         5,
         () ->
-            motor.configure(
-                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
-
-    controller = new BangBangController();
-    controller.setTolerance(KP);
+            follower.configure(
+              followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 
   @Override
   public void updateInputs(ConveyorIOInputs inputs) {
     sparkStickyFault = false;
 
-    ifOk(motor, motorEncoder::getVelocity, (value) -> inputs.velocityDegPerSec = value);
+    ifOk(motor, motor.getEncoder()::getVelocity, (value) -> inputs.motorVelocityDegPerSec = value);
 
     ifOk(
         motor,
@@ -66,32 +67,51 @@ public class ConveyorIOSpark implements ConveyorIO {
 
     ifOk(motor, motor::getOutputCurrent, (value) -> inputs.motorCurrent = value);
 
-    inputs.motorConnected = connectedDebouncer.calculate(!sparkStickyFault);
+    inputs.motorConnected = motorConnectedDebouncer.calculate(!sparkStickyFault);
+
+    sparkStickyFault = false;
+
+    ifOk(follower, follower.getEncoder()::getVelocity, (value) -> inputs.motorVelocityDegPerSec = value);
+
+    ifOk(
+        follower,
+        new DoubleSupplier[] {follower::getAppliedOutput, follower::getBusVoltage},
+        (values) -> inputs.motorVoltage = values[0] * values[1]);
+
+    ifOk(follower, follower::getMotorTemperature, (value) -> inputs.motorTemp = value);
+
+    ifOk(follower, follower::getOutputCurrent, (value) -> inputs.motorCurrent = value);
+
+    inputs.motorConnected = motorConnectedDebouncer.calculate(!sparkStickyFault);
   }
 
   @Override
   public void runVoltage(double voltage) {
     motor.setVoltage(MathUtil.clamp(voltage, -12, 12));
+    follower.setVoltage(MathUtil.clamp(voltage, -12, 12));
   }
 
   @Override
   public void stop() {
     motor.setVoltage(0);
-  }
-
-  @Override
-  public void setBangBang(double KP) {
-    controller.setTolerance(KP);
+    follower.setVoltage(0);
   }
 
   @Override
   public void setBrakeMode(boolean isBrake) {
-    config.idleMode(isBrake ? IdleMode.kBrake : IdleMode.kCoast);
+    motorConfig.idleMode(isBrake ? IdleMode.kBrake : IdleMode.kCoast);
     tryUntilOk(
         motor,
         5,
         () ->
             motor.configure(
-                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+              motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+
+    tryUntilOk(
+        follower,
+        5,
+        () ->
+            follower.configure(
+              followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 }

@@ -6,6 +6,10 @@ public class ConveyorConstants {
   public static boolean MOTOR_INVERTED = false;
   public static boolean MOTOR_BRAKE = false;
 
+  public static int FOLLOWER_ID = 59;
+  public static boolean FOLLOWER_INVERTED = false;
+  public static boolean FOLLOWER_BRAKE = false;
+
   public static double VELOCITY_CONVERSION_FACTOR = 360.0 / 60.0; // to degrees per second
 
   public static double currentThreshold = 40.0; // amps

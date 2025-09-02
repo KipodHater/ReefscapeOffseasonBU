@@ -30,5 +30,7 @@ public class GripperConstants {
 
   public static final double GRIPPER_MOMENT_OF_INNERTIA = 0.6; // kg* m^2
 
+  public static final int BEAMBRAKE_ID = 0;
+
   public record Gains(double KP, double KI, double KD, double KS, double KV, double KA) {}
 }

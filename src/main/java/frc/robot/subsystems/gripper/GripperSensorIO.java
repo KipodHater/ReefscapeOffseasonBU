@@ -6,8 +6,6 @@ public interface GripperSensorIO {
 
   @AutoLog
   public static class GripperSensorIOInputs {
-    public boolean isConnected = false;
-
     public boolean hasGamepiece = false;
   }
 

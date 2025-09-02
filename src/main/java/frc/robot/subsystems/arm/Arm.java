@@ -117,6 +117,12 @@ public class Arm extends SubsystemBase {
 
       case CORAL_L4 -> io.runPosition(ArmStates.CORAL_L4.position(), ffVoltage);
 
+      case CORAL_L2_BACK -> io.runPosition(ArmStates.CORAL_L2_BACK.position(), ffVoltage);
+
+      case CORAL_L3_BACK -> io.runPosition(ArmStates.CORAL_L3_BACK.position(), ffVoltage);
+
+      case CORAL_L4_BACK -> io.runPosition(ArmStates.CORAL_L4_BACK.position(), ffVoltage);
+
       case CORAL_L1_SCORE -> io.runPosition(ArmStates.CORAL_L1_SCORE.position(), ffVoltage);
 
       case CORAL_L2_SCORE -> io.runPosition(ArmStates.CORAL_L2_SCORE.position(), ffVoltage);
@@ -124,6 +130,12 @@ public class Arm extends SubsystemBase {
       case CORAL_L3_SCORE -> io.runPosition(ArmStates.CORAL_L3_SCORE.position(), ffVoltage);
 
       case CORAL_L4_SCORE -> io.runPosition(ArmStates.CORAL_L4_SCORE.position(), ffVoltage);
+
+      case CORAL_L2_SCORE_BACK -> io.runPosition(ArmStates.CORAL_L2_SCORE_BACK.position(), ffVoltage);
+
+      case CORAL_L3_SCORE_BACK -> io.runPosition(ArmStates.CORAL_L3_SCORE_BACK.position(), ffVoltage);
+
+      case CORAL_L4_SCORE_BACK -> io.runPosition(ArmStates.CORAL_L4_SCORE_BACK.position(), ffVoltage);
 
       case ALGAE_INTAKE_REEF -> io.runPosition(ArmStates.ALGAE_INTAKE_REEF.position(), ffVoltage);
 
