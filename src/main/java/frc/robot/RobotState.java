@@ -1,7 +1,6 @@
 package frc.robot;
 
 import static frc.robot.Constants.*;
-import static frc.robot.Constants.POSE_BUFFER_SIZE;
 import static frc.robot.Constants.RobotState.*;
 
 import edu.wpi.first.math.MathUtil;
@@ -51,7 +50,7 @@ public class RobotState {
   private ScoringInfo curCoralScoringInfo = new ScoringInfo(0, false, null, null);
   private ScoringInfo curAlgaeScoringInfo = new ScoringInfo(0, false, null, null);
 
-  // private RobotState(Pose2d initialPose) {}
+  private double elevatorOverallHeight = 0.0; // meters
 
   public static RobotState getInstance() {
     // System.out.println(1);
@@ -481,6 +480,14 @@ public class RobotState {
 
   public ScoringInfo getAlgaeScoringInfo() {
     return curAlgaeScoringInfo;
+  }
+
+  public void setElevatorOverallHeight(double elevatorOverallHeight) {
+    this.elevatorOverallHeight = elevatorOverallHeight;
+  }
+
+  public double getElevatorOverallHeight() {
+    return elevatorOverallHeight;
   }
 
   public record TxTyObservation(

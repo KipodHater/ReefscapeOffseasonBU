@@ -17,9 +17,6 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 public class ElevatorIOSim implements ElevatorIO {
   private final ProfiledPIDController elevatorPIDController;
   private final ElevatorSim elevatorSim;
-  private final LoggedMechanism2d mechanism2d;
-  private final LoggedMechanismLigament2d elevatorMechanism;
-  private final LoggedMechanismRoot2d elevatorRoot;
 
   private double appliedVoltage = 0;
 
@@ -37,11 +34,6 @@ public class ElevatorIOSim implements ElevatorIO {
             0.3,
             new double[] {0.001, 0.001});
 
-    mechanism2d = new LoggedMechanism2d(0.2, 1.7);
-    elevatorRoot = mechanism2d.getRoot("Elevator", 0, 0);
-
-    elevatorMechanism = elevatorRoot.append(new LoggedMechanismLigament2d("Elevator", 0, 90));
-
     System.out.println("Elevator Sim Initialized");
   }
 
@@ -55,9 +47,6 @@ public class ElevatorIOSim implements ElevatorIO {
     inputs.followerTemp = 0;
     inputs.motorConnected = true;
     inputs.followerConnected = true;
-
-    elevatorMechanism.setLength(inputs.positionMeters);
-    Logger.recordOutput("Elevator/Mechanism", mechanism2d);
   }
 
   public void runVoltage(double voltage) {

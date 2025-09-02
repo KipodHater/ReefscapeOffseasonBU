@@ -6,11 +6,19 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
+import frc.robot.RobotState;
 
 public class Elevator extends SubsystemBase {
 
   private final ElevatorIO io;
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
+
+  private final LoggedMechanism2d mechanism2d;
+  private final LoggedMechanismLigament2d elevatorMechanism;
+  private final LoggedMechanismRoot2d elevatorRoot;
 
   private final ElevatorFeedforward feedforwardController =
       new ElevatorFeedforward(
@@ -51,11 +59,20 @@ public class Elevator extends SubsystemBase {
 
   public Elevator(ElevatorIO io) {
     this.io = io;
+
+    mechanism2d = new LoggedMechanism2d(0.2, 1.7);
+    elevatorRoot = mechanism2d.getRoot("Elevator", 0, 0);
+
+    elevatorMechanism = elevatorRoot.append(new LoggedMechanismLigament2d("Elevator", 0, 90));
   }
 
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Elevator", inputs);
+
+    RobotState.getInstance().setElevatorOverallHeight(inputs.positionMeters+0.07);
+    elevatorMechanism.setLength(inputs.positionMeters);
+    Logger.recordOutput("Elevator/Mechanism", mechanism2d);
 
     stateMachine();
   }
