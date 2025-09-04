@@ -2,6 +2,7 @@
   "NTProvider": {
     "types": {
       "/AdvantageKit/RealOutputs/Alerts": "Alerts",
+      "/AdvantageKit/RealOutputs/Arm/Mechanism": "Mechanism2d",
       "/AdvantageKit/RealOutputs/Elevator/Mechanism": "Mechanism2d",
       "/AdvantageKit/RealOutputs/PathPlanner": "Alerts",
       "/AdvantageKit/RealOutputs/PhotonAlerts": "Alerts",

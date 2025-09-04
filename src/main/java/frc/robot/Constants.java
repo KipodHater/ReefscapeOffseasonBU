@@ -99,55 +99,56 @@ public final class Constants {
     public static final double SWITCH_SCORE_FRONT_THRESHOLD = 100; // deg
 
     public static final double SCORE_DISTANCE = 0.5;
+    public static final double ANGLE_OFFSET = 0;
     public static final Pose2d[] CORAL_SCORE_POSES = {
       new Pose2d(
           FieldConstants.REEF_BRANCHES[0].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[0])),
-          FieldConstants.REEF_ANGLES[0].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[0].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[1].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[0])),
-          FieldConstants.REEF_ANGLES[0].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[0].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[2].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[1])),
-          FieldConstants.REEF_ANGLES[1].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[1].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[3].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[1])),
-          FieldConstants.REEF_ANGLES[1].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[1].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[4].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[2])),
-          FieldConstants.REEF_ANGLES[2].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[2].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[5].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[2])),
-          FieldConstants.REEF_ANGLES[2].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[2].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[6].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[3])),
-          FieldConstants.REEF_ANGLES[3].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[3].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[7].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[3])),
-          FieldConstants.REEF_ANGLES[3].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[3].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[8].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[4])),
-          FieldConstants.REEF_ANGLES[4].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[4].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[9].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[4])),
-          FieldConstants.REEF_ANGLES[4].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[4].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[10].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[5])),
-          FieldConstants.REEF_ANGLES[5].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[5].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[11].plus(
               new Translation2d(SCORE_DISTANCE, FieldConstants.REEF_ANGLES[5])),
-          FieldConstants.REEF_ANGLES[5].plus(Rotation2d.fromDegrees(90)))
+          FieldConstants.REEF_ANGLES[5].plus(Rotation2d.fromDegrees(ANGLE_OFFSET)))
     };
 
     public static final double ALIGN_DISTANCE = 1;
@@ -155,51 +156,51 @@ public final class Constants {
       new Pose2d(
           FieldConstants.REEF_BRANCHES[0].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[0])),
-          FieldConstants.REEF_ANGLES[0].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[0].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[1].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[0])),
-          FieldConstants.REEF_ANGLES[0].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[0].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[2].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[1])),
-          FieldConstants.REEF_ANGLES[1].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[1].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[3].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[1])),
-          FieldConstants.REEF_ANGLES[1].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[1].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[4].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[2])),
-          FieldConstants.REEF_ANGLES[2].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[2].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[5].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[2])),
-          FieldConstants.REEF_ANGLES[2].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[2].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[6].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[3])),
-          FieldConstants.REEF_ANGLES[3].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[3].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[7].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[3])),
-          FieldConstants.REEF_ANGLES[3].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[3].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[8].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[4])),
-          FieldConstants.REEF_ANGLES[4].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[4].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[9].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[4])),
-          FieldConstants.REEF_ANGLES[4].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[4].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[10].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[5])),
-          FieldConstants.REEF_ANGLES[5].plus(Rotation2d.fromDegrees(90))),
+          FieldConstants.REEF_ANGLES[5].plus(Rotation2d.fromDegrees(ANGLE_OFFSET))),
       new Pose2d(
           FieldConstants.REEF_BRANCHES[11].plus(
               new Translation2d(ALIGN_DISTANCE, FieldConstants.REEF_ANGLES[5])),
-          FieldConstants.REEF_ANGLES[5].plus(Rotation2d.fromDegrees(90)))
+          FieldConstants.REEF_ANGLES[5].plus(Rotation2d.fromDegrees(ANGLE_OFFSET)))
     };
 
     public static final Pose2d[] ALGAE_ALIGN_POSES = {
