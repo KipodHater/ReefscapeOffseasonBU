@@ -16,7 +16,7 @@ public class Leds extends SubsystemBase {
     CORAL(LEDPattern.solid(Color.kAqua)),
     RED(LEDPattern.solid(Color.kRed)),
     PURPLE(LEDPattern.solid(Color.kPurple)),
-    BLINK_PURPLE(
+    FINISH_SCORE( // blink purple
         LEDPattern.solid(Color.kPurple)
             .blink(Time.ofBaseUnits(.2, Units.Seconds), Time.ofBaseUnits(.1, Units.Seconds))),
     BLUE(LEDPattern.solid(Color.kBlue));
@@ -52,7 +52,7 @@ public class Leds extends SubsystemBase {
       case CORAL -> ledsStates.CORAL.pattern().applyTo(ledBuffer);
       case RED -> ledsStates.RED.pattern().applyTo(ledBuffer);
       case PURPLE -> ledsStates.PURPLE.pattern().applyTo(ledBuffer);
-      case BLINK_PURPLE -> ledsStates.BLINK_PURPLE.pattern().applyTo(ledBuffer);
+      case FINISH_SCORE -> ledsStates.FINISH_SCORE.pattern().applyTo(ledBuffer);
       case BLUE -> ledsStates.BLUE.pattern().applyTo(ledBuffer);
       default -> ledsStates.OFF.pattern().applyTo(ledBuffer);
     }

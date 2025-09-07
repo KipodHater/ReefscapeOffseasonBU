@@ -52,7 +52,7 @@ public class AlignAlgaeReefCommand extends SequentialCommandGroup {
                     () -> RobotState.getInstance().getAlgaeScoringInfo().scorePose(),
                     0.3,
                     3),
-                Commands.runOnce(() -> leds.setState(ledsStates.BLINK_PURPLE), leds),
+                Commands.runOnce(() -> leds.setState(ledsStates.FINISH_SCORE), leds),
                 Commands.waitSeconds(0.4),
                 Commands.runOnce(() -> gripper.setState(GripperStates.HOLD_ALGAE), gripper),
                 Commands.runOnce(() -> leds.setState(ledsStates.RED), leds),

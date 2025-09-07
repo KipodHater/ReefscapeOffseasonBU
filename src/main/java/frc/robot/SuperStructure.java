@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AlignAlgaeReefCommand;
 import frc.robot.commands.AlignCoralCommand;
-import frc.robot.commands.SimpleCommands;
+import frc.robot.commands.PlaceCoralCommandTeleop;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.Arm.ArmStates;
 import frc.robot.subsystems.climb.Climb;
@@ -133,8 +133,8 @@ public class SuperStructure extends SubsystemBase {
   public void periodic() {
     previousState = currentState;
     if (wantedState != currentState) currentState = handleStateTransition(wantedState);
-    stateMachine();
     wantedState = currentState;
+    stateMachine();
   }
 
   private SuperStructureStates handleStateTransition(SuperStructureStates wantedState) {
@@ -150,8 +150,10 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case INTAKE_CORAL_FLOOR -> {
-        if (conveyor.hasCoral() || gripper.hasCoral()) yield previousState;
-        else yield SuperStructureStates.INTAKE_CORAL_FLOOR;
+        if ((!conveyor.hasCoral() || conveyor.shouldIgnoreSensor())
+            && (!gripper.hasCoral() || gripper.shouldIgnoreSensor()))
+          yield SuperStructureStates.INTAKE_CORAL_FLOOR;
+        else yield previousState;
       }
 
       case PLACE_CORAL_ALIGN_L1 -> {
@@ -419,16 +421,20 @@ public class SuperStructure extends SubsystemBase {
     closeIntakeIfPossible();
     if (previousState != currentState) {
       if (currentCommand != null) currentCommand.cancel();
-      currentCommand =
-          SimpleCommands.placeCoralCommandTeleop(elevator, arm, gripper, drive, lx)
-              .withTimeout(0.3);
+      currentCommand = new PlaceCoralCommandTeleop(arm, elevator, gripper, drive, leds, lx);
       currentCommand.schedule();
     }
-    if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
-      wantedIntakeState = StructureIntakeStates.DEPLOY;
-      wantedState =
-          SuperStructureStates
-              .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
+    if (!currentCommand.isScheduled()) {
+      if ((!gripper.hasCoral() || gripper.shouldIgnoreSensor())
+          && (!conveyor.hasCoral() || conveyor.shouldIgnoreSensor())) {
+        wantedIntakeState = StructureIntakeStates.DEPLOY;
+        wantedState =
+            SuperStructureStates
+                .INTAKE_CORAL_FLOOR; // can add here a condition about safe travel if we want
+      } else {
+        wantedState = SuperStructureStates.TRAVEL;
+        wantedIntakeState = StructureIntakeStates.CLOSED;
+      }
     }
   }
 

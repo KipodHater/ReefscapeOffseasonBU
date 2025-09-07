@@ -336,8 +336,8 @@ public class Drive extends SubsystemBase {
 
       case SLOWLY_FORWARD: // Drive backwards slowly
         robotCentricJoystickDrive(
+            0.2 * getMaxLinearSpeedMetersPerSec() * (isBackside ? -1 : 1),
             0,
-            0.05 * getMaxLinearSpeedMetersPerSec() * (isBackside ? -1 : 1),
             0); // TODO: check if forward is x or y
         break;
 

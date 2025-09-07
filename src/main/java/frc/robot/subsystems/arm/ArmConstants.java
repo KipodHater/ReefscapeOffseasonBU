@@ -11,12 +11,12 @@ public class ArmConstants {
   public static final Gains GAINS =
       switch (Constants.currentMode) {
         case REAL -> new Gains(0.26, 0, 0.01, 0.01, 0.1, 0.0, 0.1);
-        default -> new Gains(0.005, 0, 0, 0, 0, 0, 0);
+        default -> new Gains(0.2, 0, 0.1, 0, 0, 0, 0);
       };
 
-  public static final double ARM_GEAR_RATIO = 14.0 / (36.0 * 60.0); // 100:1
-  public static final double ARM_LENGTH_METERS = 1.0; // meters, change!
-  public static final double ARM_MOI = 1.5; // kg*m^2
+  public static final double ARM_GEAR_RATIO = 1.0 / 80; // 100:1
+  public static final double ARM_LENGTH_METERS = 0.8; // meters, change!
+  public static final double ARM_MOI = 1; // kg*m^2
   public static final double MAX_ANGLE = 300; // degrees
   public static final double MIN_ANGLE = -3.0; // degrees
 
