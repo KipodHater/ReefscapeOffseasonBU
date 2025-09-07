@@ -34,7 +34,7 @@ public class PlaceCoralCommandTeleop extends SequentialCommandGroup {
                           drive.setStateSlowlyForward(
                               RobotState.getInstance().getCoralScoringInfo().backside())),
                   Commands.runOnce(() -> leds.setState(ledsStates.FINISH_SCORE)))
-              .withTimeout(0.5));
+              .withTimeout(0.8));
     }
   }
 }
