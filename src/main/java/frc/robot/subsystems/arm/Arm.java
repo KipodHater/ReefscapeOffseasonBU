@@ -81,7 +81,7 @@ public class Arm extends SubsystemBase {
     Logger.processInputs("Arm", inputs);
 
     armRoot.setPosition(0, RobotState.getInstance().getElevatorOverallHeight());
-    armLigament.setAngle(inputs.positionDeg - 90);
+    armLigament.setAngle(180 - (inputs.positionDeg - 90));
     Logger.recordOutput("Arm/Mechanism", mechanism2d);
     stateMachine();
   }

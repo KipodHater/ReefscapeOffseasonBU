@@ -42,8 +42,8 @@ public final class Constants {
   }
 
   public static final double CYCLE_TIME = 0.02;
-  public static final double FIELD_LENGTH = 16.5;
-  public static final double FIELD_WIDTH = 8.3;
+  public static final double FIELD_LENGTH = 17.55;
+  public static final double FIELD_WIDTH = 8.05;
   public static final double POSE_BUFFER_SIZE = 2.0; // seconds
 
   public static class FieldConstants {
@@ -96,7 +96,7 @@ public final class Constants {
 
   public final class RobotState {
 
-    public static final double SWITCH_SCORE_FRONT_THRESHOLD = 100; // deg
+    public static final double SWITCH_SCORE_FRONT_THRESHOLD = 100.0; // deg
 
     public static final double SCORE_DISTANCE = 0.5;
     public static final double ANGLE_OFFSET = 0;
