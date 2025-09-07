@@ -28,13 +28,13 @@ public class PlaceCoralCommandTeleop extends SequentialCommandGroup {
       addCommands(Commands.waitSeconds(0.05)); // can maybe remove this
       addCommands(
           Commands.parallel(
-                  Commands.runOnce(() -> gripper.setState(Gripper.GripperStates.EJECT_CORAL)),
-                  Commands.runOnce(
-                      () ->
-                          drive.setStateSlowlyForward(
-                              RobotState.getInstance().getCoralScoringInfo().backside())),
-                  Commands.runOnce(() -> leds.setState(ledsStates.FINISH_SCORE)))
-              .withTimeout(0.8));
+              Commands.runOnce(() -> gripper.setState(Gripper.GripperStates.EJECT_CORAL)),
+              Commands.runOnce(
+                  () ->
+                      drive.setStateSlowlyForward(
+                          RobotState.getInstance().getCoralScoringInfo().backside())),
+              Commands.runOnce(() -> leds.setState(ledsStates.FINISH_SCORE))),
+          Commands.waitSeconds(0.3));
     }
   }
 }
