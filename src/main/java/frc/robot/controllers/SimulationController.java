@@ -87,6 +87,6 @@ public class SimulationController implements ControllerInterface {
 
   @Override
   public double rotationVelocityAnalog() {
-    return controller.getRawAxis(4);
+    return controller.getRawAxis(2);
   }
 }

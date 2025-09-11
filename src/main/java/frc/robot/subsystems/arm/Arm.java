@@ -36,12 +36,12 @@ public class Arm extends SubsystemBase {
     CORAL_L2_SCORE(90.0),
     CORAL_L3_SCORE(90.0),
     CORAL_L4_SCORE(110.0),
-    CORAL_L2_BACK(260.0),
-    CORAL_L3_BACK(260.0),
-    CORAL_L4_BACK(280.0),
-    CORAL_L2_SCORE_BACK(270.0),
-    CORAL_L3_SCORE_BACK(270.0),
-    CORAL_L4_SCORE_BACK(250.0),
+    CORAL_L2_FRONT(260.0),
+    CORAL_L3_FRONT(260.0),
+    CORAL_L4_FRONT(280.0),
+    CORAL_L2_SCORE_FRONT(270.0),
+    CORAL_L3_SCORE_FRONT(270.0),
+    CORAL_L4_SCORE_FRONT(250.0),
     ALGAE_INTAKE_REEF(90.0),
     ALGAE_INTAKE_LOLIPOP(50.0),
     ALGAE_INTAKE_FLOOR(40.0),
@@ -135,11 +135,11 @@ public class Arm extends SubsystemBase {
 
       case CORAL_L4 -> io.runPosition(ArmStates.CORAL_L4.position(), ffVoltage);
 
-      case CORAL_L2_BACK -> io.runPosition(ArmStates.CORAL_L2_BACK.position(), ffVoltage);
+      case CORAL_L2_FRONT -> io.runPosition(ArmStates.CORAL_L2_FRONT.position(), ffVoltage);
 
-      case CORAL_L3_BACK -> io.runPosition(ArmStates.CORAL_L3_BACK.position(), ffVoltage);
+      case CORAL_L3_FRONT -> io.runPosition(ArmStates.CORAL_L3_FRONT.position(), ffVoltage);
 
-      case CORAL_L4_BACK -> io.runPosition(ArmStates.CORAL_L4_BACK.position(), ffVoltage);
+      case CORAL_L4_FRONT -> io.runPosition(ArmStates.CORAL_L4_FRONT.position(), ffVoltage);
 
       case CORAL_L1_SCORE -> io.runPosition(ArmStates.CORAL_L1_SCORE.position(), ffVoltage);
 
@@ -149,14 +149,14 @@ public class Arm extends SubsystemBase {
 
       case CORAL_L4_SCORE -> io.runPosition(ArmStates.CORAL_L4_SCORE.position(), ffVoltage);
 
-      case CORAL_L2_SCORE_BACK -> io.runPosition(
-          ArmStates.CORAL_L2_SCORE_BACK.position(), ffVoltage);
+      case CORAL_L2_SCORE_FRONT -> io.runPosition(
+          ArmStates.CORAL_L2_SCORE_FRONT.position(), ffVoltage);
 
-      case CORAL_L3_SCORE_BACK -> io.runPosition(
-          ArmStates.CORAL_L3_SCORE_BACK.position(), ffVoltage);
+      case CORAL_L3_SCORE_FRONT -> io.runPosition(
+          ArmStates.CORAL_L3_SCORE_FRONT.position(), ffVoltage);
 
-      case CORAL_L4_SCORE_BACK -> io.runPosition(
-          ArmStates.CORAL_L4_SCORE_BACK.position(), ffVoltage);
+      case CORAL_L4_SCORE_FRONT -> io.runPosition(
+          ArmStates.CORAL_L4_SCORE_FRONT.position(), ffVoltage);
 
       case ALGAE_INTAKE_REEF -> io.runPosition(ArmStates.ALGAE_INTAKE_REEF.position(), ffVoltage);
 
@@ -182,12 +182,12 @@ public class Arm extends SubsystemBase {
   }
 
   public void setReefState(int Lx, boolean isBackside) {
-    if (isBackside) {
+    if (!isBackside) {
       switch (Lx) {
         case 1 -> setState(ArmStates.CORAL_L1);
-        case 2 -> setState(ArmStates.CORAL_L2_BACK);
-        case 3 -> setState(ArmStates.CORAL_L3_BACK);
-        case 4 -> setState(ArmStates.CORAL_L4_BACK);
+        case 2 -> setState(ArmStates.CORAL_L2_FRONT);
+        case 3 -> setState(ArmStates.CORAL_L3_FRONT);
+        case 4 -> setState(ArmStates.CORAL_L4_FRONT);
       }
     } else {
       switch (Lx) {
@@ -200,12 +200,12 @@ public class Arm extends SubsystemBase {
   }
 
   public void setScoreReefState(int Lx, boolean isBackside) {
-    if (isBackside) {
+    if (!isBackside) {
       switch (Lx) {
-        case 1 -> setState(ArmStates.CORAL_L1_SCORE);
-        case 2 -> setState(ArmStates.CORAL_L2_SCORE);
-        case 3 -> setState(ArmStates.CORAL_L3_SCORE);
-        case 4 -> setState(ArmStates.CORAL_L4_SCORE);
+        case 1 -> setState(ArmStates.CORAL_L2_SCORE_FRONT);
+        case 2 -> setState(ArmStates.CORAL_L2_SCORE_FRONT);
+        case 3 -> setState(ArmStates.CORAL_L3_SCORE_FRONT);
+        case 4 -> setState(ArmStates.CORAL_L4_SCORE_FRONT);
       }
     } else {
       switch (Lx) {

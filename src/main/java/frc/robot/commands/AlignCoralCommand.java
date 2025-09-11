@@ -39,12 +39,16 @@ public class AlignCoralCommand extends SequentialCommandGroup {
                         elevator,
                         lx,
                         RobotState.getInstance().getCoralScoringInfo().backside()),
-                        Commands.runOnce(() -> gripper.setState(GripperStates.HOLD_CORAL)),
-                        SimpleCommands.driveAutoAlignTolerance(
-                            drive,
-                            () -> RobotState.getInstance().getCoralScoringInfo().scorePose(),
-                            0.15,
-                            3)),
+                    Commands.runOnce(() -> gripper.setState(GripperStates.HOLD_CORAL)),
+                    SimpleCommands.driveAutoAlignTolerance(
+                        drive,
+                        () -> RobotState.getInstance().getCoralScoringInfo().scorePose(),
+                        0.05,
+                        3)),
+                Commands.race(
+                    SimpleCommands.nonStopAutoAlignCommand(
+                        drive, () -> RobotState.getInstance().getCoralScoringInfo().alignPose()),
+                    Commands.waitSeconds(0.3)),
                 SimpleCommands.nonStopAutoAlignCommand(
                     drive, () -> RobotState.getInstance().getCoralScoringInfo().scorePose())),
             Commands.none(),

@@ -414,10 +414,15 @@ public class RobotState {
 
     Pose2d alignPose = AllianceFlipping.apply(CORAL_ALIGN_POSES[closestFace]);
     Pose2d scorePose = AllianceFlipping.apply(CORAL_SCORE_POSES[closestFace]);
-    if (Math.abs(estimatedPose.getRotation().getDegrees() - scorePose.getRotation().getDegrees())
-        > SWITCH_SCORE_FRONT_THRESHOLD) {
-      alignPose.rotateBy(Rotation2d.fromDegrees(180));
-      scorePose.rotateBy(Rotation2d.fromDegrees(180));
+    double angleError = estimatedPose.getRotation().minus(scorePose.getRotation()).getDegrees();
+    angleError = MathUtil.inputModulus(angleError, -180, 180);
+    if (angleError > SWITCH_SCORE_FRONT_THRESHOLD) {
+      alignPose =
+          new Pose2d(
+              alignPose.getTranslation(), alignPose.getRotation().plus(new Rotation2d(Math.PI)));
+      scorePose =
+          new Pose2d(
+              scorePose.getTranslation(), scorePose.getRotation().plus(new Rotation2d(Math.PI)));
       isBackSide = false;
     }
 
@@ -468,8 +473,9 @@ public class RobotState {
 
     Pose2d alignPose = AllianceFlipping.apply(ALGAE_ALIGN_POSES[closestFace]);
     Pose2d scorePose = AllianceFlipping.apply(ALGAE_INTAKE_POSES[closestFace]);
-    if (Math.abs(estimatedPose.getRotation().getDegrees() - scorePose.getRotation().getDegrees())
-        > SWITCH_SCORE_FRONT_THRESHOLD) {
+    double angleError = estimatedPose.getRotation().minus(scorePose.getRotation()).getDegrees();
+    angleError = MathUtil.inputModulus(angleError, -180, 180);
+    if (angleError > SWITCH_SCORE_FRONT_THRESHOLD) {
       alignPose.rotateBy(Rotation2d.fromDegrees(180));
       scorePose.rotateBy(Rotation2d.fromDegrees(180));
       isBackSide = false;

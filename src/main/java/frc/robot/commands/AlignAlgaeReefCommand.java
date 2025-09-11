@@ -50,7 +50,7 @@ public class AlignAlgaeReefCommand extends SequentialCommandGroup {
                 SimpleCommands.driveAutoAlignTolerance(
                     drive,
                     () -> RobotState.getInstance().getAlgaeScoringInfo().scorePose(),
-                    0.3,
+                    0.05,
                     3),
                 Commands.runOnce(() -> leds.setState(ledsStates.FINISH_SCORE), leds),
                 Commands.waitSeconds(0.4),

@@ -98,7 +98,7 @@ public final class Constants {
 
     public static final double SWITCH_SCORE_FRONT_THRESHOLD = 100.0; // deg
 
-    public static final double SCORE_DISTANCE = 0.5;
+    public static final double SCORE_DISTANCE = 0.7;
     public static final double ANGLE_OFFSET = 0;
     public static final Pose2d[] CORAL_SCORE_POSES = {
       new Pose2d(
@@ -151,7 +151,7 @@ public final class Constants {
           FieldConstants.REEF_ANGLES[5].plus(Rotation2d.fromDegrees(ANGLE_OFFSET)))
     };
 
-    public static final double ALIGN_DISTANCE = 1;
+    public static final double ALIGN_DISTANCE = 1.2;
     public static final Pose2d[] CORAL_ALIGN_POSES = {
       new Pose2d(
           FieldConstants.REEF_BRANCHES[0].plus(
