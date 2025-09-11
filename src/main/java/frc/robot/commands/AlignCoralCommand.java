@@ -12,6 +12,7 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.gripper.Gripper;
+import frc.robot.subsystems.gripper.Gripper.GripperStates;
 
 public class AlignCoralCommand extends SequentialCommandGroup {
 
@@ -38,10 +39,12 @@ public class AlignCoralCommand extends SequentialCommandGroup {
                         elevator,
                         lx,
                         RobotState.getInstance().getCoralScoringInfo().backside()),
-                    Commands.runOnce(
-                        () ->
-                            drive.setStateAutoAlign(
-                                () -> RobotState.getInstance().getCoralScoringInfo().alignPose()))),
+                        Commands.runOnce(() -> gripper.setState(GripperStates.HOLD_CORAL)),
+                        SimpleCommands.driveAutoAlignTolerance(
+                            drive,
+                            () -> RobotState.getInstance().getCoralScoringInfo().scorePose(),
+                            0.15,
+                            3)),
                 SimpleCommands.nonStopAutoAlignCommand(
                     drive, () -> RobotState.getInstance().getCoralScoringInfo().scorePose())),
             Commands.none(),
