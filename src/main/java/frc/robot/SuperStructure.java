@@ -411,7 +411,7 @@ public class SuperStructure extends SubsystemBase {
       currentCommand = new AlignCoralCommand(drive, arm, elevator, gripper, lx);
       currentCommand.schedule();
     }
-    if (!currentCommand.isScheduled()) {
+    if (!currentCommand.isScheduled()) { // should change this to is robot within tolerance
       leds.setState(ledsStates.BLUE);
     }
   }

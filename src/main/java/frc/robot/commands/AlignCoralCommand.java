@@ -13,14 +13,14 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.Gripper.GripperStates;
+import frc.robot.subsystems.leds.Leds;
 
 public class AlignCoralCommand extends SequentialCommandGroup {
 
-  public AlignCoralCommand(Drive drive, Arm arm, Elevator elevator, Gripper gripper, int lx) {
+  public AlignCoralCommand(Drive drive, Arm arm, Elevator elevator, Leds leds, Gripper gripper, int lx) {
     // Use addRequirements() here to declare subsystem dependencies.
     RobotState.getInstance().setUpScoringTargetCoral();
-    addRequirements(drive, arm, elevator, gripper);
-    SmartDashboard.putBoolean("Structure/got here", true);
+    addRequirements(drive, arm, elevator, leds, gripper);
     if (!gripper.hasCoral() || gripper.shouldIgnoreSensor()) {
       addCommands(
           Commands.parallel(
@@ -42,14 +42,14 @@ public class AlignCoralCommand extends SequentialCommandGroup {
                     Commands.runOnce(() -> gripper.setState(GripperStates.HOLD_CORAL)),
                     SimpleCommands.driveAutoAlignTolerance(
                         drive,
-                        () -> RobotState.getInstance().getCoralScoringInfo().scorePose(),
-                        0.05,
+                        () -> RobotState.getInstance().getCoralScoringInfo().alignPose(),
+                        0.03,
                         3)),
-                Commands.race(
-                    SimpleCommands.nonStopAutoAlignCommand(
-                        drive, () -> RobotState.getInstance().getCoralScoringInfo().alignPose()),
-                    Commands.waitSeconds(0.3)),
-                SimpleCommands.nonStopAutoAlignCommand(
+                // Commands.race(
+                //     SimpleCommands.nonStopAutoAlignCommand(
+                //         drive, () -> RobotState.getInstance().getCoralScoringInfo().alignPose()),
+                //     Commands.waitSeconds(0.3)),
+                CommSimpleCommands.nonStopAutoAlignCommand(
                     drive, () -> RobotState.getInstance().getCoralScoringInfo().scorePose())),
             Commands.none(),
             () -> (gripper.hasCoral() || gripper.shouldIgnoreSensor())));
