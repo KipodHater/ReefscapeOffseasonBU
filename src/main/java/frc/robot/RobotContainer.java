@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.SuperStructure.SuperStructureStates;
 import frc.robot.controllers.ControllerInterface;
 import frc.robot.controllers.SimulationController;
 import frc.robot.controllers.SingleXboxController;
@@ -263,7 +264,10 @@ public class RobotContainer {
     controller
         .intakeAlgaeFloorButton()
         .onTrue(Commands.runOnce(() -> structure.intakeAlgaeFloorButtonPress()));
-    controller.l4NetButton().onTrue(Commands.runOnce(() -> structure.l4NetButtonPress()));
+    // controller.l4NetButton().onTrue(Commands.runOnce(() -> structure.l4NetButtonPress()));
+    controller
+        .l4NetButton()
+        .onTrue(structure.setWantedStateCommand(SuperStructureStates.ALGAE_NET));
     controller.l3Button().onTrue(Commands.runOnce(() -> structure.l3ButtonPress()));
     controller
         .l2AlgaeHomeButton()

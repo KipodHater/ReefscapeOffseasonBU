@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.AlgaeNetCommand;
 import frc.robot.commands.AlignAlgaeReefCommand;
 import frc.robot.commands.AlignCoralCommand;
 import frc.robot.commands.PlaceCoralCommandTeleop;
@@ -251,8 +252,8 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case ALGAE_NET -> {
-        if (gripper.hasAlgae() || gripper.shouldIgnoreSensor())
-          yield SuperStructureStates.ALGAE_NET;
+        if (gripper.hasAlgae() || gripper.shouldIgnoreSensor() || true) // TODO: eufheurhgioueh
+        yield SuperStructureStates.ALGAE_NET;
         else yield previousState;
       }
 
@@ -342,14 +343,20 @@ public class SuperStructure extends SubsystemBase {
       }
 
       case ALGAE_NET -> {
+        // System.out.println("i hate my life");
         if (currentCommand != null) currentCommand.cancel();
-        arm.setState(ArmStates.ALGAE_SCORE_NET);
-        elevator.setState(ElevatorStates.ALGAE_SCORE_NET);
-        conveyor.setState(ConveyorStates.IDLE);
-        drive.setState(DriveStates.FIELD_DRIVE);
-        gripper.setState(GripperStates.HOLD_ALGAE);
-        intakeStateMachine();
-        leds.setState(ledsStates.ALGAE);
+        currentCommand =
+            new AlgaeNetCommand(
+                drive, arm, elevator, gripper, leds, () -> false, () -> true, false);
+        currentCommand.schedule();
+
+        // arm.setState(ArmStates.ALGAE_SCORE_NET);
+        // elevator.setState(ElevatorStates.ALGAE_SCORE_NET);
+        // conveyor.setState(ConveyorStates.IDLE);
+        // drive.setState(DriveStates.FIELD_DRIVE);
+        // gripper.setState(GripperStates.HOLD_ALGAE);
+        // intakeStateMachine();
+        // leds.setState(ledsStates.ALGAE);
       }
 
       case ALGAE_HOME -> {
@@ -408,12 +415,11 @@ public class SuperStructure extends SubsystemBase {
     closeIntakeIfPossible();
     if (previousState != currentState) {
       if (currentCommand != null) currentCommand.cancel();
-      currentCommand = new AlignCoralCommand(arm, drive, elevator, gripper, leds, lx);
+      currentCommand = new AlignCoralCommand(drive, arm, elevator, leds, gripper, lx);
       currentCommand.schedule();
     }
     if (!currentCommand.isScheduled()) { // should change this to is robot within tolerance
-      currentState = SuperStructureStates.TRAVEL;
-      wantedState = currentState;
+      leds.setState(ledsStates.BLUE);
     }
   }
 
@@ -526,7 +532,8 @@ public class SuperStructure extends SubsystemBase {
   }
 
   public void l4NetButtonPress() {
-    if (gripper.hasAlgae() && !gripper.shouldIgnoreSensor()) {
+    if (
+    /*gripper.hasAlgae() && !gripper.shouldIgnoreSensor()*/ true) { // TODO: change
       wantedState = SuperStructureStates.ALGAE_NET;
     } else {
       if (currentState == SuperStructureStates.PLACE_CORAL_ALIGN_L4) {
