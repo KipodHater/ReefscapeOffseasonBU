@@ -408,11 +408,12 @@ public class SuperStructure extends SubsystemBase {
     closeIntakeIfPossible();
     if (previousState != currentState) {
       if (currentCommand != null) currentCommand.cancel();
-      currentCommand = new AlignCoralCommand(drive, arm, elevator, gripper, lx);
+      currentCommand = new AlignCoralCommand(arm, drive, elevator, gripper, leds, lx);
       currentCommand.schedule();
     }
     if (!currentCommand.isScheduled()) { // should change this to is robot within tolerance
-      leds.setState(ledsStates.BLUE);
+      currentState = SuperStructureStates.TRAVEL;
+      wantedState = currentState;
     }
   }
 
@@ -421,7 +422,7 @@ public class SuperStructure extends SubsystemBase {
     closeIntakeIfPossible();
     if (previousState != currentState) {
       if (currentCommand != null) currentCommand.cancel();
-      currentCommand = new PlaceCoralCommandTeleop(arm, elevator, gripper, drive, leds, lx);
+      currentCommand = new PlaceCoralCommandTeleop(arm, drive, elevator, gripper, leds, lx);
       currentCommand.schedule();
     }
     if (!currentCommand.isScheduled()) {

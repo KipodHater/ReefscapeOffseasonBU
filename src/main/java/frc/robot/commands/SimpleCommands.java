@@ -12,6 +12,8 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.Elevator.ElevatorStates;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.Gripper.GripperStates;
+import frc.robot.subsystems.leds.Leds;
+
 import java.util.function.Supplier;
 
 public class SimpleCommands {
@@ -135,19 +137,22 @@ public class SimpleCommands {
         () -> drive.setStateAutoAlign(other),
         () -> {},
         interrupted -> {},
-        () -> {
-          Pose2d currentPose =
-              drive.getPose() != null ? drive.getPose() : new Pose2d(1, 1, new Rotation2d());
-          Pose2d targetPose =
-              other.get() != null ? other.get() : new Pose2d(1, 1, new Rotation2d());
-          System.out.println(currentPose.toString());
-          System.out.println(targetPose.toString());
-          return currentPose.getTranslation().getDistance(targetPose.getTranslation()) < tolerance
-              && Math.abs(
-                      currentPose.getRotation().getDegrees()
-                          - targetPose.getRotation().getDegrees())
-                  < angleTolerance;
-        },
+        () -> drive.isAtAlignSetpoint(tolerance, angleTolerance),
         drive);
+  }
+
+  public static Command blinkLedsOnAlignCondition(Leds leds, Supplier<Boolean> condition) {
+    return new FunctionalCommand(
+        () -> {},
+        () -> {
+          if (condition.get()) {
+            leds.setState(Leds.ledsStates.BLUE);
+          } else {
+            leds.setState(Leds.ledsStates.RED);
+          }
+        },
+        interrupted -> {},
+        () -> false,
+        leds);
   }
 }

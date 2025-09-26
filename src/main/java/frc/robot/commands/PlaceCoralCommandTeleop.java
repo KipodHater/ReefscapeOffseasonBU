@@ -13,8 +13,8 @@ import frc.robot.subsystems.leds.Leds.ledsStates;
 public class PlaceCoralCommandTeleop extends SequentialCommandGroup {
 
   public PlaceCoralCommandTeleop(
-      Arm arm, Elevator elevator, Gripper gripper, Drive drive, Leds leds, int lx) {
-    addRequirements(arm, elevator, gripper, drive, leds);
+      Arm arm, Drive drive, Elevator elevator, Gripper gripper, Leds leds, int lx) {
+    addRequirements(arm, drive, elevator, gripper, leds);
     if (gripper.hasCoral() || gripper.shouldIgnoreSensor()) {
       addCommands(
           Commands.parallel(
@@ -24,7 +24,7 @@ public class PlaceCoralCommandTeleop extends SequentialCommandGroup {
                   gripper,
                   lx,
                   RobotState.getInstance().getCoralScoringInfo().backside()),
-              Commands.runOnce(() -> leds.setState(ledsStates.RED))));
+              Commands.runOnce(() -> leds.setState(ledsStates.FINISH_SCORE), leds)));
       addCommands(Commands.waitSeconds(0.05)); // can maybe remove this
       addCommands(
           Commands.parallel(
