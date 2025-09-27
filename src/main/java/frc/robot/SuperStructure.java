@@ -344,11 +344,16 @@ public class SuperStructure extends SubsystemBase {
 
       case ALGAE_NET -> {
         // System.out.println("i hate my life");
-        if (currentCommand != null) currentCommand.cancel();
-        currentCommand =
-            new AlgaeNetCommand(
-                drive, arm, elevator, gripper, leds, () -> false, () -> true, false);
-        currentCommand.schedule();
+        if (previousState != wantedState) {
+          if (currentCommand != null) currentCommand.cancel();
+          currentCommand =
+              new AlgaeNetCommand(
+                  drive, arm, elevator, gripper, leds, () -> false, () -> true, false);
+          currentCommand.schedule();
+        }
+        if (!CommandScheduler.getInstance().isScheduled(currentCommand)) {
+          setWantedState(SuperStructureStates.TRAVEL);
+        }
 
         // arm.setState(ArmStates.ALGAE_SCORE_NET);
         // elevator.setState(ElevatorStates.ALGAE_SCORE_NET);
@@ -386,7 +391,7 @@ public class SuperStructure extends SubsystemBase {
     elevator.setState(ElevatorStates.DEFAULT);
 
     if (elevator.isSafeForArm()) arm.setState(ArmStates.DEFAULT);
-    else arm.setState(ArmStates.IDLE); // TODO: change this to hold current position state
+    // else arm.setState(ArmStates.IDLE); // TODO: change this to hold current position state
 
     gripper.setState(GripperStates.IDLE);
     closeIntakeIfPossible();

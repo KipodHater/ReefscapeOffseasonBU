@@ -342,11 +342,11 @@ public class Drive extends SubsystemBase {
         break;
 
       case AUTO_ALIGN: // Align the robot with reef
-      if(autoAlignTarget == null) {
-        System.out.println("Invalid auto-align target, switching to IDLE");
-        driveState = DriveStates.IDLE;
-        break;
-      }
+        if (autoAlignTarget == null) {
+          System.out.println("Invalid auto-align target, switching to IDLE");
+          driveState = DriveStates.IDLE;
+          break;
+        }
         autoAlignTarget =
             autoAlignTarget != null ? autoAlignTarget : () -> new Pose2d(3, 3, new Rotation2d());
 
@@ -562,16 +562,14 @@ public class Drive extends SubsystemBase {
   }
 
   public boolean isAtAlignSetpoint(double tolerance, double angleTolerance) {
-    Pose2d currentPose =
-              getPose() != null ? getPose() : new Pose2d(1, 1, new Rotation2d());
-    Pose2d targetPose = autoAlignTarget != null && autoAlignTarget.get() != null
-              ? autoAlignTarget.get()
-              : new Pose2d(1, 1, new Rotation2d());
-              
-          return currentPose.getTranslation().getDistance(targetPose.getTranslation()) < tolerance
-              && Math.abs(
-                      currentPose.getRotation().getDegrees()
-                          - targetPose.getRotation().getDegrees())
-                  < angleTolerance;
+    Pose2d currentPose = getPose() != null ? getPose() : new Pose2d(1, 1, new Rotation2d());
+    Pose2d targetPose =
+        autoAlignTarget != null && autoAlignTarget.get() != null
+            ? autoAlignTarget.get()
+            : new Pose2d(1, 1, new Rotation2d());
+
+    return currentPose.getTranslation().getDistance(targetPose.getTranslation()) < tolerance
+        && Math.abs(currentPose.getRotation().getDegrees() - targetPose.getRotation().getDegrees())
+            < angleTolerance;
   }
 }

@@ -98,7 +98,8 @@ public class SimpleCommands {
         elevator);
   }
 
-  public static boolean moveToNet(Arm arm, Elevator elevator, Gripper gripper, boolean isBackside) {
+  private static boolean moveToNet(
+      Arm arm, Elevator elevator, Gripper gripper, boolean isBackside) {
     arm.setState(ArmStates.ALGAE_SCORE_NET);
     elevator.setState(ElevatorStates.ALGAE_SCORE_NET);
     return elevator.atGoal() /*  && arm.atGoal()*/;
