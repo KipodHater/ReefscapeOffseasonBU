@@ -91,7 +91,7 @@ public class VisionIOPhoton implements VisionIO {
         //   fieldToRobot = fieldToCamera.plus(robotToCamera.inverse()); // vector addition
         //   Pose3d robotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
         
-        angle = 
+        double robotAngle = RobotState.getInstance()
 
           // Add tag ID
           tagIds.add((short) target.fiducialId);
