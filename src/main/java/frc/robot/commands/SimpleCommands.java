@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.RobotState;
@@ -13,7 +12,6 @@ import frc.robot.subsystems.elevator.Elevator.ElevatorStates;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.Gripper.GripperStates;
 import frc.robot.subsystems.leds.Leds;
-
 import java.util.function.Supplier;
 
 public class SimpleCommands {

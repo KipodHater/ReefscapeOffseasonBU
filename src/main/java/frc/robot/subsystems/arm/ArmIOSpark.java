@@ -46,7 +46,7 @@ public class ArmIOSpark implements ArmIO {
         .encoder
         .positionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR)
         .velocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR)
-        .inverted(ArmConstants.ENCODER_INVERTED)
+        // .inverted(ArmConstants.ENCODER_INVERTED)
         .uvwMeasurementPeriod(10);
 
     tryUntilOk(
