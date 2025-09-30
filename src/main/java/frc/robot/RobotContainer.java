@@ -179,10 +179,10 @@ public class RobotContainer {
                       "camera0",
                       VisionConstants.robotToCamera0,
                       driveSimulation::getSimulatedDriveTrainPose),
-                  new VisionIOPhotonSim(
-                      "camera1",
-                      VisionConstants.robotToCamera1,
-                      driveSimulation::getSimulatedDriveTrainPose)
+                  // new VisionIOPhotonSim(
+                  //     "camera1",
+                  //     VisionConstants.robotToCamera1,
+                  //     driveSimulation::getSimulatedDriveTrainPose)
                   // new VisionIOTest()
                 });
         break;
