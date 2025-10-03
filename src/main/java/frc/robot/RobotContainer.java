@@ -60,6 +60,8 @@ import frc.robot.subsystems.objectVision.ObjectVision;
 import frc.robot.subsystems.objectVision.ObjectVisionIO;
 import frc.robot.subsystems.objectVision.ObjectVisionIOPhoton;
 import frc.robot.subsystems.vision.*;
+import frc.robot.util.AllianceFlipping;
+
 import java.util.function.DoubleSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -249,7 +251,7 @@ public class RobotContainer {
             ? () -> RobotState.getInstance().resetPose(driveSimulation.getSimulatedDriveTrainPose())
             : () ->
                 RobotState.getInstance()
-                    .resetPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
+                    .resetPose(new Pose2d(RobotState.getInstance().getEstimatedPose().getTranslation(), AllianceFlipping.apply(Rotation2d.fromDegrees(180))));
 
     controller.resetGyroButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
@@ -324,7 +326,7 @@ public class RobotContainer {
     if (Constants.currentMode != Constants.Mode.SIM) return;
 
     // Reset the simulation to the initial pose
-    driveSimulation.setSimulationWorldPose(drive.getPose());
+    driveSimulation.setSimulationWorldPose(RobotState.getInstance().getEstimatedPose());
     gripper.autonomousInit();
   }
 }

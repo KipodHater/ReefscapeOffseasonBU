@@ -171,7 +171,7 @@ public class Drive extends SubsystemBase {
 
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
-        this::getPose,
+        RobotState.getInstance()::getEstimatedPose,
         RobotState.getInstance()::resetPose,
         this::getChassisSpeeds,
         this::runVelocity,
@@ -308,10 +308,10 @@ public class Drive extends SubsystemBase {
               yJoystickVelocity.getAsDouble(),
               rJoystickVelocity.getAsDouble());
         else {
-          Translation2d pathToCoral = coral.get().minus(getPose().getTranslation());
+          Translation2d pathToCoral = coral.get().minus(RobotState.getInstance().getEstimatedPose().getTranslation());
           double pidGain =
               rotationController.calculate(
-                  getPose().getRotation().getDegrees(),
+                  RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),
                   Math.toDegrees(Math.atan2(pathToCoral.getY(), pathToCoral.getX())));
           double rMag = Math.abs(rJoystickVelocity.getAsDouble());
           // double velMag = Math.hypot(xJoystickVelocity.getAsDouble(),
@@ -350,7 +350,7 @@ public class Drive extends SubsystemBase {
         autoAlignTarget =
             autoAlignTarget != null ? autoAlignTarget : () -> new Pose2d(3, 3, new Rotation2d());
 
-        Transform2d distance = autoAlignTarget.get().minus(getPose());
+        Transform2d distance = autoAlignTarget.get().minus(RobotState.getInstance().getEstimatedPose());
         double linearVelocity =
             linearVelocityController.calculate(0, Math.hypot(distance.getX(), distance.getY()));
         Translation2d linearVelocityTranslation =
@@ -361,7 +361,7 @@ public class Drive extends SubsystemBase {
                 linearVelocityTranslation.getX(),
                 linearVelocityTranslation.getY(),
                 rotationController.calculate(
-                    getPose().getRotation().getDegrees(),
+                  RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),
                     autoAlignTarget.get().getRotation().getDegrees())));
         break;
       default:
@@ -404,7 +404,7 @@ public class Drive extends SubsystemBase {
             && DriverStation.getAlliance().get() == Alliance.Red;
     runVelocity(
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            speeds, isFlipped ? getRotation().plus(new Rotation2d(Math.PI)) : getRotation()));
+            speeds, isFlipped ? RobotState.getInstance().getEstimatedPose().getRotation().plus(new Rotation2d(Math.PI)) : RobotState.getInstance().getEstimatedPose().getRotation()));
   }
 
   private void robotCentricJoystickDrive(double vx, double vy, double vr) {
@@ -499,17 +499,6 @@ public class Drive extends SubsystemBase {
     return values;
   }
 
-  /** Returns the current odometry pose. */
-  @AutoLogOutput(key = "Odometry/Robot")
-  public Pose2d getPose() {
-    return RobotState.getInstance().getEstimatedPose();
-  }
-
-  /** Returns the current odometry rotation. */
-  public Rotation2d getRotation() {
-    return getPose().getRotation();
-  }
-
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
     return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
@@ -567,7 +556,7 @@ public class Drive extends SubsystemBase {
   }
 
   public boolean isAtAlignSetpoint(double tolerance, double angleTolerance) {
-    Pose2d currentPose = getPose() != null ? getPose() : new Pose2d(1, 1, new Rotation2d());
+    Pose2d currentPose = RobotState.getInstance().getEstimatedPose() != null ? RobotState.getInstance().getEstimatedPose() : new Pose2d(1, 1, new Rotation2d());
     Pose2d targetPose =
         autoAlignTarget != null && autoAlignTarget.get() != null
             ? autoAlignTarget.get()
