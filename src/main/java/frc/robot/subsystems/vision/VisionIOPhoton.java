@@ -88,12 +88,15 @@ public class VisionIOPhoton implements VisionIO {
         var tagPose = aprilTagLayout.getTagPose(target.fiducialId);
 
         Rotation2d robotAngle = RobotState.getInstance().getRotation();
+        
         Rotation2d groundTx = projectTxBetweenPlanes(Rotation2d.fromDegrees(-target.getYaw()));
+        System.out.println(groundTx.getDegrees());
+        System.out.println(target.getYaw());
         // shuffle("txahhhh", target);
         SmartDashboard.putNumber("tx", target.getYaw());
         SmartDashboard.putNumber("groundtx", groundTx.getDegrees());
         Rotation2d ty = Rotation2d.fromDegrees(target.getPitch());
-        System.out.println(target.getPitch());
+        // System.out.println(target.getPitch());
 
         // System.out.println(tagPose.get().getTranslation().toTranslation2d());
         // SmartDashboard.putNumber("tagHeight", );
@@ -113,6 +116,21 @@ public class VisionIOPhoton implements VisionIO {
         // Add tag ID
         tagIds.add((short) target.fiducialId);
 
+        Transform3d fieldToTarget =
+            new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
+        Transform3d cameraToTarget = target.bestCameraToTarget;
+        Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
+        Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
+        Pose3d robotPose1 = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
+        Logger.recordOutput("bestEstimation", robotPose1);
+
+        fieldToTarget =
+            new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
+        cameraToTarget = target.altCameraToTarget;
+        fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
+        fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
+        robotPose1 = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
+        Logger.recordOutput("alternateEstimation", robotPose1);
         // Translation2d distanceVector = new Translation2d(distance, totalYaw);
         // System.out.println(totalYaw.getDegrees());
         Logger.recordOutput("ahhhhhh", totalYaw.getDegrees());

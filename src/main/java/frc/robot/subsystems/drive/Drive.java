@@ -308,7 +308,8 @@ public class Drive extends SubsystemBase {
               yJoystickVelocity.getAsDouble(),
               rJoystickVelocity.getAsDouble());
         else {
-          Translation2d pathToCoral = coral.get().minus(RobotState.getInstance().getEstimatedPose().getTranslation());
+          Translation2d pathToCoral =
+              coral.get().minus(RobotState.getInstance().getEstimatedPose().getTranslation());
           double pidGain =
               rotationController.calculate(
                   RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),
@@ -350,7 +351,8 @@ public class Drive extends SubsystemBase {
         autoAlignTarget =
             autoAlignTarget != null ? autoAlignTarget : () -> new Pose2d(3, 3, new Rotation2d());
 
-        Transform2d distance = autoAlignTarget.get().minus(RobotState.getInstance().getEstimatedPose());
+        Transform2d distance =
+            autoAlignTarget.get().minus(RobotState.getInstance().getEstimatedPose());
         double linearVelocity =
             linearVelocityController.calculate(0, Math.hypot(distance.getX(), distance.getY()));
         Translation2d linearVelocityTranslation =
@@ -361,7 +363,7 @@ public class Drive extends SubsystemBase {
                 linearVelocityTranslation.getX(),
                 linearVelocityTranslation.getY(),
                 rotationController.calculate(
-                  RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),
+                    RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),
                     autoAlignTarget.get().getRotation().getDegrees())));
         break;
       default:
@@ -404,7 +406,13 @@ public class Drive extends SubsystemBase {
             && DriverStation.getAlliance().get() == Alliance.Red;
     runVelocity(
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            speeds, isFlipped ? RobotState.getInstance().getEstimatedPose().getRotation().plus(new Rotation2d(Math.PI)) : RobotState.getInstance().getEstimatedPose().getRotation()));
+            speeds,
+            isFlipped
+                ? RobotState.getInstance()
+                    .getEstimatedPose()
+                    .getRotation()
+                    .plus(new Rotation2d(Math.PI))
+                : RobotState.getInstance().getEstimatedPose().getRotation()));
   }
 
   private void robotCentricJoystickDrive(double vx, double vy, double vr) {
@@ -556,7 +564,10 @@ public class Drive extends SubsystemBase {
   }
 
   public boolean isAtAlignSetpoint(double tolerance, double angleTolerance) {
-    Pose2d currentPose = RobotState.getInstance().getEstimatedPose() != null ? RobotState.getInstance().getEstimatedPose() : new Pose2d(1, 1, new Rotation2d());
+    Pose2d currentPose =
+        RobotState.getInstance().getEstimatedPose() != null
+            ? RobotState.getInstance().getEstimatedPose()
+            : new Pose2d(1, 1, new Rotation2d());
     Pose2d targetPose =
         autoAlignTarget != null && autoAlignTarget.get() != null
             ? autoAlignTarget.get()
