@@ -1,7 +1,7 @@
 package frc.robot.subsystems.gripper;
 
+import static frc.lib.util.SparkUtil.*;
 import static frc.robot.subsystems.gripper.GripperConstants.*;
-import static frc.robot.util.SparkUtil.*;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;

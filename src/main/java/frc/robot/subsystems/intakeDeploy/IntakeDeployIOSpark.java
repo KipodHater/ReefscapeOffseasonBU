@@ -1,7 +1,7 @@
 package frc.robot.subsystems.intakeDeploy;
 
+import static frc.lib.util.SparkUtil.*;
 import static frc.robot.subsystems.intakeDeploy.IntakeDeployConstants.*;
-import static frc.robot.util.SparkUtil.*;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;

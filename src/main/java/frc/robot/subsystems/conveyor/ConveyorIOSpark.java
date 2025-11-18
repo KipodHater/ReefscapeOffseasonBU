@@ -1,7 +1,7 @@
 package frc.robot.subsystems.conveyor;
 
+import static frc.lib.util.SparkUtil.*;
 import static frc.robot.subsystems.conveyor.ConveyorConstants.*;
-import static frc.robot.util.SparkUtil.*;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;

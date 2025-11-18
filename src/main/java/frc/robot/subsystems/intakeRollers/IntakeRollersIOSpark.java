@@ -1,7 +1,7 @@
 package frc.robot.subsystems.intakeRollers;
 
+import static frc.lib.util.SparkUtil.*;
 import static frc.robot.subsystems.intakeRollers.IntakeRollersConstants.*;
-import static frc.robot.util.SparkUtil.*;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;

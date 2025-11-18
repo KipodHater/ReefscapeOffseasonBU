@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.lib.util.AllianceFlipping;
 import frc.robot.controllers.ControllerInterface;
 import frc.robot.controllers.SimulationController;
 import frc.robot.controllers.SingleXboxController;
@@ -60,7 +61,7 @@ import frc.robot.subsystems.objectVision.ObjectVision;
 import frc.robot.subsystems.objectVision.ObjectVisionIO;
 import frc.robot.subsystems.objectVision.ObjectVisionIOPhoton;
 import frc.robot.subsystems.vision.*;
-import frc.robot.util.AllianceFlipping;
+
 import java.util.function.DoubleSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;

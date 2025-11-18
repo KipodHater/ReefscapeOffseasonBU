@@ -1,7 +1,7 @@
 package frc.robot.subsystems.arm;
 
+import static frc.lib.util.SparkUtil.*;
 import static frc.robot.subsystems.arm.ArmConstants.*;
-import static frc.robot.util.SparkUtil.*;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;

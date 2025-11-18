@@ -1,7 +1,7 @@
 package frc.robot.subsystems.elevator;
 
+import static frc.lib.util.SparkUtil.sparkStickyFault;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
-import static frc.robot.util.SparkUtil.sparkStickyFault;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;

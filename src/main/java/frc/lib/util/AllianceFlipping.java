@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.lib.util;
 
 import static frc.robot.Constants.FIELD_LENGTH;
 import static frc.robot.Constants.FIELD_WIDTH;

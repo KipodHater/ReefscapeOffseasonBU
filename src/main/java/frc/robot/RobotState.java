@@ -26,10 +26,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import frc.lib.util.AllianceFlipping;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.util.AllianceFlipping;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
