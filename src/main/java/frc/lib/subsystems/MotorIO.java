@@ -38,5 +38,10 @@ public interface MotorIO {
      */
     void setCurrentPosition(double positionUnits);
 
+    void setNeutralMode(boolean isBrake);
     // void follow(int masterID, boolean opposeMaterDirection);
+
+    void setEnableSoftLimit(boolean fwd, boolean rev);
+
+    void setEnableHardLimit(boolean fwd, boolean rev);
 }
