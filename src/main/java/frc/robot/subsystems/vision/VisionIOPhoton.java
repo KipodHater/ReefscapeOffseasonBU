@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.RobotState;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +32,13 @@ public class VisionIOPhoton implements VisionIO {
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
-
+    double d =
+        Math.hypot(
+            aprilTagLayout.getTagPose(17).get().getX()
+                - RobotState.getInstance().getEstimatedPose().getX(),
+            aprilTagLayout.getTagPose(17).get().getY()
+                - RobotState.getInstance().getEstimatedPose().getY());
+    System.out.println(d);
     inputs.connected = camera.isConnected();
 
     Set<Short> tagIds = new HashSet<>();

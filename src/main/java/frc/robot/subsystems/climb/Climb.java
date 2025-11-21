@@ -12,7 +12,7 @@ public class Climb extends SubsystemBase {
   private final ClimbIO io;
   private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
-  private final ArmFeedforward climbFeedforwardController =
+  private final ArmFeedforward climbFeedforwardController           =
       new ArmFeedforward(
           ClimbConstants.GAINS.KS(), ClimbConstants.GAINS.KG(), ClimbConstants.GAINS.KV());
 

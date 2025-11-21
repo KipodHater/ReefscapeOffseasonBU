@@ -10,9 +10,9 @@
       "maximized": "0",
       "style": "0",
       "userScale": "2",
-      "width": "1280",
-      "xpos": "930",
-      "ypos": "185"
+      "width": "1286",
+      "xpos": "387",
+      "ypos": "513"
     }
   },
   "Table": {
@@ -27,11 +27,11 @@
     "###FMS": {
       "Collapsed": "0",
       "Pos": "714,496",
-      "Size": "283,140"
+      "Size": "169,184"
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "444,75",
+      "Pos": "440,74",
       "Size": "796,149"
     },
     "###Keyboard 0 Settings": {

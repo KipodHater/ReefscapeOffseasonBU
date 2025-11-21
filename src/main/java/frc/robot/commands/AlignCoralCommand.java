@@ -16,14 +16,15 @@ import frc.robot.subsystems.leds.Leds;
 
 public class AlignCoralCommand extends SequentialCommandGroup {
 
-  public AlignCoralCommand(Arm arm, Drive drive, Elevator elevator, Gripper gripper, Leds leds, int lx) {
+  public AlignCoralCommand(
+      Arm arm, Drive drive, Elevator elevator, Gripper gripper, Leds leds, int lx) {
     // Use addRequirements() here to declare subsystem dependencies.
     RobotState.getInstance().setUpScoringTargetCoral();
     addRequirements(drive, arm, elevator, leds, gripper);
     if (!gripper.hasCoral() || gripper.shouldIgnoreSensor()) {
       addCommands(
           Commands.parallel(
-            Commands.runOnce(() -> leds.setState(Leds.ledsStates.PURPLE), leds),
+              Commands.runOnce(() -> leds.setState(Leds.ledsStates.PURPLE), leds),
               new IntakeFromConveyor(arm, elevator, gripper),
               Commands.runOnce(
                   () ->
@@ -47,10 +48,10 @@ public class AlignCoralCommand extends SequentialCommandGroup {
                         0.03,
                         2)), // can possibly make this forever
                 Commands.parallel(
-                SimpleCommands.nonStopAutoAlignCommand(
-                    drive, () -> RobotState.getInstance().getCoralScoringInfo().scorePose())),
-                SimpleCommands.blinkLedsOnAlignCondition(leds, () -> drive.isAtAlignSetpoint(0.03, 2))
-            ),
+                    SimpleCommands.nonStopAutoAlignCommand(
+                        drive, () -> RobotState.getInstance().getCoralScoringInfo().scorePose())),
+                SimpleCommands.blinkLedsOnAlignCondition(
+                    leds, () -> drive.isAtAlignSetpoint(0.03, 2))),
             Commands.none(),
             () -> (gripper.hasCoral() || gripper.shouldIgnoreSensor())));
   }
