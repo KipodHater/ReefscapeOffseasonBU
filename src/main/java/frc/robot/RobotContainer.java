@@ -61,7 +61,6 @@ import frc.robot.subsystems.objectVision.ObjectVision;
 import frc.robot.subsystems.objectVision.ObjectVisionIO;
 import frc.robot.subsystems.objectVision.ObjectVisionIOPhoton;
 import frc.robot.subsystems.vision.*;
-
 import java.util.function.DoubleSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;

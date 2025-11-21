@@ -88,7 +88,7 @@ public class VisionIOPhoton implements VisionIO {
         var tagPose = aprilTagLayout.getTagPose(target.fiducialId);
 
         Rotation2d robotAngle = RobotState.getInstance().getRotation();
-        
+
         Rotation2d groundTx = projectTxBetweenPlanes(Rotation2d.fromDegrees(-target.getYaw()));
         System.out.println(groundTx.getDegrees());
         System.out.println(target.getYaw());

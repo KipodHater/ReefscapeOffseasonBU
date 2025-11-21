@@ -51,7 +51,6 @@ import frc.robot.Constants.Mode;
 import frc.robot.RobotState;
 import frc.robot.RobotState.OdometryObservation;
 import frc.robot.generated.TunerConstants;
-
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;

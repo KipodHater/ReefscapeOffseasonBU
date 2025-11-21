@@ -27,7 +27,8 @@
 
 //     public SimSparkMaxIO(MotorSubsystemConfig config) {
 //         this(config, new DCMotorSim(
-//             LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), config.momentOfInertia, 1.0/config.unitToRotorRatio),
+//             LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), config.momentOfInertia,
+// 1.0/config.unitToRotorRatio),
 //             DCMotor.getNEO(1), 0.001, 0.001
 //             ));
 //     }
@@ -35,7 +36,7 @@
 //     public SimSparkMaxIO(MotorSubsystemConfig config, DCMotorSim sim) {
 //         super(config);
 //         this.sim = sim;
-        
+
 //         simNotifier = new Notifier(this::updateSim);
 //         simNotifier.startPeriodic(0.005);
 //     }

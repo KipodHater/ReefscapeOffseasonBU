@@ -1,24 +1,30 @@
 package frc.lib;
 
+import static frc.robot.Constants.CYCLE_TIME;
+import static frc.robot.subsystems.drive.DriveConstants.*;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N2;
-
-import static frc.robot.subsystems.drive.DriveConstants.*;
-import static frc.robot.Constants.CYCLE_TIME;
 
 public class accelLimitsLib {
 
-  private static Vector<N2> applyAccLimits(Vector<N2> wantedVelocityRobotOriented, Vector<N2> currentVelocityRobotOriented) {
+  private static Vector<N2> applyAccLimits(
+      Vector<N2> wantedVelocityRobotOriented, Vector<N2> currentVelocityRobotOriented) {
 
-    Vector<N2> wantedAccRobotOriented = (wantedVelocityRobotOriented.minus(currentVelocityRobotOriented)).div(CYCLE_TIME);    
+    Vector<N2> wantedAccRobotOriented =
+        (wantedVelocityRobotOriented.minus(currentVelocityRobotOriented)).div(CYCLE_TIME);
     // can possibly make this better
-    Vector<N2> skidAccel = wantedAccRobotOriented.div(wantedAccRobotOriented.norm()).times(Math.min(wantedAccRobotOriented.norm(), MAX_SKID_ACCEL));
+    Vector<N2> skidAccel =
+        wantedAccRobotOriented
+            .div(wantedAccRobotOriented.norm())
+            .times(Math.min(wantedAccRobotOriented.norm(), MAX_SKID_ACCEL));
 
     // double maxForwardAccel = MAX_ACCELERATION * (currentVelocity. / maxSpeedMetersPerSec);
-    double frontAccel = Math.copySign(Math.min(Math.abs(skidAccel.get(0)), MAX_FRONT_ACCEL), skidAccel.get(0));
-    double sideAccel = Math.copySign(Math.min(Math.abs(skidAccel.get(1)), MAX_FRONT_ACCEL), skidAccel.get(1));
+    double frontAccel =
+        Math.copySign(Math.min(Math.abs(skidAccel.get(0)), MAX_FRONT_ACCEL), skidAccel.get(0));
+    double sideAccel =
+        Math.copySign(Math.min(Math.abs(skidAccel.get(1)), MAX_FRONT_ACCEL), skidAccel.get(1));
 
     Vector<N2> limitedAccRobotOriented = VecBuilder.fill(frontAccel, sideAccel);
 
