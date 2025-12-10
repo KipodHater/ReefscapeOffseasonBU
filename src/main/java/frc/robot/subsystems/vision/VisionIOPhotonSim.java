@@ -4,6 +4,7 @@ import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import java.util.function.Supplier;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -31,7 +32,17 @@ public class VisionIOPhotonSim extends VisionIOPhoton {
     cameraProp.setAvgLatencyMs(10);
     cameraSim = new PhotonCameraSim(camera, cameraProp, aprilTagLayout);
 
-    visionSim.addCamera(cameraSim, robotToCamera);
+    Transform3d robotToCameraShifted =
+        // robotToCamera;
+        new Transform3d(
+            robotToCamera.getX(),
+            robotToCamera.getY(),
+            robotToCamera.getZ(), // Shift camera up by 5 cm to avoid ground clipping
+            new Rotation3d(
+                robotToCamera.getRotation().getX(),
+                robotToCamera.getRotation().getY(),
+                robotToCamera.getRotation().getZ()));
+    visionSim.addCamera(cameraSim, robotToCameraShifted);
   }
 
   public void updateInputs(VisionIOInputs inputs) {

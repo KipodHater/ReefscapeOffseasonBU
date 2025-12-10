@@ -81,7 +81,6 @@ public class SimpleCommands {
     arm.setScoreReefState(lx, isBackside);
     elevator.setReefState(lx);
     if (arm.atScoreGoal()) {
-      System.out.println("im the problem!");
       gripper.setState(GripperStates.EJECT_CORAL);
     }
     return arm.atGoal();
